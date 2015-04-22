@@ -1,6 +1,7 @@
 var UI = require('ui');
 var groups = require('Groups');
 var events = require('Events');
+var Settings = require('settings');
 
 var functions = module.exports;
 
@@ -32,6 +33,9 @@ functions.setup = function setup() {
         });
 };
 
+functions.getSetting = function getSetting(setting) {
+   return Settings.data(setting);
+};
 
 functions.showCard = function showCard(title, subtitle, body) {
     console.log('Body is ' + body);

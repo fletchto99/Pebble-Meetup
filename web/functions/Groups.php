@@ -8,15 +8,17 @@ class Groups
     private $key = null;
     private $radius = null;
     private $url = null;
-    private $exclusions = array('country', 'city', 'id', 'state', 'name', 'lat', 'lon', 'city');
+    private $units = null;
+    private $exclusions = array('country', 'state', 'city', 'id', 'name', 'lat', 'lon');
 
-    function __construct($url, $key, $lat, $lon, $radius = 1000000)
+    function __construct($url, $key, $lat, $lon, $units, $radius = 1000000)
     {
         $this->lat = $lat;
         $this->lon = $lon;
         $this->key = $key;
         $this->radius = $radius;
         $this->url = $url;
+        $this->units = $units;
     }
 
     function execute()
@@ -28,7 +30,10 @@ class Groups
             array_walk($clean,function(&$v, $k) {
                 if (is_array($v)) {
                     if (is_numeric($v['lat']) && is_numeric($v['lon'])) {
-                        $v['distance'] = functions::distance($this->lat, $this->lon, $v['lat'], $v['lon'], 'K');
+                        $v['distance'] = functions::distance($this->lat, $this->lon, $v['lat'], $v['lon'], $this -> units);
+                    }
+                    if (is_numeric($v['state'])) {
+                        $v['state'] = '';
                     }
                 }
             });

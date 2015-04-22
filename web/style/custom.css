@@ -1,0 +1,30 @@
+body {
+    background: red;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}
+
+#container {
+    padding-left:15px;
+    padding-right:15px;
+    color: black;
+}
+
+#header {
+    text-align: center;
+    font-weight: bold;
+    color: black;
+}
+
+#progress {
+    margin-top:5px;
+}
+
+.form-label {
+    color: black;
+    font-size: 15pt;
+}

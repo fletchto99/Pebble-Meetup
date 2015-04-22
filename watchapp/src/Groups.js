@@ -1,6 +1,7 @@
 var functions = require('functions');
 var ajax = require('ajax');
 var UI = require('ui');
+var events = require('Events');
 
 var Groups = module.exports;
 
@@ -11,6 +12,7 @@ var locationOptions = {
 };
 
 var loading = null;
+var eventIndex = -1;
 
 function locationSuccess(pos) {
     console.log('lat= ' + pos.coords.latitude + ' lon= ' + pos.coords.longitude);
@@ -21,7 +23,7 @@ function locationSuccess(pos) {
         data:{
             lat:pos.coords.latitude,
             lon:pos.coords.longitude,
-          //  radius:100,
+            units: functions.getSetting('units') ? functions.getSetting('units') : 'm',
             method:'groups'
         },
         cache: false
@@ -31,25 +33,60 @@ function locationSuccess(pos) {
                  functions.showAndRemoveCard('Error', data.error, '', loading);
              } else {
                  loading.hide();
-                  var menuItems = Array(data.length);
-                  for(var i=0;i<data.length;i++){
-                      menuItems[i] = {
-                          title: data[i].name,
-                          subtitle: "Distance: " + data[i].distance,
-                          city: data[i].city,
-                          state: data[i].state,
-                          country: data[i].country
-                      };
-                  }
+                 var menuItems = Array(data.length);
+                 for(var i=0;i<data.length;i++){
+                     menuItems[i] = {
+                         title: data[i].name,
+                         subtitle: "Distance: " + data[i].distance,
+                         city: data[i].city,
+                         state: data[i].state,
+                         country: data[i].country,
+                         id: data[i].id
+                     };
+                 }
+                 var optionItems = [
+                     {
+                         title: 'Get Info',
+                         subtitle: 'Retrieve the group info.'
+                     },
+                     {
+                         title: 'Find Events',
+                         subtitle: 'Find group\'s events.'
+                     },
+                     {
+                         title: 'Subscribe',
+                         subtitle: 'Events on Timeline.'
+                     }
+                 ];
                  var menu = new UI.Menu({
-                      sections: [{
-                          title: 'Groups',
-                          items: menuItems
-                      }]
-                  });
+                     sections: [{
+                         title: 'Groups',
+                         items: menuItems
+                     }]
+                 });
+                 var options = new UI.Menu({
+                     sections: [{
+                         title: 'Options',
+                         items: optionItems
+                     }]
+                 });
+                 options.on('select', function(event) {
+                     if (eventIndex < 0 || eventIndex > menuItems.length -1) {
+                         return;
+                     }
+                     if (event.itemIndex === 0) {
+                         functions.showCard(menuItems[eventIndex].title, '', 'Location: ' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?menuItems[eventIndex].state:menuItems[eventIndex].country ) + '\n' + menuItems[eventIndex].subtitle );
+                     } else if (event.itemIndex == 1) {
+                         events.fetchFor(menuItems[eventIndex].id);
+                     } else if (event.itemIndex === 2) {
+                         functions.showCard('Sorry!', '', 'This functions is not yet implemented!');
+                     }
+                 });
                  menu.on('select', function(event) {
-                     functions.showCard(menuItems[event.itemIndex].title, '', 'Location: ' + menuItems[event.itemIndex].city + ', ' + (menuItems[event.itemIndex].state?menuItems[event.itemIndex].state:menuItems[event.itemIndex].country ) + '\n' + menuItems[event.itemIndex].subtitle );
-                  });
+                     eventIndex = event.itemIndex;
+                     options.hide();
+                     options.show();
+                 });
                  menu.show();
              }
          },

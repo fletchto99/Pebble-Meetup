@@ -1,6 +1,7 @@
 var functions = require('functions');
 var ajax = require('ajax');
 var UI = require('ui');
+var UI = require('ui');
 
 var Events = module.exports;
 
@@ -11,6 +12,10 @@ var locationOptions = {
 };
 
 var loading = null;
+var groupID = -1;
+var menu = null;
+var options = null;
+var eventIndex = -1;
 
 function locationSuccess(pos) {
     console.log('lat= ' + pos.coords.latitude + ' lon= ' + pos.coords.longitude);
@@ -21,7 +26,9 @@ function locationSuccess(pos) {
         data:{
             lat:pos.coords.latitude,
             lon:pos.coords.longitude,
-            distance:250,
+            distance: functions.getSetting('radius') ? functions.getSetting('radius') : 250,
+            groupID: groupID,
+            units: functions.getSetting('units') ? functions.getSetting('units') : 'm',
             method:'events'
         },
         cache: false
@@ -31,30 +38,58 @@ function locationSuccess(pos) {
                  functions.showAndRemoveCard('Error', data.error, '', loading);
              } else {
                  loading.hide();
-                  var menuItems = Array(data.length);
-                  for(var i=0;i<data.length;i++){
-                      menuItems[i] = {
-                          title: data[i].name,
-                          subtitle: data[i].date,
-                          city: data[i].venue.city,
-                          state: data[i].venue.state,
-                          country: data[i].venue.country,
-                          date: data[i].date,
-                          distance: data[i].distance,
-                          location: data[i].venue.name,
-                          address: data[i].venue.address_1,
-                          group: data[i].group.name
-                      };
-                  }
-                 var menu = new UI.Menu({
-                      sections: [{
-                          title: 'Events',
-                          items: menuItems
-                      }]
-                  });
+                 var menuItems = Array(data.length);
+                 for(var i=0;i<data.length;i++){
+                     menuItems[i] = {
+                         title: data[i].name,
+                         subtitle: data[i].date,
+                         city: data[i].venue.city,
+                         state: data[i].venue.state,
+                         country: data[i].venue.country,
+                         date: data[i].date,
+                         distance: data[i].distance,
+                         location: data[i].venue.name,
+                         address: data[i].venue.address_1,
+                         group: data[i].group.name
+                     };
+                 }
+                 var optionItems = [
+                     {
+                         title: 'Get Info',
+                         subtitle: 'Retrieve the event info.'
+                     },
+                     {
+                         title: 'Pin Event',
+                         subtitle: 'Add to Timeline.'
+                     }
+                 ];
+                 menu = new UI.Menu({
+                     sections: [{
+                         title: 'Events',
+                         items: menuItems
+                     }]
+                 });
+                 options = new UI.Menu({
+                     sections: [{
+                         title: 'Options',
+                         items: optionItems
+                     }]
+                 });
+                 options.on('select', function(event) {
+                     if (eventIndex < 0 || eventIndex > menuItems.length -1) {
+                         return;
+                     }
+                     if (event.itemIndex === 0) {
+                         functions.showCard(menuItems[eventIndex].title, '','Date:' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + '\nDistance:' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress:' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country + '\nHost Group: ' + menuItems[eventIndex].group);
+                     } else if (event.itemIndex === 1) {
+                         functions.showCard('Sorry!', '', 'This functions is not yet implemented!');
+                     }
+                 });
                  menu.on('select', function(event) {
-                     functions.showCard(menuItems[event.itemIndex].title, '','Date:' + menuItems[event.itemIndex].subtitle + '\nLocation: ' + menuItems[event.itemIndex].location + '\nDistance:' + menuItems[event.itemIndex].distance + (menuItems[event.itemIndex].address ?'\nAddress:' + menuItems[event.itemIndex].address:'') + '\n' + menuItems[event.itemIndex].city + ', ' + (menuItems[event.itemIndex].state?(menuItems[event.itemIndex].state + ', '): '') + menuItems[event.itemIndex].country + '\nHost Group: ' + menuItems[event.itemIndex].group);
-                  });
+                     eventIndex = event.itemIndex;
+                     options.hide();
+                     options.show();
+                 });
                  menu.show();
              }
          },
@@ -72,6 +107,37 @@ function locationError(err) {
 // Make an asynchronous request
 
 Events.fetch = function fetch() { 
+    if (menu !== null) {
+        menu.hide();
+        menu = null;
+    }
+    if (options !== null) {
+        options.hide();
+        options = null;
+    }
+    if (loading !== null) {
+        loading.hide();
+        loading = null;
+    }
+    groupID = -1;
+    loading = functions.showCard('Events', 'Loading...', '');
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+};
+
+Events.fetchFor = function fetchFor(gid) { 
+    if (menu !== null) {
+        menu.hide();
+        menu = null;
+    }
+    if (options !== null) {
+        options.hide();
+        options = null;
+    }
+    if (loading !== null) {
+        loading.hide();
+        loading = null;
+    }
+    groupID = gid;
     loading = functions.showCard('Events', 'Loading...', '');
     navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
 };
