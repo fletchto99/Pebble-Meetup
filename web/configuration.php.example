@@ -5,7 +5,7 @@ class Configuration
 
     static function getConfiguration()
     {
-        $config['API_KEY'] = '5867715a6e3b6a3d67294f497d17807a';
+        $config['API_KEY'] = 'YOUR_API_KEY_HERE';
         $config['API_URL'] = 'https://api.meetup.com';
         $config['GROUP_CALL'] = '/2/groups?';
         return $config;
