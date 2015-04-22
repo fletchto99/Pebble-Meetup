@@ -1,5 +1,6 @@
 var UI = require('ui');
 var groups = require('Groups');
+var events = require('Events');
 
 var functions = module.exports;
 
@@ -7,8 +8,12 @@ var functions = module.exports;
 functions.setup = function setup() { 
         var menuItems = [
             {
-                title: 'Find Group',
-                subtitle: 'Find the closest group.'
+                title: 'Find Groups',
+                subtitle: 'Find the closest groups.'
+            },
+            {
+                title: 'Find Events',
+                subtitle: 'Find upcoming events.'
             }
         ];
         var mainMenu = new UI.Menu({
@@ -21,6 +26,8 @@ functions.setup = function setup() {
         mainMenu.on('select', function(event) {                 
             if (event.itemIndex === 0) {
                 groups.fetch();
+            } else if (event.itemIndex === 1) {
+                events.fetch();
             }
         });
 };
@@ -35,7 +42,7 @@ functions.showAndRemoveCard = function showAndRemoveCard(title, subtitle, body, 
     if (old !== null) {
         old.hide();
     }
-    var card = new UI.Card({title: title,subtitle: subtitle, body: body});
+    var card = new UI.Card({title: title,subtitle: subtitle, body: body, scrollable: true});
     card.show();
     return card;
 };
