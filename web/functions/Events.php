@@ -8,7 +8,7 @@ class Events
     private $key = null;
     private $distance = null;
     private $url = null;
-    private $exclusions = array('distance', 'id', 'name', 'venue', 'time', 'utc_offset', 'address', 'group');
+    private $exclusions = array('distance', 'id', 'name', 'venue', 'time', 'utc_offset', 'address', 'group', 'yes_rsvp_count');
     private $groupIDS = null;
     private $units = null;
 

@@ -2,6 +2,7 @@
 
 require_once('Groups.php');
 require_once('Events.php');
+require_once('Members.php');
 
 class Functions
 {
@@ -41,9 +42,12 @@ class Functions
         return $unit === 'KM' ? (round(($miles * 1.609344), 1) . 'km') : (round($miles, 1) . 'mi');
     }
 
-    function execute($method, $params)
-    {
+    function execute($method, $params) {
         switch ($method) {
+            case 'members':
+                $members = new Members($this->config['API_URL'] . $this->config['MEMBERS_CALL'], $this->config['API_KEY'], $params['groupID']);
+                $this->result = $members->execute();
+                break;
             case 'groups':
                 $groups = new Groups($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['API_KEY'], $params['lat'], $params['lon'], $params['units']);
                 $this->result = $groups->execute();

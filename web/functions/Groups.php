@@ -9,7 +9,7 @@ class Groups
     private $radius = null;
     private $url = null;
     private $units = null;
-    private $exclusions = array('country', 'state', 'city', 'id', 'name', 'lat', 'lon');
+    private $exclusions = array('country', 'state', 'city', 'id', 'name', 'lat', 'lon', 'members', 'who');
 
     function __construct($url, $key, $lat, $lon, $units, $radius = 1000000)
     {
