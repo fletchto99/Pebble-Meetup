@@ -1,7 +1,6 @@
 var functions = require('functions');
 var ajax = require('ajax');
 var UI = require('ui');
-var UI = require('ui');
 
 var Events = module.exports;
 
@@ -50,7 +49,9 @@ function locationSuccess(pos) {
                          distance: data[i].distance,
                          location: data[i].venue.name,
                          address: data[i].venue.address_1,
-                         group: data[i].group.name
+                         group: data[i].group.name,
+                         who: data[i].group.who,
+                         attending: data[i].yes_rsvp_count
                      };
                  }
                  var optionItems = [
@@ -80,7 +81,7 @@ function locationSuccess(pos) {
                          return;
                      }
                      if (event.itemIndex === 0) {
-                         functions.showCard(menuItems[eventIndex].title, '','Date:' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + '\nDistance:' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress:' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country + '\nHost Group: ' + menuItems[eventIndex].group);
+                         functions.showCard(menuItems[eventIndex].title, '','Date:' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + '\nDistance:' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress:' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
                      } else if (event.itemIndex === 1) {
                          functions.showCard('Sorry!', '', 'This functions is not yet implemented!');
                      }

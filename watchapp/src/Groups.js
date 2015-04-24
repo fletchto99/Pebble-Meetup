@@ -2,6 +2,7 @@ var functions = require('functions');
 var ajax = require('ajax');
 var UI = require('ui');
 var events = require('Events');
+var members = require('Members');
 
 var Groups = module.exports;
 
@@ -41,13 +42,19 @@ function locationSuccess(pos) {
                          city: data[i].city,
                          state: data[i].state,
                          country: data[i].country,
-                         id: data[i].id
+                         id: data[i].id,
+                         who: data[i].who,
+                         members: data[i].members 
                      };
                  }
                  var optionItems = [
                      {
                          title: 'Get Info',
                          subtitle: 'Retrieve the group info.'
+                     },
+                     {
+                         title: 'Members',
+                         subtitle: 'List group\'s members.'
                      },
                      {
                          title: 'Find Events',
@@ -75,10 +82,12 @@ function locationSuccess(pos) {
                          return;
                      }
                      if (event.itemIndex === 0) {
-                         functions.showCard(menuItems[eventIndex].title, '', 'Location: ' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?menuItems[eventIndex].state:menuItems[eventIndex].country ) + '\n' + menuItems[eventIndex].subtitle );
+                         functions.showCard(menuItems[eventIndex].title, '', 'Location: ' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?menuItems[eventIndex].state:menuItems[eventIndex].country ) + '\n' + menuItems[eventIndex].subtitle + '\nWe\'re ' + menuItems[eventIndex].members + ' ' + menuItems[eventIndex].who );
                      } else if (event.itemIndex == 1) {
+                         members.fetchFor(menuItems[eventIndex].id,menuItems[eventIndex].members,menuItems[eventIndex].who);
+                     } else if (event.itemIndex == 2) {
                          events.fetchFor(menuItems[eventIndex].id);
-                     } else if (event.itemIndex === 2) {
+                     } else if (event.itemIndex === 3) {
                          functions.showCard('Sorry!', '', 'This functions is not yet implemented!');
                      }
                  });
