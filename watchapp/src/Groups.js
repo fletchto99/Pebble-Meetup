@@ -88,7 +88,7 @@ function locationSuccess(pos) {
                      } else if (event.itemIndex == 2) {
                          events.fetchFor(menuItems[eventIndex].id);
                      } else if (event.itemIndex === 3) {
-                         functions.showCard('Sorry!', '', 'This functions is not yet implemented!');
+                         functions.showCard('Sorry!', '', 'This functions is not yet implemented! Expect this feature to roll out when SDK 3.0 + Timeline is released.');
                      }
                  });
                  menu.on('select', function(event) {

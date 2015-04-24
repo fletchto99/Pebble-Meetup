@@ -83,7 +83,7 @@ function locationSuccess(pos) {
                      if (event.itemIndex === 0) {
                          functions.showCard(menuItems[eventIndex].title, '','Date:' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + '\nDistance:' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress:' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
                      } else if (event.itemIndex === 1) {
-                         functions.showCard('Sorry!', '', 'This functions is not yet implemented!');
+                         functions.showCard('Sorry!', '', 'This functions is not yet implemented! Expect this feature to roll out when SDK 3.0 + Timeline is released.');
                      }
                  });
                  menu.on('select', function(event) {
