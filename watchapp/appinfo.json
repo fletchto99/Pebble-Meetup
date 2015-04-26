@@ -40,7 +40,7 @@
     "shortName": "Meetup",
     "uuid": "3257305c-5f42-48fe-b64b-a915ab116125",
     "versionCode": 1,
-    "versionLabel": "1.0",
+    "versionLabel": "1.1",
     "watchapp": {
         "watchface": false
     }

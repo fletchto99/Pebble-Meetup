@@ -3,9 +3,13 @@ body {
 }
 
 img {
+    display: block;
     max-width: 100%;
     height: auto;
     width: auto\9; /* ie8 */
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
 }
 
 #container {

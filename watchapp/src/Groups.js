@@ -15,15 +15,15 @@ var locationOptions = {
 var loading = null;
 var eventIndex = -1;
 
-function locationSuccess(pos) {
-    console.log('lat= ' + pos.coords.latitude + ' lon= ' + pos.coords.longitude);
+function getGroups(lon, lat) {
+    console.log('lat= ' + lat + ' lon= ' + lon);
     ajax({
         url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
         type: 'json',
         method: 'post',
         data:{
-            lat:pos.coords.latitude,
-            lon:pos.coords.longitude,
+            lat:lat,
+            lon:lon,
             units: functions.getSetting('units') ? functions.getSetting('units') : 'm',
             method:'groups'
         },
@@ -104,6 +104,10 @@ function locationSuccess(pos) {
          });
 }
 
+function locationSuccess(pos) {
+    getGroups(pos.coords.longitude, pos.coords.latitude);
+}
+
 function locationError(err) {
     functions.showAndRemoveCard('Error', 'Error determining location.', '', loading);
     console.log('location error (' + err.code + '): ' + err.message);
@@ -114,5 +118,15 @@ function locationError(err) {
 
 Groups.fetch = function fetch() { 
     loading = functions.showCard('Groups', 'Loading...', '');
-    navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+    if (!functions.getSetting('location')) {
+        navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+    } else {
+        var lon = functions.getSetting('lon');
+        var lat = functions.getSetting('lat');        
+        if (lon && lat) {
+            getGroups(lon, lat);
+        } else {
+            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading);
+        }
+    }
 };

@@ -34,7 +34,7 @@ functions.setup = function setup() {
 };
 
 functions.getSetting = function getSetting(setting) {
-   return Settings.data(setting);
+    return Settings.data(setting) !==null ? Settings.data(setting) : false;
 };
 
 functions.showCard = function showCard(title, subtitle, body) {

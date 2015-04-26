@@ -16,15 +16,15 @@ var menu = null;
 var options = null;
 var eventIndex = -1;
 
-function locationSuccess(pos) {
-    console.log('lat= ' + pos.coords.latitude + ' lon= ' + pos.coords.longitude);
+function getEvents(lon, lat) {
+    console.log('lat= ' + lat + ' lon= ' + lon);
     ajax({
         url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
         type: 'json',
         method: 'post',
         data:{
-            lat:pos.coords.latitude,
-            lon:pos.coords.longitude,
+            lat:lat,
+            lon:lon,
             distance: functions.getSetting('radius') ? functions.getSetting('radius') : 250,
             groupID: groupID,
             units: functions.getSetting('units') ? functions.getSetting('units') : 'm',
@@ -99,6 +99,10 @@ function locationSuccess(pos) {
          });
 }
 
+function locationSuccess(pos) {
+    getEvents(pos.coords.longitude,pos.coords.latitude);
+}
+
 function locationError(err) {
     functions.showAndRemoveCard('Error', 'Error determining location.', 'If you keep recieving this message, a manual location can be set in the settings.', loading);
     console.log('location error (' + err.code + '): ' + err.message);
@@ -122,7 +126,17 @@ Events.fetch = function fetch() {
     }
     groupID = -1;
     loading = functions.showCard('Events', 'Loading...', '');
-    navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+    if (!functions.getSetting('location')) {
+        navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+    } else {
+        var lon = functions.getSetting('lon');
+        var lat = functions.getSetting('lat');
+        if (lon && lat) {
+            getEvents(lon, lat);
+        } else {
+            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading);
+        }
+    }
 };
 
 Events.fetchFor = function fetchFor(gid) { 
@@ -140,5 +154,16 @@ Events.fetchFor = function fetchFor(gid) {
     }
     groupID = gid;
     loading = functions.showCard('Events', 'Loading...', '');
-    navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+    if (!functions.getSetting('location')) {
+        navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+    } else {
+        var lon = functions.getSetting('lon');
+        var lat = functions.getSetting('lat');
+        if (lon && lat) {
+            getEvents(lon, lat);
+        } else {
+            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading);
+        }
+    }
+
 };

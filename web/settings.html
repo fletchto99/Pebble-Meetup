@@ -11,6 +11,7 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3"></script>
 
     <script>
 
@@ -27,14 +28,32 @@
         }
 
         function saveOptions() {
-            var options = {
+            var options =  {
                 'radius': $('#radius').val(),
-                'units': $('#units').val()
+                'units': $('#units').val(),
+                'location': $('#location').is(":checked"),
+                'address': $('#address').val(),
+                'lon': $('#lon').val(),
+                'lat': $('#lat').val()
             }
             return options;
         }
 
         $(document).ready(function () {
+            var geocoder = new google.maps.Geocoder();
+            $("#progress").hide();
+            $("#units option").filter(function () {
+                return $(this).val() == getQueryParam('units', 'km');
+            }).prop('selected', true);
+            $('#radius').val(parseInt(getQueryParam('radius', '100')));
+            $('#location').prop('checked', 'true' === getQueryParam('location', 'false'));
+            if ('false' === getQueryParam('location', 'false')) {
+                $('#addressOption').hide();
+            }
+            $('#lon').val(getQueryParam('lon', '0'));
+            $('#lat').val(getQueryParam('lat', '0'));
+            $('#address').val(getQueryParam('address', ' '));
+
             $("#radius").keydown(function (e) {
                 if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
                         (e.keyCode == 65 && e.ctrlKey === true) ||
@@ -50,20 +69,49 @@
             $('#cancel').click(function () {
                 document.location = getQueryParam('return_to', 'pebblejs://close#');
             });
+            $('#location').click(function () {
+                $('#addressOption').slideToggle('1000');
+            });
             $('#save').click(function () {
+
                 if ($('#radius').val() == '' || $('#units').val() == '') {
                     alert('Invalid radius entered!');
                     return;
                 }
-                document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(saveOptions()));
+                $('#options').fadeToggle('1000', function () {
+                    $('#progress').fadeToggle('1000');
+                });
+
+                if ($('#location').prop('checked')) {
+                    var address = document.getElementById('address').value;
+                    geocoder.geocode({'address': address}, function (results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            $('#progress').fadeToggle('1000');
+                            $('#address').val(results[0].formatted_address);
+                            $('#lat').val(results[0].geometry.location.lat());
+                            $('#lon').val(results[0].geometry.location.lng());
+                            document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(saveOptions()));
+                        } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+                            alert('Address not found!');
+                            $('#progress').fadeToggle('1000', function () {
+                                console.log('Fading?!?!?');
+                                $('#options').fadeToggle('1000');
+                            });
+                        } else {
+                            alert('Invalid address entered!');
+                            $('#progress').fadeToggle('1000', function () {
+                                $('#options').fadeToggle('1000');
+                            });
+                        }
+                    });
+                } else {
+                    document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(saveOptions()));
+                }
+
             });
-            if (getQueryParam('radius', false)) {
-                $("#units option").filter(function() {
-                    return this.value == getQueryParam('units', 'km');
-                }).attr('selected', true);
-                $('#radius').val(parseInt(getQueryParam('radius', '100')));
-            }
+
         });
+
     </script>
 </head>
 <body>
@@ -73,7 +121,7 @@
     </div>
     <div id="options">
         <div class="form-group">
-            <label for="units">Select list:</label>
+            <label for="units" class="form-label">Select list:</label>
             <select class="form-control" id="units">
                 <option value="km">kilometers</option>
                 <option value="m">miles</option>
@@ -83,6 +131,16 @@
             <label for="radius" class="form-label">Event Search Radius:</label>
             <input type="text" class="form-control" id="radius">
         </div>
+        <div class="form-group">
+            <label for="location" class="form-label">Use custom location:</label>
+            <input type="checkbox" class="form-control" id="location">
+        </div>
+        <div class="form-group" id="addressOption">
+            <label for="address" class="form-label">Address:</label>
+            <input type="text" class="form-control" id="address">
+            <input type="hidden" id="lat" value="0">
+            <input type="hidden" id="lon" value="0">
+        </div>
         <div class="row">
             <div class="col-xs-6">
                 <button type="submit" id="cancel" class="btn btn-primary btn-block">Cancel</button>
@@ -90,9 +148,18 @@
             <div class="col-xs-6">
                 <button type="submit" id="save" class="btn btn-success btn-block">Save</button>
             </div>
-
         </div>
     </div>
+    <div id="progress">
+        <h2>
+            Saving....
+        </h2>
+
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
+        </div>
+    </div>
+    <img src="style/logo.png"/>
 </div>
 </body>
 </html>
