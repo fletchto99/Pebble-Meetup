@@ -25,9 +25,8 @@ class Groups
     {
         $arr = array('error' => 'No groups found!');
         if ($this->lat && $this->lon) {
-            $response = json_decode(file_get_contents($this->url . 'sign=true&photo-host=public&topic=pebble&lat=' . $this->lat . '&lon=' . $this->lon . '&radius=' . $this->radius . '&key=' . $this->key), true);
-            $clean = functions::cleanupResponse($response, $this->exclusions)['results'];
-            array_walk($clean,function(&$v, $k) {
+            $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&topic=pebble&lat=' . $this->lat . '&lon=' . $this->lon . '&radius=' . $this->radius . '&key=' . $this->key, $this -> exclusions);
+            array_walk($response,function(&$v, $k) {
                 if (is_array($v)) {
                     if (is_numeric($v['lat']) && is_numeric($v['lon'])) {
                         $v['distance'] = functions::distance($this->lat, $this->lon, $v['lat'], $v['lon'], $this -> units);
@@ -37,10 +36,10 @@ class Groups
                     }
                 }
             });
-            usort($clean, function($a, $b) {
+            usort($response, function($a, $b) {
                 return floatval($a['distance']) - floatval($b['distance']);
             });
-            return !empty($clean) ? $clean : $arr;
+            return !empty($response) ? $response : $arr;
         }
         return $arr;
     }

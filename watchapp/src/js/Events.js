@@ -37,9 +37,10 @@ function getEvents(lon, lat) {
                  functions.showAndRemoveCard('Error', data.error, '', loading);
              } else {
                  loading.hide();
-                 var menuItems = Array(data.length);
+                 var menuItems = [data.length];
                  for(var i=0;i<data.length;i++){
                      menuItems[i] = {
+                         id: data[i].id,
                          title: data[i].name,
                          subtitle: data[i].date,
                          city: data[i].venue.city,
@@ -81,9 +82,36 @@ function getEvents(lon, lat) {
                          return;
                      }
                      if (event.itemIndex === 0) {
-                         functions.showCard(menuItems[eventIndex].title, '','Date:' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + '\nDistance:' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress:' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
+                         functions.showCard(menuItems[eventIndex].title, '','Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress: ' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country : '') +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
                      } else if (event.itemIndex === 1) {
-                         functions.showCard('Sorry!', '', 'This functions is not yet implemented! Expect this feature to roll out when SDK 3.0 + Timeline is released.');
+                         Pebble.getTimelineToken(
+                             function (token) {
+                                 ajax({
+                                         url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
+                                         type: 'json',
+                                         method: 'post',
+                                         data:{
+                                             userToken: token,
+                                             eventID: menuItems[eventIndex].id,
+                                             method:'eventnotify'
+                                         },
+                                         cache: false
+                                     },
+                                     function(data) {
+                                         if (data.status.code != 200) {
+                                             functions.showCard('Error', data.status.message, '');
+                                         } else {
+                                             functions.showCard('Success', data.status.message, '');
+                                         }
+                                     },
+                                     function(error) {
+                                         functions.showCard('Error', 'Error pinning event!', '');
+                                     });
+                             },
+                             function (error) {
+                                 functions.showCard('Error', 'Error fetching timeline token!', '');
+                             }
+                         );
                      }
                  });
                  menu.on('select', function(event) {

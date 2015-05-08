@@ -30,12 +30,18 @@ class Events
             return $arr;
         } else {
             if ($this->lat && $this->lon) {
-                $response = json_decode(file_get_contents($this->url . 'sign=true&photo-host=public&group_id=' . $this->groupIDS . '&status=upcoming&key=' . $this->key), true);
-                $clean = functions::cleanupResponse($response, $this->exclusions)['results'];
-                array_walk($clean, function (&$v, $k) {
+                $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&group_id=' . $this->groupIDS . '&status=upcoming&key=' . $this->key, $this->exclusions);
+
+                array_walk($response, function (&$v, $k) {
                     if (is_array($v)) {
+                        if (empty($v['venue'])) {
+                            $v['venue'] = ['city' => '', 'state' => '', 'country' => '', 'name' => 'Undetermined', 'address_1' => ''];
+                        }
+
                         if (is_numeric($v['venue']['lat']) && is_numeric($v['venue']['lon'])) {
                             $v['distance'] = functions::distance($this->lat, $this->lon, $v['venue']['lat'], $v['venue']['lon'], $this->units);
+                        } else {
+                            $v['distance'] = 'No location set.';
                         }
                         if (is_numeric($v['time'])) {
                             date_default_timezone_set('UTC');
@@ -47,15 +53,15 @@ class Events
                         }
                     }
                 });
-                foreach ($clean as $key => $value) {
-                    if ((floatval($value['distance']) * ($this->units == 'km' ? 1.60934 : 1)) > $this->distance) {
-                        unset($clean[$key]);
+                foreach ($response as $key => $value) {
+                    if (((floatval($value['distance']) * ($this->units == 'km' ? 1.60934 : 1)) > $this->distance) || $value['distance'] == 'No location set.') {
+                        unset($response[$key]);
                     }
                 }
-                usort($clean, function ($a, $b) {
+                usort($response, function ($a, $b) {
                     return new DateTime($a['date']) > new DateTime($b['date']) ? 1 : -1;
                 });
-                return !empty($clean) ? $clean : $arr;
+                return !empty($response) ? $response : $arr;
             }
         }
         return $arr;

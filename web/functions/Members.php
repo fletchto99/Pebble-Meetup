@@ -21,9 +21,8 @@ class Members
         if (empty($this->groupID)) {
             return $arr;
         } else {
-            $response = json_decode(file_get_contents($this->url . 'sign=true&photo-host=public&group_id=' . $this->groupID . '&key=' . $this->key), true);
-            $clean = functions::cleanupResponse($response, $this->exclusions)['results'];
-            return !empty($clean) ? $clean : $arr;
+            $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&group_id=' . $this->groupID . '&key=' . $this->key, $this -> exclusions);
+            return !empty($response) ? $response : $arr;
         }
     }
 

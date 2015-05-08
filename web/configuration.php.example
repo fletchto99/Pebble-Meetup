@@ -5,9 +5,13 @@ class Configuration
 
     static function getConfiguration()
     {
-        $config['API_KEY'] = 'YOUR_API_KEY_HERE';
+        $config['MEETUP_API_KEY'] = 'YOUR_MEETUP_API_KEY_HERE';
+        $config['TIMELINE_API_KEY'] = 'YOUR_TIMELINE_API_KEY_HERE';
         $config['API_URL'] = 'https://api.meetup.com';
         $config['GROUP_CALL'] = '/2/groups?';
+        $config['EVENTS_CALL'] = '/2/events?';
+        $config['EVENT_CALL'] = '/2/event/';
+        $config['MEMBERS_CALL'] = '/2/members?';
         return $config;
     }
 }

@@ -34,7 +34,7 @@ function getGroups(lon, lat) {
                  functions.showAndRemoveCard('Error', data.error, '', loading);
              } else {
                  loading.hide();
-                 var menuItems = Array(data.length);
+                 var menuItems = [data.length];
                  for(var i=0;i<data.length;i++){
                      menuItems[i] = {
                          title: data[i].name,
@@ -61,7 +61,7 @@ function getGroups(lon, lat) {
                          subtitle: 'Find group\'s events.'
                      },
                      {
-                         title: 'Subscribe',
+                         title: 'Toggle Timeline',
                          subtitle: 'Events on Timeline.'
                      }
                  ];
@@ -88,8 +88,34 @@ function getGroups(lon, lat) {
                      } else if (event.itemIndex == 2) {
                          events.fetchFor(menuItems[eventIndex].id);
                      } else if (event.itemIndex === 3) {
-                         functions.showCard('Sorry!', '', 'This functions is not yet implemented! Expect this feature to roll out when SDK 3.0 + Timeline is released.');
-                     }
+                         Pebble.timelineSubscriptions(
+                             function (topics) {
+                                 functions.showCard("You are subscribed to " + topics.join(','));
+                                 if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
+                                     Pebble.timelineUnsubscribe(menuItems[eventIndex].id,
+                                         function () {
+                                             functions.showCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with '+menuItems[eventIndex].titl+'.');
+                                         },
+                                         function (errorString) {
+                                             functions.showCard('Error!', '', 'Error unsubscribing to group ' + menuItems[eventIndex].title + '.');
+                                         }
+                                     );
+                                 } else {
+                                     Pebble.timelineSubscribe(menuItems[eventIndex].id,
+                                         function () {
+                                             functions.showCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.');
+                                         },
+                                         function (errorString) {
+                                             functions.showCard('Error!', '', 'Error subscribing the group ' + menuItems[eventIndex].title + '. Error: ' + errorString);
+                                         }
+                                     );
+                                 }
+                             },
+                             function (errorString) {
+                                 functions.showCard('Error!', '', 'Error determining subscription status!');
+                             }
+                         );
+                    }
                  });
                  menu.on('select', function(event) {
                      eventIndex = event.itemIndex;
