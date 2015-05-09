@@ -9,6 +9,7 @@ use TimelineAPI\PinIcon;
 use TimelineAPI\PinReminder;
 use TimelineAPI\Timeline;
 use TimelineAPI\PebbleColour;
+use TimelineAPI\PinNotification;
 
 
 class PinEvent
@@ -41,10 +42,12 @@ class PinEvent
             } else {
                 return $arr;
             }
+            $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has successfully been pinned!', null, null, null, PinIcon::NOTIFICATION_FLAG);
             $reminderLayout = new PinLayout(PinLayoutType::GENERIC_REMINDER, 'Meetup event in 1 Hour!', null, null, null, PinIcon::NOTIFICATION_FLAG);
             $pinLayout = new PinLayout(PinLayoutType::GENERIC_PIN, $response['name'], 'Meetup Event', null, 'Loacted at ' . $response['venue']['address_1'], PinIcon::TIMELINE_CALENDAR, PinIcon::TIMELINE_CALENDAR, PinIcon:: TIMELINE_CALENDAR, PebbleColour::WHITE, PebbleColour::RED);
+            $createNotification = new PinNotification($createLayout);
             $reminder = new PinReminder($reminderLayout, (new DateTime($response['date'])) -> sub(new DateInterval('PT1H')));
-            $pin = new Pin($this -> eventID, new DateTime($response['date']), $pinLayout);
+            $pin = new Pin($this -> eventID, new DateTime($response['date']), $pinLayout, null, $createNotification);
             $pin -> addReminder($reminder);
             $response = Timeline::pushPin($this -> userToken, $pin);
             return !empty($response) ? $response : $arr;
