@@ -97,7 +97,7 @@ function getGroups(lon, lat) {
                                              functions.showCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with '+menuItems[eventIndex].titl+'.');
                                          },
                                          function (errorString) {
-                                             functions.showCard('Error!', '', 'Error unsubscribing to group ' + menuItems[eventIndex].title + '.');
+                                             functions.showCard('Error!', '', 'Error unsubscribing from the group ' + menuItems[eventIndex].title + '.');
                                          }
                                      );
                                  } else {
@@ -106,7 +106,7 @@ function getGroups(lon, lat) {
                                              functions.showCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.');
                                          },
                                          function (errorString) {
-                                             functions.showCard('Error!', '', 'Error subscribing the group ' + menuItems[eventIndex].title + '. Error: ' + errorString);
+                                             functions.showCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString);
                                          }
                                      );
                                  }
