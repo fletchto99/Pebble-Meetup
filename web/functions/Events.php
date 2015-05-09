@@ -31,7 +31,6 @@ class Events
         } else {
             if ($this->lat && $this->lon) {
                 $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&group_id=' . $this->groupIDS . '&status=upcoming&key=' . $this->key, $this->exclusions);
-
                 array_walk($response, function (&$v, $k) {
                     if (is_array($v)) {
                         if (empty($v['venue'])) {
