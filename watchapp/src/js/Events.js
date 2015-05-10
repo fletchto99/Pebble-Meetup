@@ -84,6 +84,7 @@ function getEvents(lon, lat) {
                      if (event.itemIndex === 0) {
                          functions.showCard(menuItems[eventIndex].title, '','Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress: ' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country : '') +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
                      } else if (event.itemIndex === 1) {
+                         var pinning = functions.showCard('Events','Pinning...','');
                          Pebble.getTimelineToken(
                              function (token) {
                                  ajax({
@@ -99,9 +100,9 @@ function getEvents(lon, lat) {
                                      },
                                      function(data) {
                                          if (data.status.code != 200) {
-                                             functions.showCard('Error', data.status.message, '');
+                                             functions.showAndRemoveCard('Error', data.status.message, '', pinning);
                                          } else {
-                                             functions.showCard('Success', data.status.message, '');
+                                             functions.showAndRemoveCard('Success', data.status.message, '', pinning);
                                          }
                                      },
                                      function(error) {

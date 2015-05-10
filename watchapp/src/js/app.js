@@ -8,6 +8,7 @@ var location = (Settings.data('location')? '&location='+encodeURIComponent(Setti
 var address = (Settings.data('address')? '&address='+encodeURIComponent(Settings.data('address')) : '');
 var lon = (Settings.data('lon')? '&lon='+encodeURIComponent(Settings.data('lon')) : '');
 var lat = (Settings.data('lat')? '&lat='+encodeURIComponent(Settings.data('lat')) : '');
+var events = (Settings.data('events')? '&evnets='+encodeURIComponent(Settings.data('events')) : '');
 
 
 Settings.config(
@@ -24,7 +25,27 @@ Settings.config(
         Settings.data('address', data.address);
         Settings.data('lat', data.lat);
         Settings.data('lon', data.lon);
-        console.log('lat' + encodeURIComponent(data.units));
+        Settings.data('events', data.events);
+        if (functions.getSetting('events')) {
+            Pebble.timelineSubscriptions(
+                function (topics) {
+                    if (topics.indexOf('all-events') < 1 && functions.getSetting('events')) {
+                        Pebble.timelineSubscribe('all-events',
+                            function () {
+                                console.log('Error subscribing to all events');
+                            },
+                            function (errorString) {
+                                console.log('Error subscribing subscribing from all events');
+                            }
+                        );
+                    } else if (topics.indexOf('all-events') > 0 && !functions.getSetting('events')) {
+
+                    }
+                },
+                function (errorString) {
+                    functions.showCard('Error!', '', 'Error determining subscription status!');
+                });
+        }
     }
 );
 

@@ -32,6 +32,7 @@
                 'radius': $('#radius').val(),
                 'units': $('#units').val(),
                 'location': $('#location').is(":checked"),
+                'events': $('#events').is(":checked"),
                 'address': $('#address').val(),
                 'lon': $('#lon').val(),
                 'lat': $('#lat').val()
@@ -47,6 +48,7 @@
             }).prop('selected', true);
             $('#radius').val(parseInt(getQueryParam('radius', '100')));
             $('#location').prop('checked', 'true' === getQueryParam('location', 'false'));
+            $('#events').prop('checked', 'true' === getQueryParam('events', 'false'));
             if ('false' === getQueryParam('location', 'false')) {
                 $('#addressOption').hide();
             }
@@ -130,6 +132,10 @@
         <div class="form-group">
             <label for="radius" class="form-label">Event Search Radius:</label>
             <input type="text" class="form-control" id="radius">
+        </div>
+        <div class="form-group">
+            <label for="events" class="form-label">Show all events on timeline:</label>
+            <input type="checkbox" class="form-control" id="events">
         </div>
         <div class="form-group">
             <label for="location" class="form-label">Use custom location:</label>

@@ -90,7 +90,6 @@ function getGroups(lon, lat) {
                      } else if (event.itemIndex === 3) {
                          Pebble.timelineSubscriptions(
                              function (topics) {
-                                 functions.showCard("You are subscribed to " + topics.join(','));
                                  if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
                                      Pebble.timelineUnsubscribe(menuItems[eventIndex].id,
                                          function () {
