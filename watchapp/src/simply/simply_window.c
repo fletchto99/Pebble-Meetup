@@ -49,6 +49,10 @@ struct __attribute__((__packed__)) ClickPacket {
 
 typedef ClickPacket LongClickPacket;
 
+
+static GColor8 s_button_palette[] = { { GColorWhiteARGB8 }, { GColorClearARGB8 } };
+
+
 static void click_config_provider(void *data);
 
 static bool send_click(SimplyMsg *self, Command type, ButtonId button) {
@@ -164,19 +168,27 @@ void simply_window_set_action_bar_icon(SimplyWindow *self, ButtonId button, uint
     return;
   }
 
-  if (id) {
-    GBitmap *icon = simply_res_auto_image(self->simply->res, id, true);
-    action_bar_layer_set_icon(self->action_bar_layer, button, icon);
-    simply_window_set_action_bar(self, true);
-  } else {
+  SimplyImage *icon = simply_res_auto_image(self->simply->res, id, true);
+
+  if (!icon) {
     action_bar_layer_clear_icon(self->action_bar_layer, button);
+    return;
   }
+
+  if (icon->is_palette_black_and_white) {
+    gbitmap_set_palette(icon->bitmap, s_button_palette, false);
+  }
+
+  action_bar_layer_set_icon(self->action_bar_layer, button, icon->bitmap);
+  simply_window_set_action_bar(self, true);
 }
 
 void simply_window_set_action_bar_background_color(SimplyWindow *self, GColor8 background_color) {
   if (!self->action_bar_layer) {
     return;
   }
+
+  s_button_palette[0] = gcolor8_equal(background_color, GColorWhite) ? GColor8Black : GColor8White;
 
   action_bar_layer_set_background_color(self->action_bar_layer, gcolor8_get(background_color));
   simply_window_set_action_bar(self, true);
