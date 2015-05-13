@@ -12,6 +12,10 @@ class Configuration
         $config['EVENTS_CALL'] = '/2/events?';
         $config['EVENT_CALL'] = '/2/event/';
         $config['MEMBERS_CALL'] = '/2/members?';
+        $config['DATABASE_HOST'] = 'localhost';
+        $config['DATABASE_NAME'] = 'YOUR_DATABASE';
+        $config['DATABASE_USER'] = 'YOUR_DB_USERNAME';
+        $config['DATABASE_PASS'] = 'YOUR_DB_PASSWORD';
         return $config;
     }
 }

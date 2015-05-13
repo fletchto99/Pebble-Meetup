@@ -1,11 +1,11 @@
 <?php
 
-require_once('Groups.php');
-require_once('Events.php');
-require_once('Members.php');
-require_once('SingleEventNotify.php');
-require_once('MultiEventNotify.php');
-require_once('PebbleGroups.php');
+require_once 'Groups.php';
+require_once 'Events.php';
+require_once 'Members.php';
+require_once 'SingleEventNotify.php';
+require_once 'MultiEventNotify.php';
+require_once 'PebbleGroups.php';
 
 class Functions
 {
