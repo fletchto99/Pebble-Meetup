@@ -1,6 +1,5 @@
 <?php
-
-require_once '../configuration.php';
+require_once dirname(__FILE__) . '/../configuration.php';
 
 class DataBase {
 

@@ -31,7 +31,7 @@ class Groups
                     if (is_numeric($v['lat']) && is_numeric($v['lon'])) {
                         $v['distance'] = functions::distance($this->lat, $this->lon, $v['lat'], $v['lon'], $this -> units);
                     }
-                    if (is_numeric($v['state'])) {
+                    if (!array_key_exists('state', $v) || is_numeric($v['state'])) {
                         $v['state'] = '';
                     }
                 }

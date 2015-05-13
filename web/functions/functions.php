@@ -6,6 +6,7 @@ require_once 'Members.php';
 require_once 'SingleEventNotify.php';
 require_once 'MultiEventNotify.php';
 require_once 'PebbleGroups.php';
+require_once 'DataBase.php';
 
 class Functions
 {
@@ -13,7 +14,7 @@ class Functions
 
     private $result = array('error' => 'Error executing option, please try again later.');
 
-    function __construct($config, $params)
+    function __construct($config)
     {
         $this->config = $config;
     }
