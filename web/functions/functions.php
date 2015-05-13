@@ -3,7 +3,9 @@
 require_once('Groups.php');
 require_once('Events.php');
 require_once('Members.php');
-require_once('EventNotify.php');
+require_once('SingleEventNotify.php');
+require_once('MultiEventNotify.php');
+require_once('PebbleGroups.php');
 
 class Functions
 {
@@ -72,8 +74,16 @@ class Functions
                 $this->result = $events->execute();
                 break;
             case 'eventnotify':
-                $pin = new PinEvent($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $params['userToken'], $params['eventID']);
+                $pin = new SingleEventNotify($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $params['userToken'], $params['eventID']);
                 $this->result = $pin->execute();
+                break;
+            case 'multieventnotify':
+                $pin = new MultiEventNotify($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $this -> config['TIMELINE_API_KEY'], $params['eventID']);
+                $this->result = $pin->execute();
+                break;
+            case 'groupids':
+                $ids = new PebbleGroups($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY']);
+                $this->result = $ids->execute();
                 break;
         }
         echo json_encode($this->result);

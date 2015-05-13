@@ -12,7 +12,7 @@ use TimelineAPI\PebbleColour;
 use TimelineAPI\PinNotification;
 
 
-class PinEvent
+class SingleEventNotify
 {
 
     private $key = null;
@@ -42,13 +42,29 @@ class PinEvent
             } else {
                 return $arr;
             }
+            //Layouts
             $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has successfully been pinned!', null, null, null, PinIcon::NOTIFICATION_FLAG);
-            $reminderLayout = new PinLayout(PinLayoutType::GENERIC_REMINDER, 'Meetup event in 1 Hour!', null, null, null, PinIcon::NOTIFICATION_FLAG);
-            $pinLayout = new PinLayout(PinLayoutType::GENERIC_PIN, $response['name'], 'Meetup Event', null, 'Loacted at ' . $response['venue']['address_1'], PinIcon::TIMELINE_CALENDAR, PinIcon::TIMELINE_CALENDAR, PinIcon:: TIMELINE_CALENDAR, PebbleColour::WHITE, PebbleColour::RED);
+            $updateLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has been updated!', null, null, null, PinIcon::NOTIFICATION_FLAG);
+            $reminder1Layout = new PinLayout(PinLayoutType::GENERIC_REMINDER, 'Meetup event in 1 Day!', null, null, null, PinIcon::NOTIFICATION_FLAG);
+            $reminder2Layout = new PinLayout(PinLayoutType::GENERIC_REMINDER, 'Meetup event in 1 Hour!', null, null, null, PinIcon::NOTIFICATION_FLAG);
+            $pinLayout = new PinLayout(PinLayoutType::GENERIC_PIN, $response['name'], 'Meetup Event', null, 'Located at ' . $response['venue']['address_1'], PinIcon::TIMELINE_CALENDAR, PinIcon::TIMELINE_CALENDAR, PinIcon:: TIMELINE_CALENDAR, PebbleColour::WHITE, PebbleColour::RED);
+
+            //Notifications
             $createNotification = new PinNotification($createLayout);
-            $reminder = new PinReminder($reminderLayout, (new DateTime($response['date'])) -> sub(new DateInterval('PT1H')));
-            $pin = new Pin($this -> eventID, new DateTime($response['date']), $pinLayout, null, $createNotification);
-            $pin -> addReminder($reminder);
+            $updateNotification = new PinNotification($updateLayout, new DateTime('now'));
+
+            //Reminders
+            $reminder1 = new PinReminder($reminder1Layout, (new DateTime($response['date'])) -> sub(new DateInterval('PT24H')));
+            $reminder2 = new PinReminder($reminder2Layout, (new DateTime($response['date'])) -> sub(new DateInterval('PT1H')));
+
+            //Pin
+            $pin = new Pin($this -> eventID, new DateTime($response['date']), $pinLayout, null, $createNotification, $updateNotification);
+
+            //Add reminders
+            $pin -> addReminder($reminder1);
+            $pin -> addReminder($reminder2);
+
+            //Push the pin
             $response = Timeline::pushPin($this -> userToken, $pin);
             return !empty($response) ? $response : $arr;
         }
