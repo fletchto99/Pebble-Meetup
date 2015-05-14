@@ -3,3 +3,4 @@ web/configuration.php
 watchapp/build
 web/node_modules
 node.core
+Configuration.json

@@ -1,0 +1,4 @@
+{
+  "API_URL": "Path/to/api.php",
+  "MEETUP_API_KEY": "<YOUR MEETUP API KEY>"
+}
