@@ -6,7 +6,23 @@ var Settings = require('settings');
 var functions = module.exports;
 
 //Functions
-functions.setup = function setup() { 
+functions.setup = function setup() {
+        Pebble.timelineSubscriptions(
+            function (topics) {
+                if (topics.indexOf('notifications') < 1 && functions.getSetting('events')) {
+                    Pebble.timelineSubscribe('notifications',
+                        function () {
+                            //success! -- TODO: Should we notify the user?
+                        },
+                        function (errorString) {
+                            //Error subscribing to notifications -- keep the error transparent to the user
+                        }
+                    );
+                }
+            },
+            function (errorString) {
+                //Error subscribing to notifications -- keep the error transparent to the user
+            });
         var menuItems = [
             {
                 title: 'Find Groups',
