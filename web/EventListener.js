@@ -45,7 +45,7 @@ function getLastEventTime(onComplete) {
         body:   {method: 'mtime'}
     }, function (error, response, body) {
         if (!error && response.statusCode === 200) {
-            if (body.mtime && body.mtime != 'empty') {
+            if (body.mtime && body.mtime != 'Empty') {
                 onComplete(parseInt(body.mtime));
             } else {
                 onComplete();

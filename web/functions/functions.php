@@ -6,6 +6,8 @@ require_once 'Members.php';
 require_once 'SingleEventNotify.php';
 require_once 'MultiEventNotify.php';
 require_once 'PebbleGroups.php';
+require_once 'MTime.php';
+require_once 'Notification.php';
 require_once 'DataBase.php';
 
 class Functions
@@ -51,6 +53,17 @@ class Functions
         return $unit === 'KM' ? (round(($miles * 1.609344), 1) . 'km') : (round($miles, 1) . 'mi');
     }
 
+    static function generateRandomString($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
     function execute($method, $params) {
         switch ($method) {
             case 'members':
@@ -86,8 +99,16 @@ class Functions
                 $ids = new PebbleGroups($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY']);
                 $this->result = $ids->execute();
                 break;
+            case 'mtime':
+                $mtime = isset($params['mtime']) ? new MTime($params['mtime']) : new MTime();
+                $this->result = $mtime->execute();
+                break;
+            case 'notifications':
+                $notification = new Notification($this->config['TIMELINE_API_KEY'],$params['username'],$params['password'],$params['message'] );
+                $this->result = $notification->execute();
+                break;
         }
-        echo json_encode($this->result);
+        echo json_encode($this->result, JSON_UNESCAPED_SLASHES);
     }
 
 }

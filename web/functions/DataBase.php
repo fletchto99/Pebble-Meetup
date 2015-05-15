@@ -23,33 +23,58 @@ class DataBase {
         return self::$instance;
     }
 
-    public function insert($table, $columns, $values) {
-        if (sizeof($columns) != sizeof($values)) {
-            throwException("Columns not equal to values");
-        }
-        $stmt = $this -> dbh->prepare("INSERT INTO ".$table." (".join(",",$columns).")
-                                              VALUES (".join(", ", array_keys($values)).")");
+
+    public function select($query_string, $values =[]) {
+        $stmt = $this -> dbh->prepare($query_string);
         if (!$stmt) {
-            return "Error";
+            throw new Exception( "Error building query! " . $stmt ->errorInfo()[2]);
         }
         foreach($values as $key => $value) {
-            $stmt->bindParam($key, $value);
+            if (is_numeric($value)){
+                $stmt->bindParam($key, $value, PDO::PARAM_INT);
+            } else {
+                $stmt->bindParam($key, $value);
+            }
         }
-        $stmt->execute();
+        if (!($stmt->execute())) {
+            throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
+        }
+        return $stmt->fetchAll();
     }
 
-    public function select($table, $columns, $criteria_string, $criteria_values) {
-        $stmt = $this -> dbh->prepare("SELECT ".join(", ", $columns)."
-                                              FROM ".$table."
-                                              WHERE 1=1 ". (strlen($criteria_string) > 0 ? ("AND " . $criteria_string) :""));
+    public function insert($query_string, $values) {
+        $stmt = $this -> dbh->prepare($query_string);
         if (!$stmt) {
-            return "Error";
+            throw new Exception( "Error building query! " . $stmt ->errorInfo()[2]);
         }
-        foreach($criteria_values as $key => $value) {
-            $stmt->bindParam($key, $value);
+        foreach($values as $key => $value) {
+            if (is_numeric($value)){
+                $stmt->bindParam($key, $value, PDO::PARAM_INT);
+            } else {
+                $stmt->bindParam($key, $value);
+            }
         }
-        $stmt->execute();
-        return $stmt->fetchAll();
+        if (!($stmt->execute())) {
+            throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
+        }
+        return $this -> dbh ->lastInsertId();
+    }
+
+    public function update($query_string, $values) {
+        $stmt = $this -> dbh->prepare($query_string);
+        if (!$stmt) {
+            throw new Exception( "Error building query! " . $stmt ->errorInfo()[2]);
+        }
+        foreach($values as $key => $value) {
+            if (is_numeric($value)){
+                $stmt->bindParam($key, $value, PDO::PARAM_INT);
+            } else {
+                $stmt->bindParam($key, $value);
+            }
+        }
+        if (!($stmt->execute())) {
+            throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
+        }
     }
 
 }
