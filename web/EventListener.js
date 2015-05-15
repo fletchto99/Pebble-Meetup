@@ -9,7 +9,7 @@ var meetup = require('meetup-api')({
 var ids = [];
 
 function setNewIDs(onComplete, onFail) {
-    winston.log('info','Fetching group ids...');
+    winston.log('info', getDateTime() + ' Fetching group ids...');
     request({
         method:'post',
         url: config.API_URL,
@@ -19,17 +19,17 @@ function setNewIDs(onComplete, onFail) {
         if (!error && response.statusCode === 200) {
             if (body.groups) {
                 ids = body.groups;
-                winston.log('info','Now listening for events in '+ids.length+' groups with the ids: ' + ids.join(", "));
+                winston.log('info', getDateTime() + ' Now listening for events in '+ids.length+' groups with the ids: ' + ids.join(", "));
                 if (onComplete !== undefined && onComplete !== null) {
                     onComplete();
                 }
             } else {
-                winston.log('info','Error fetching Pebble Group Ids');
+                winston.log('info', getDateTime() + ' Error fetching Pebble Group Ids');
                 if (onFail !== onFail && onFail !== null) {
                     onFail();
                 }
                 if (ids.length > 0) {
-                    winston.log('info','Still using ids ' + ids.join(', '))
+                    winston.log('info', getDateTime() + ' Still using ids ' + ids.join(', '))
                 }
             }
         }
@@ -37,7 +37,7 @@ function setNewIDs(onComplete, onFail) {
 }
 
 function getLastEventTime(onComplete) {
-    winston.log('info','Fetching last mtime...');
+    winston.log('info', getDateTime() + ' Fetching last mtime...');
     request({
         method:'post',
         url: config.API_URL,
@@ -68,7 +68,7 @@ function setLastEventTime(mTime) {
 }
 
 function sendEvent(id) {
-    winston.log('info','Sending event ' + id + '...')
+    winston.log('info', getDateTime() + ' Sending event ' + id + '...')
     request({
         method:'post',
         url: API_URL,
@@ -87,9 +87,9 @@ function sendEvent(id) {
 
 function startStream(mtime) {
     if (mtime !== undefined && !isNaN(mtime)) {
-        winston.log('info','Starting stream from mtime: ' + mtime);
+        winston.log('info', getDateTime() + ' Starting stream from mtime: ' + mtime);
     } else {
-        winston.log('info','No mtime found! Starting stream from current time...');
+        winston.log('info', getDateTime() + ' No mtime found! Starting stream from current time...');
         mtime = Date.now();
     }
     meetup.getStreamOpenEvents({
@@ -109,11 +109,11 @@ function processStreamData(obj) {
             var groupID = parseInt(obj.group.id);
             var mtime = parseInt(obj.mtime);
             if (ids.indexOf(groupID) > 0) {
-                winston.log('info','Event for group: ' + groupID + '... It is a pebble event :) eID: ' + eventID);
+                winston.log('info', getDateTime() + ' Event for group: ' + groupID + '... It is a pebble event :) eID: ' + eventID);
                 sendEvent(eventID);
                 setLastEventTime(mtime);
             } else {
-                winston.log('info','Event for group: ' + groupID + '... Not a pebble event :( eID: ' + eventID);
+                winston.log('info', getDateTime() + ' Event for group: ' + groupID + '... Not a pebble event :( eID: ' + eventID);
                 setLastEventTime(mtime);
             }
         }
@@ -128,6 +128,31 @@ function setup() {
 
 function exit() {
     process.exit(0);
+}
+
+function getDateTime() {
+
+    var date = new Date();
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return day + "/" + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+
 }
 
 setNewIDs(setup, exit);
