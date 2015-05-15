@@ -25,56 +25,45 @@ class DataBase {
 
 
     public function select($query_string, $values =[]) {
+        if (sizeof($values) !== substr_count($query_string, '?')) {
+            throw new Exception("Size mismatch: Number of parameters passed does not match the number of parameters expected!");
+        }
         $stmt = $this -> dbh->prepare($query_string);
         if (!$stmt) {
-            throw new Exception( "Error building query! " . $stmt ->errorInfo()[2]);
+            throw new Exception("Error building query! " . $stmt->errorInfo()[2]);
         }
-        foreach($values as $key => $value) {
-            if (is_numeric($value)){
-                $stmt->bindParam($key, $value, PDO::PARAM_INT);
-            } else {
-                $stmt->bindParam($key, $value);
-            }
-        }
-        if (!($stmt->execute())) {
+        if (!($stmt->execute($values))) {
             throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
         }
         return $stmt->fetchAll();
     }
 
     public function insert($query_string, $values) {
+        if (sizeof($values) !== substr_count($query_string, '?')) {
+            throw new Exception("Size mismatch: Number of parameters passed does not match the number of parameters expected!");
+        }
         $stmt = $this -> dbh->prepare($query_string);
         if (!$stmt) {
-            throw new Exception( "Error building query! " . $stmt ->errorInfo()[2]);
+            throw new Exception("Error building query! " . $stmt->errorInfo()[2]);
         }
-        foreach($values as $key => $value) {
-            if (is_numeric($value)){
-                $stmt->bindParam($key, $value, PDO::PARAM_INT);
-            } else {
-                $stmt->bindParam($key, $value);
-            }
-        }
-        if (!($stmt->execute())) {
+        if (!($stmt->execute($values))) {
             throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
         }
         return $this -> dbh ->lastInsertId();
     }
 
     public function update($query_string, $values) {
+        if (sizeof($values) !== substr_count($query_string, '?')) {
+            throw new Exception("Size mismatch: Number of parameters passed does not match the number of parameters expected!");
+        }
         $stmt = $this -> dbh->prepare($query_string);
         if (!$stmt) {
-            throw new Exception( "Error building query! " . $stmt ->errorInfo()[2]);
+            throw new Exception("Error building query! " . $stmt->errorInfo()[2]);
         }
-        foreach($values as $key => $value) {
-            if (is_numeric($value)){
-                $stmt->bindParam($key, $value, PDO::PARAM_INT);
-            } else {
-                $stmt->bindParam($key, $value);
-            }
-        }
-        if (!($stmt->execute())) {
+        if (!($stmt->execute($values))) {
             throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
         }
+        return $stmt -> rowCount();
     }
 
 }

@@ -37,8 +37,7 @@ class Notification
         } else {
             try {
                 $db = DataBase::getInstance();
-                echo md5($this -> password);
-                $count = $db ->select("SELECT count(*) AS count FROM Logins WHERE Login_Name=:username AND Login_Key =:password AND Enabled=1", [':username' => $this -> username, ':password' => md5($this -> password)])[0]['count'];
+                $count = $db ->select("SELECT count(*) AS count FROM Logins WHERE Login_Name=? AND Login_Key =? AND Enabled=1", [$this -> username, md5($this -> password)])[0]['count'];
                 if (!is_numeric($count) || $count < 1) {
                     return ['error' => 'Invalid username/password combination entered!'];
                 }
@@ -48,8 +47,8 @@ class Notification
             }
             try {
                 $db = DataBase::getInstance();
-                $loginID = $db -> select("SELECT Login_ID FROM Logins WHERE Login_Name = :username", [':username' => $this -> username])[0]['Login_ID'];
-                $lastID = $db ->insert("INSERT INTO Notifications(Login_ID, Message) VALUES (:login, :message)", [':login' => $loginID, ':message' => $this -> message]);
+                $loginID = $db -> select("SELECT Login_ID FROM Logins WHERE Login_Name = ?", [$this -> username])[0]['Login_ID'];
+                $lastID = $db ->insert("INSERT INTO Notifications(Login_ID, Message) VALUES (?, ?)", [$loginID, $this -> message]);
                 if (is_numeric($lastID)) {
                     $this -> id = $this -> id . $lastID;
                 } else {
