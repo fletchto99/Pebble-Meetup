@@ -56,6 +56,7 @@ class Notification
                 }
             } catch(Exception $error) {
                 $this -> id = $this -> id . functions::generateRandomString();
+                echo 'Error!!!! Please send the following to fletchto99@gmail.com!' . $error -> getMessage();
             }
             //Layouts
             $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'You have received a message regarding the Pebble Meetup App!', null, null, null, PinIcon::NOTIFICATION_FLAG);

@@ -26,26 +26,31 @@ Settings.config(
         Settings.data('lat', data.lat);
         Settings.data('lon', data.lon);
         Settings.data('events', data.events);
-        if (functions.getSetting('events')) {
-            Pebble.timelineSubscriptions(
-                function (topics) {
-                    if (topics.indexOf('all-events') < 1 && functions.getSetting('events')) {
-                        Pebble.timelineSubscribe('all-events',
-                            function () {
-                                console.log('Error subscribing to all events');
-                            },
-                            function (errorString) {
-                                console.log('Error subscribing subscribing from all events');
-                            }
-                        );
-                    } else if (topics.indexOf('all-events') > 0 && !functions.getSetting('events')) {
-
-                    }
-                },
-                function (errorString) {
-                    functions.showCard('Error!', '', 'Error determining subscription status!');
-                });
-        }
+        Pebble.timelineSubscriptions(
+            function (topics) {
+                if (topics.indexOf('all-events') < 1 && functions.getSetting('events')) {
+                    Pebble.timelineSubscribe('all-events',
+                        function () {
+                            functions.showCard('Success','You have subscribed to notifications for all events!','')
+                        },
+                        function (errorString) {
+                            console.log('Error subscribing from all events');
+                        }
+                    );
+                } else if (topics.indexOf('all-events') > 0 && !functions.getSetting('events')) {
+                    Pebble.timelineUnsubscribe('all-events',
+                        function () {
+                            functions.showCard('Success','You have removed your subscription to notifications for all events!','')
+                        },
+                        function (errorString) {
+                            console.log('Error removing subscription from all events');
+                        }
+                    );
+                }
+            },
+            function (errorString) {
+            }
+        );
     }
 );
 
