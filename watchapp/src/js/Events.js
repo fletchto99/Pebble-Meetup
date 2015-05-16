@@ -85,34 +85,38 @@ function getEvents(lon, lat) {
                          functions.showCard(menuItems[eventIndex].title, '','Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress: ' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country : '') +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
                      } else if (event.itemIndex === 1) {
                          var pinning = functions.showCard('Events','Pinning...','');
-                         Pebble.getTimelineToken(
-                             function (token) {
-                                 ajax({
-                                         url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
-                                         type: 'json',
-                                         method: 'post',
-                                         data:{
-                                             userToken: token,
-                                             eventID: menuItems[eventIndex].id,
-                                             method:'eventnotify'
+                         if (typeof Pebble.getTimelineToken == 'function') {
+                             Pebble.getTimelineToken(
+                                 function (token) {
+                                     ajax({
+                                             url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
+                                             type: 'json',
+                                             method: 'post',
+                                             data:{
+                                                 userToken: token,
+                                                 eventID: menuItems[eventIndex].id,
+                                                 method:'eventnotify'
+                                             },
+                                             cache: false
                                          },
-                                         cache: false
-                                     },
-                                     function(data) {
-                                         if (data.status.code != 200) {
-                                             functions.showAndRemoveCard('Error', data.status.message, '', pinning);
-                                         } else {
-                                             functions.showAndRemoveCard('Success', data.status.message, '', pinning);
-                                         }
-                                     },
-                                     function(error) {
-                                         functions.showCard('Error', 'Error pinning event!', '');
-                                     });
-                             },
-                             function (error) {
-                                 functions.showCard('Error', 'Error fetching timeline token!', '');
-                             }
-                         );
+                                         function(data) {
+                                             if (data.status.code != 200) {
+                                                 functions.showAndRemoveCard('Error', data.status.message, '', pinning);
+                                             } else {
+                                                 functions.showAndRemoveCard('Success', data.status.message, '', pinning);
+                                             }
+                                         },
+                                         function(error) {
+                                             functions.showAndRemoveCard('Error', 'Error pinning event!', '',pinning);
+                                         });
+                                 },
+                                 function (error) {
+                                     functions.showAndREmoveCard('Error', 'Error fetching timeline token!', '',pinning);
+                                 }
+                             );
+                         } else {
+                             functions.showAndRemoveCard('Error', 'This functionality is not supported on SDK 2.9!', '',pinning);
+                         }
                      }
                  });
                  menu.on('select', function(event) {

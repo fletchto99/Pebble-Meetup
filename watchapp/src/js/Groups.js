@@ -88,32 +88,34 @@ function getGroups(lon, lat) {
                      } else if (event.itemIndex == 2) {
                          events.fetchFor(menuItems[eventIndex].id);
                      } else if (event.itemIndex === 3) {
-                         Pebble.timelineSubscriptions(
-                             function (topics) {
-                                 if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
-                                     Pebble.timelineUnsubscribe(menuItems[eventIndex].id,
-                                         function () {
-                                             functions.showCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with '+menuItems[eventIndex].titl+'.');
-                                         },
-                                         function (errorString) {
-                                             functions.showCard('Error!', '', 'Error unsubscribing from the group ' + menuItems[eventIndex].title + '.');
-                                         }
-                                     );
-                                 } else {
-                                     Pebble.timelineSubscribe(menuItems[eventIndex].id,
-                                         function () {
-                                             functions.showCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.');
-                                         },
-                                         function (errorString) {
-                                             functions.showCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString);
-                                         }
-                                     );
+                         if (typeof Pebble.timelineSubscriptions == 'function') {
+                             Pebble.timelineSubscriptions(
+                                 function (topics) {
+                                     if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
+                                         Pebble.timelineUnsubscribe(menuItems[eventIndex].id,
+                                             function () {
+                                                 functions.showCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with ' + menuItems[eventIndex].titl + '.');
+                                             },
+                                             function (errorString) {
+                                                 functions.showCard('Error!', '', 'Error unsubscribing from the group ' + menuItems[eventIndex].title + '.');
+                                             }
+                                         );
+                                     } else {
+                                         Pebble.timelineSubscribe(menuItems[eventIndex].id,
+                                             function () {
+                                                 functions.showCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.');
+                                             },
+                                             function (errorString) {
+                                                 functions.showCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString);
+                                             }
+                                         );
+                                     }
+                                 },
+                                 function (errorString) {
+                                     functions.showCard('Error!', '', 'Error determining subscription status!');
                                  }
-                             },
-                             function (errorString) {
-                                 functions.showCard('Error!', '', 'Error determining subscription status!');
-                             }
-                         );
+                             );
+                         }
                     }
                  });
                  menu.on('select', function(event) {
