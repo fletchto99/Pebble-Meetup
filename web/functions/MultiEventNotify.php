@@ -15,10 +15,10 @@ use TimelineAPI\PinNotification;
 class MultiEventNotify
 {
 
-    private $key = null;
-    private $timelineKey = null;
-    private $url = null;
-    private $userToken = null;
+    private $key;
+    private $timelineKey;
+    private $url;
+    private $eventID;
     private $exclusions = array('distance', 'id', 'name', 'venue', 'time', 'utc_offset', 'address', 'group');
 
     function __construct($url, $key, $timelineKey, $eventID)
@@ -35,6 +35,7 @@ class MultiEventNotify
         if (empty($this->eventID)) {
             return $arr;
         } else {
+
             $response = functions::cleanAPICall($this->url . $this->eventID . '?sign=true&key=' . $this->key, $this -> exclusions, null);
             if (is_numeric($response['time'])) {
                 date_default_timezone_set('UTC');
@@ -43,6 +44,49 @@ class MultiEventNotify
             } else {
                 return $arr;
             }
+
+            try {
+                $db = DataBase::getInstance();
+                $tokens = $db -> select("SELECT Users.User_Token FROM Events INNER JOIN User_Events ON Events.Event_ID = User_Events.Event_ID INNER JOIN Users ON Users.User_ID=User_Events.User_ID WHERE Events.Event_Token=?", [$this -> eventID]);
+                if (sizeof($tokens) > 0) {
+                    foreach($tokens as $token) {
+                        if(!empty($token['User_Token'])) {
+                            $subscriptions = Timeline::listSubscriptions($token['User_Token'])['result']['topics'];
+                            if (sizeof($subscriptions) > 0) {
+                                if (!in_array($response['group']['id'],$subscriptions) && !in_array('all-events',$subscriptions)) {
+                                    //Layouts
+                                    $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has been pinned!', null, null, null, PinIcon::NOTIFICATION_FLAG);
+                                    $updateLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'Meetup Event Update', null, null, 'The event '.$response['name'].' has been updated!', PinIcon::NOTIFICATION_FLAG);
+                                    $reminder1Layout = new PinLayout(PinLayoutType::GENERIC_REMINDER, 'Meetup event in 1 Day!', null, null, null, PinIcon::NOTIFICATION_FLAG);
+                                    $reminder2Layout = new PinLayout(PinLayoutType::GENERIC_REMINDER, 'Meetup event in 1 Hour!', null, null, null, PinIcon::NOTIFICATION_FLAG);
+                                    $pinLayout = new PinLayout(PinLayoutType::GENERIC_PIN, $response['name'], null, 'Meetup Event', 'Located at ' . $response['venue']['address_1'], PinIcon::TIMELINE_CALENDAR, PinIcon::TIMELINE_CALENDAR, PinIcon:: TIMELINE_CALENDAR, PebbleColour::WHITE, PebbleColour::RED);
+
+                                    //Notifications
+                                    $createNotification = new PinNotification($createLayout);
+                                    $updateNotification = new PinNotification($updateLayout, new DateTime('now'));
+
+                                    //Reminders
+                                    $reminder1 = new PinReminder($reminder1Layout, (new DateTime($response['date'])) -> sub(new DateInterval('PT24H')));
+                                    $reminder2 = new PinReminder($reminder2Layout, (new DateTime($response['date'])) -> sub(new DateInterval('PT1H')));
+
+                                    //Pin
+                                    $pin = new Pin($this -> eventID, new DateTime($response['date']), $pinLayout, null, $createNotification, $updateNotification);
+
+                                    //Add reminders
+                                    $pin -> addReminder($reminder1);
+                                    $pin -> addReminder($reminder2);
+
+                                    //Push the pin
+                                    $response = Timeline::pushPin($token['User_Token'], $pin);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception $exception) {
+                //Supress errors, guess the user won't get the update! :(
+            }
+
 
             //Layouts
             $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has successfully been pinned!', null, null, null, PinIcon::NOTIFICATION_FLAG);
