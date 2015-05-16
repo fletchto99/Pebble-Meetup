@@ -116,7 +116,7 @@ function getGroups(lon, lat) {
                                  }
                              );
                          }else {
-                             functions.showAndRemoveCard('Error', 'This functionality is not supported on SDK 2.9!', '');
+                             functions.showCard('Error', 'This functionality is not supported on SDK 2.9!', '');
                          }
                     }
                  });
