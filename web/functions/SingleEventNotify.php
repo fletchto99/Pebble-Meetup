@@ -42,6 +42,22 @@ class SingleEventNotify
             } else {
                 return $arr;
             }
+            try {
+                $db = DataBase::getInstance();
+                $uID = $db -> select('SELECT User_ID FROM Users WHERE User_Token=?', [$this-> userToken])[0]['User_ID'];
+                if (empty($uID)) {
+                    $uID = $db -> insert('INSERT INTO Users(User_Token) VALUES (?)', [$this -> userToken]);
+                }
+                $eID = $db -> select('SELECT Event_ID FROM Events WHERE Event_Token=?', [$this-> eventID])[0]['Event_ID'];
+                if (empty($eID)) {
+                    $eID = $db -> insert('INSERT INTO Events(Event_Token) VALUES (?)', [$this -> eventID]);
+                }
+                if (is_numeric($uID) && is_numeric($eID)) {
+                    $db -> insert('INSERT INTO User_Events(User_ID, Event_ID) VALUES (?,?)', [$uID, $eID]);
+                }
+            } catch(Exception $error) {
+                //Supress errors, pin the event and sadly this user won't see event updates
+            }
             //Layouts
             $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has successfully been pinned!', null, null, null, PinIcon::NOTIFICATION_FLAG);
             $updateLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has been updated!', null, null, null, PinIcon::NOTIFICATION_FLAG);
