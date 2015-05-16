@@ -7,9 +7,13 @@ var meetup = require('meetup-api')({
 
 
 var ids = [];
+var skipped = 0;
+var processed = 0;
+var totalSkipped = 0;
+var totalProcessed = 0;
 
 function setNewIDs(onComplete, onFail) {
-    winston.log('info', getDateTime() + ' Fetching group ids...');
+    winston.log('info', 'Fetching group ids...');
     request({
         method:'post',
         url: config.API_URL,
@@ -19,17 +23,24 @@ function setNewIDs(onComplete, onFail) {
         if (!error && response.statusCode === 200) {
             if (body.groups) {
                 ids = body.groups;
-                winston.log('info', getDateTime() + ' Now listening for events in '+ids.length+' groups with the ids: ' + ids.join(", "));
+                winston.log('info', 'Now listening for events in '+ids.length+' groups with the ids: ' + ids.join(", "));
+                if (skipped > 0) {
+                    winston.log('info', 'There have been ' + skipped + ' non-pebble events skipped in the last 15 minutes');
+                    winston.log('info', 'There have been ' + processed + ' pebble events processed in the last 15 minutes');
+                    winston.log('info', 'In total there have been ' + totalProcessed + ' pebble events processed and '+totalSkipped+' non-pebble events skipped');
+                    skipped=0;
+                    processed=0;
+                }
                 if (onComplete !== undefined && onComplete !== null) {
                     onComplete();
                 }
             } else {
-                winston.log('info', getDateTime() + ' Error fetching Pebble Group Ids');
+                winston.log('info', 'Error fetching Pebble Group Ids');
                 if (onFail !== onFail && onFail !== null) {
                     onFail();
                 }
                 if (ids.length > 0) {
-                    winston.log('info', getDateTime() + ' Still using ids ' + ids.join(', '))
+                    winston.log('info', 'Still using ids ' + ids.join(', '))
                 }
             }
         }
@@ -37,7 +48,7 @@ function setNewIDs(onComplete, onFail) {
 }
 
 function getLastEventTime(onComplete) {
-    winston.log('info', getDateTime() + ' Fetching last mtime...');
+    winston.log('info', 'Fetching last mtime...');
     request({
         method:'post',
         url: config.API_URL,
@@ -68,7 +79,7 @@ function setLastEventTime(mTime) {
 }
 
 function sendEvent(id) {
-    winston.log('info', getDateTime() + ' Sending event ' + id + '...')
+    winston.log('info', 'Sending event ' + id + '...')
     request({
         method:'post',
         url: API_URL,
@@ -87,9 +98,9 @@ function sendEvent(id) {
 
 function startStream(mtime) {
     if (mtime !== undefined && !isNaN(mtime)) {
-        winston.log('info', getDateTime() + ' Starting stream from mtime: ' + mtime);
+        winston.log('info', 'Starting stream from mtime: ' + mtime);
     } else {
-        winston.log('info', getDateTime() + ' No mtime found! Starting stream from current time...');
+        winston.log('info', 'No mtime found! Starting stream from current time...');
         mtime = Date.now();
     }
     meetup.getStreamOpenEvents({
@@ -98,6 +109,7 @@ function startStream(mtime) {
         processStreamData(obj);
     }).on('end', function () {
         winston.log('info', 'Events stream closed. Attempting to restart stream...');
+        winston.log('info', 'In this session we have skipped ' + totalSkipped + ' events, processed ' + totalProcessed +' pebble events');
         getLastEventTime(startStream);
     });
 }
@@ -109,11 +121,14 @@ function processStreamData(obj) {
             var groupID = parseInt(obj.group.id);
             var mtime = parseInt(obj.mtime);
             if (ids.indexOf(groupID) > 0) {
-                winston.log('info', getDateTime() + ' Event for group: ' + groupID + '... It is a pebble event :) eID: ' + eventID);
+                winston.log('info', 'Pebble event ' + eventID + ' found for group: ' + groupID );
                 sendEvent(eventID);
                 setLastEventTime(mtime);
+                processed++;
+                totalProcessed++;
             } else {
-                winston.log('info', getDateTime() + ' Event for group: ' + groupID + '... Not a pebble event :( eID: ' + eventID);
+                skipped++;
+                totalSkipped++;
                 setLastEventTime(mtime);
             }
         }
@@ -130,29 +145,11 @@ function exit() {
     process.exit(0);
 }
 
-function getDateTime() {
-
-    var date = new Date();
-
-    var hour = date.getHours();
-    hour = (hour < 10 ? "0" : "") + hour;
-
-    var min  = date.getMinutes();
-    min = (min < 10 ? "0" : "") + min;
-
-    var sec  = date.getSeconds();
-    sec = (sec < 10 ? "0" : "") + sec;
-
-    var year = date.getFullYear();
-
-    var month = date.getMonth() + 1;
-    month = (month < 10 ? "0" : "") + month;
-
-    var day  = date.getDate();
-    day = (day < 10 ? "0" : "") + day;
-
-    return day + "/" + month + "/" + year + " " + hour + ":" + min + ":" + sec;
-
-}
+process.on( "SIGINT", function() {
+    winston.log('info', 'Events stream closed by a person!');
+    winston.log('info', 'In this session we have skipped ' + totalSkipped + ' events, processed ' + totalProcessed +' pebble events');
+    winston.log('info', 'Program will now terminate...');
+    process.exit();
+} );
 
 setNewIDs(setup, exit);
