@@ -115,6 +115,8 @@ function getGroups(lon, lat) {
                                      functions.showCard('Error!', '', 'Error determining subscription status!');
                                  }
                              );
+                         }else {
+                             functions.showAndRemoveCard('Error', 'This functionality is not supported on SDK 2.9!', '');
                          }
                     }
                  });
