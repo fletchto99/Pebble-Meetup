@@ -45,6 +45,17 @@ class MultiEventNotify
                 return $arr;
             }
 
+            //Shouldnt have to insert the event but just incase
+            try {
+                $db = DataBase::getInstance();
+                $eID = $db -> select('SELECT Event_ID FROM Events WHERE Event_Token=?', [$this-> eventID])[0]['Event_ID'];
+                if (empty($eID)) {
+                    $eID = $db -> insert('INSERT INTO Events(Event_Token) VALUES (?)', [$this -> eventID]);
+                }
+            } catch(Exception $error) {
+                //Supress errors, pin the event and sadly this user won't see event updates
+            }
+
             try {
                 $db = DataBase::getInstance();
                 $tokens = $db -> select("SELECT Users.User_Token FROM Events INNER JOIN User_Events ON Events.Event_ID = User_Events.Event_ID INNER JOIN Users ON Users.User_ID=User_Events.User_ID WHERE Events.Event_Token=?", [$this -> eventID]);
@@ -86,7 +97,6 @@ class MultiEventNotify
             } catch (Exception $exception) {
                 //Supress errors, guess the user won't get the update! :(
             }
-
 
             //Layouts
             $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has successfully been pinned!', null, null, null, PinIcon::NOTIFICATION_FLAG);
