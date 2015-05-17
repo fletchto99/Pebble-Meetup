@@ -19,7 +19,7 @@ class MultiEventNotify
     private $timelineKey;
     private $url;
     private $eventID;
-    private $exclusions = array('distance', 'id', 'name', 'venue', 'time', 'utc_offset', 'address', 'group');
+    private $exclusions = array('distance', 'id', 'name', 'venue', 'time', 'address', 'group');
 
     function __construct($url, $key, $timelineKey, $eventID)
     {
@@ -38,7 +38,7 @@ class MultiEventNotify
 
             $response = functions::cleanAPICall($this->url . $this->eventID . '?sign=true&key=' . $this->key, $this -> exclusions, null);
             if (is_numeric($response['time'])) {
-                $time = $response['time'] + $response['utc_offset'];
+                $time = $response['time'];
                 $response['date'] = date("d-m-Y g:ia", intval($time) / 1000);
             } else {
                 return $arr;

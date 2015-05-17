@@ -18,7 +18,7 @@ class SingleEventNotify
     private $key = null;
     private $url = null;
     private $userToken = null;
-    private $exclusions = array('distance', 'id', 'name', 'venue', 'time', 'utc_offset', 'address');
+    private $exclusions = array('distance', 'id', 'name', 'venue', 'time', 'address');
 
     function __construct($url, $key, $userToken, $eventID)
     {
@@ -36,7 +36,7 @@ class SingleEventNotify
         } else {
             $response = functions::cleanAPICall($this->url . $this->eventID . '?sign=true&key=' . $this->key, $this -> exclusions, null);
             if (is_numeric($response['time'])) {
-                $time = $response['time'] + $response['utc_offset'];
+                $time = $response['time'];
                 $response['date'] = date("d-m-Y g:ia", intval($time) / 1000);
             } else {
                 return $arr;
