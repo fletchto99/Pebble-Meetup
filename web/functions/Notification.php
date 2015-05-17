@@ -66,7 +66,7 @@ class Notification
             $createNotification = new PinNotification($createLayout);
 
             //Pin
-            $pin = new Pin($this -> id, new DateTime('now'), $pinLayout, null, $createNotification);
+            $pin = new Pin($this -> id, (new DateTime('now')) -> add(new DateInterval('PT5M')), $pinLayout, null, $createNotification);
 
             //Push the pin
             $response = Timeline::pushSharedPin($this -> apiKey, ['notifications'], $pin);
