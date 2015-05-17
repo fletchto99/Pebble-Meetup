@@ -148,7 +148,7 @@ function exit() {
 process.on( "SIGINT", function() {
     winston.log('info', 'Events stream closed by a person!');
     winston.log('info', 'In this session we have skipped ' + totalSkipped + ' events, processed ' + totalProcessed +' pebble events');
-    winston.log('info', 'Program will now terminate...');
+    winston.log('info', 'Program will now terminate... Thanks for using Pebble Meetup!');
     process.exit();
 } );
 
