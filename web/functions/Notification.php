@@ -60,7 +60,7 @@ class Notification
             }
             //Layouts
             $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'You have received a message regarding the Pebble Meetup App!', null, null, null, PinIcon::NOTIFICATION_FLAG);
-            $pinLayout = new PinLayout(PinLayoutType::GENERIC_PIN, 'Meetup Message', 'Meetup Message', null, $this -> message, PinIcon::GENERIC_SMS, PinIcon::GENERIC_SMS, PinIcon::GENERIC_SMS, PebbleColour::WHITE, PebbleColour::RED);
+            $pinLayout = new PinLayout(PinLayoutType::GENERIC_PIN, 'Meetup Message', 'Meetup Message', null, $this -> message, PinIcon::GENERIC_EMAIL, PinIcon::GENERIC_EMAIL, PinIcon::GENERIC_EMAIL, PebbleColour::WHITE, PebbleColour::RED);
 
             //Notifications
             $createNotification = new PinNotification($createLayout);
