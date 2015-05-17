@@ -59,8 +59,8 @@ class SingleEventNotify
                 //Supress errors, pin the event and sadly this user won't see event updates
             }
             //Layouts
-            $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'The event '.$response['name'].' has been pinned!', null, null, null, PinIcon::NOTIFICATION_FLAG);
-            $updateLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'Meetup Event Update', null, null, 'The event '.$response['name'].' has been updated!', PinIcon::NOTIFICATION_FLAG);
+            $createLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'Meetup Event Added!', null, null, 'The event '.$response['name'].' has successfully been pinned!', PinIcon::NOTIFICATION_FLAG);
+            $updateLayout = new PinLayout(PinLayoutType::GENERIC_NOTIFICATION, 'Meetup Event Update!', null, null, 'The event '.$response['name'].' has been updated!', PinIcon::NOTIFICATION_FLAG);
             $reminder1Layout = new PinLayout(PinLayoutType::GENERIC_REMINDER, 'Meetup event in 1 Day!', null, null, null, PinIcon::NOTIFICATION_FLAG);
             $reminder2Layout = new PinLayout(PinLayoutType::GENERIC_REMINDER, 'Meetup event in 1 Hour!', null, null, null, PinIcon::NOTIFICATION_FLAG);
             $pinLayout = new PinLayout(PinLayoutType::GENERIC_PIN, 'Meetup Event', null, $response['name'], 'Located at ' . $response['venue']['address_1'], PinIcon::TIMELINE_CALENDAR, PinIcon::TIMELINE_CALENDAR, PinIcon:: TIMELINE_CALENDAR, PebbleColour::WHITE, PebbleColour::RED);

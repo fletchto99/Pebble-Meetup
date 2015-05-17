@@ -82,7 +82,7 @@ function sendEvent(id) {
     winston.log('info', 'Sending event ' + id + '...')
     request({
         method:'post',
-        url: API_URL,
+        url: config.API_URL,
         json: true,
         body:   {method: 'multieventnotify',eventID:id}
     }, function (error, response, body) {
