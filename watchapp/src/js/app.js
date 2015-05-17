@@ -8,11 +8,11 @@ var location = (Settings.data('location')? '&location='+encodeURIComponent(Setti
 var address = (Settings.data('address')? '&address='+encodeURIComponent(Settings.data('address')) : '');
 var lon = (Settings.data('lon')? '&lon='+encodeURIComponent(Settings.data('lon')) : '');
 var lat = (Settings.data('lat')? '&lat='+encodeURIComponent(Settings.data('lat')) : '');
-var events = (Settings.data('events')? '&evnets='+encodeURIComponent(Settings.data('events')) : '');
+var events = (Settings.data('events')? '&events='+encodeURIComponent(Settings.data('events')) : '');
 
 
 Settings.config(
-    { url: ('http://fletchto99.com/other/pebble/meetup/web/settings.html?' + radius + units + location + address + lon + lat) },
+    { url: ('http://fletchto99.com/other/pebble/meetup/web/settings.html?' + radius + units + location + address + lon + lat + events) },
     function(e) {
         if (!e.response){
             console.log("No response from server?");
