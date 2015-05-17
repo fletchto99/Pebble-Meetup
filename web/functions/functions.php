@@ -65,6 +65,7 @@ class Functions
     }
 
     function execute($method, $params) {
+        date_default_timezone_set('UTC');
         switch ($method) {
             case 'members':
                 $members = new Members($this->config['API_URL'] . $this->config['MEMBERS_CALL'], $this->config['MEETUP_API_KEY'], $params['groupID']);

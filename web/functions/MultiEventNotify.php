@@ -38,7 +38,6 @@ class MultiEventNotify
 
             $response = functions::cleanAPICall($this->url . $this->eventID . '?sign=true&key=' . $this->key, $this -> exclusions, null);
             if (is_numeric($response['time'])) {
-                date_default_timezone_set('UTC');
                 $time = $response['time'] + $response['utc_offset'];
                 $response['date'] = date("d-m-Y g:ia", intval($time) / 1000);
             } else {
