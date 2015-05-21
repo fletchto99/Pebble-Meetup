@@ -89,41 +89,72 @@ function getGroups(lon, lat) {
                          events.fetchFor(menuItems[eventIndex].id);
                      } else if (event.itemIndex === 3) {
                          if (typeof Pebble.timelineSubscriptions == 'function') {
+                             var subscribing = functions.showCard('Subscription...', (optionItems[3].title.indexOf('Toggle') < 0 ? optionItems[3].title.substring(0, optionItems[3].title.length-1) +'ing...' : 'Toggling Subscription'),'');
                              Pebble.timelineSubscriptions(
                                  function (topics) {
                                      if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
-                                         Pebble.timelineUnsubscribe(menuItems[eventIndex].id,
+                                         Pebble.timelineUnsubscribe(menuItems[eventIndex].id.toString(),
                                              function () {
-                                                 functions.showCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with ' + menuItems[eventIndex].titl + '.');
+                                                 functions.showAndRemoveCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing);
+                                                 optionItems[3].title = 'Subscribe';
+                                                 options.items(0, optionItems);
                                              },
                                              function (errorString) {
-                                                 functions.showCard('Error!', '', 'Error unsubscribing from the group ' + menuItems[eventIndex].title + '.');
+                                                 functions.showAndRemoveCard('Error!', '', 'Error unsubscribing from the group ' + menuItems[eventIndex].title + '.', subscribing);
+                                                 console.log('Error unsubscribing from group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
                                              }
                                          );
                                      } else {
-                                         Pebble.timelineSubscribe(menuItems[eventIndex].id,
+                                         Pebble.timelineSubscribe(menuItems[eventIndex].id.toString(),
                                              function () {
-                                                 functions.showCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.');
+                                                 functions.showAndRemoveCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing);
+                                                 optionItems[3].title = 'Unsubscribe';
+                                                 options.items(0, optionItems);
                                              },
                                              function (errorString) {
-                                                 functions.showCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString);
+                                                 functions.showAndRemoveCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing);
+                                                 console.log('Error subscribing to group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
                                              }
                                          );
                                      }
                                  },
                                  function (errorString) {
-                                     functions.showCard('Error!', '', 'Error determining subscription status!');
+                                     functions.showAndRemoveCard('Error!', '', 'Error determining subscription status!', subscribing);
+                                     console.log('Error getting subscriptions to toggle subscription for group ' + menuItems[eventIndex].title + ' error code: ' +errorString);
                                  }
                              );
-                         }else {
-                             functions.showCard('Error', 'This functionality is not supported on SDK 2.9!', '');
+                         } else {
+                             functions.showAndRemoveCard('Error', 'This functionality is not supported on SDK 2.9!', '', subscribing);
                          }
                     }
                  });
                  menu.on('select', function(event) {
-                     eventIndex = event.itemIndex;
                      options.hide();
-                     options.show();
+                     eventIndex = event.itemIndex;
+                     var subscriptions = functions.showCard('Loading...', 'Determining group subscription status','');
+                     if (typeof Pebble.timelineSubscriptions == 'function') {
+                         Pebble.timelineSubscriptions(
+                             function (topics) {
+                                 if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
+                                    optionItems[3].title = 'Unsubscribe';
+                                    options.items(0, optionItems);
+                                 } else {
+                                     optionItems[3].title = 'Subscribe';
+                                     options.items(0, optionItems);
+                                 }
+                                 subscriptions.hide();
+                                 options.show();
+                             },
+                             function (errorString) {
+                                 console.log('Error determining subscription stats for group ' + menuItems[eventIndex].title + ' error code: ' +errorString);
+                                 subscriptions.hide();
+                                 options.show();
+                             }
+                         );
+                     } else {
+                         subscriptions.hide();
+                         options.show();
+                     }
                  });
                  menu.show();
              }
