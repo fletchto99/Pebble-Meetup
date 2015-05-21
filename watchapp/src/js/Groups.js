@@ -124,15 +124,15 @@ function getGroups(lon, lat) {
                                  }
                              );
                          } else {
-                             functions.showAndRemoveCard('Error', 'This functionality is not supported on SDK 2.9!', '', subscribing);
+                             functions.showCard('Error', 'This functionality is not supported on SDK 2.9!', '');
                          }
                     }
                  });
                  menu.on('select', function(event) {
                      options.hide();
                      eventIndex = event.itemIndex;
-                     var subscriptions = functions.showCard('Loading...', 'Determining group subscription status','');
                      if (typeof Pebble.timelineSubscriptions == 'function') {
+                         var subscriptions = functions.showCard('Loading...', 'Determining group subscription status','');
                          Pebble.timelineSubscriptions(
                              function (topics) {
                                  if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
@@ -152,7 +152,6 @@ function getGroups(lon, lat) {
                              }
                          );
                      } else {
-                         subscriptions.hide();
                          options.show();
                      }
                  });
