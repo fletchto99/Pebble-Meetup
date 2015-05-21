@@ -30,7 +30,7 @@ class SingleEventNotify
 
     function execute()
     {
-        $arr = array('error' => 'Error retrieving event information! Please try again later!'); //This should never happen... but...
+        $arr = array('error' => 'Error retrieving event information to pin! Please try again later!'); //This should never happen... but...
         if (empty($this->eventID) || empty($this -> userToken)) {
             return $arr;
         } else {
