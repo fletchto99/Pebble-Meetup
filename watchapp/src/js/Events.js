@@ -94,13 +94,15 @@ function getEvents(lon, lat) {
                                              method: 'post',
                                              data:{
                                                  userToken: token,
-                                                 eventID: menuItems[eventIndex].id,
+                                                 eventID: menuItems[eventIndex].id.toString(),
                                                  method:'eventnotify'
                                              },
                                              cache: false
                                          },
                                          function(data) {
-                                             if (data.status.code != 200) {
+                                             if (data.error) {
+                                                 functions.showAndRemoveCard('Error', data.error, '', pinning);
+                                             } else if (data.status.code != 200) {
                                                  functions.showAndRemoveCard('Error', data.status.message, '', pinning);
                                              } else {
                                                  functions.showAndRemoveCard('Success', data.status.message, '', pinning);

@@ -10,18 +10,22 @@ functions.setup = function setup() {
         if (typeof Pebble.timelineSubscriptions == 'function') {
             Pebble.timelineSubscriptions(
                 function (topics) {
-                    if (topics.indexOf('notifications') < 1 && functions.getSetting('events')) {
+                    if (topics.indexOf('notifications') < 1) {
                         Pebble.timelineSubscribe('notifications',
                             function () {
-                                //success! -- TODO: Should we notify the user?
+                                console.log('Successfully subscribed to notifications!')
                             },
                             function (errorString) {
+                                console.log('Error subscribing to notifications ' + errorString);
                                 //Error subscribing to notifications -- keep the error transparent to the user
                             }
                         );
+                    } else {
+                        console.log('Already subscribed to notifications!')
                     }
                 },
                 function (errorString) {
+                    console.log('Error listing timeline subscriptions ' + errorString);
                     //Error subscribing to notifications -- keep the error transparent to the user
                 });
         }
@@ -56,7 +60,6 @@ functions.getSetting = function getSetting(setting) {
 };
 
 functions.showCard = function showCard(title, subtitle, body) {
-    console.log('Body is ' + body);
     return functions.showAndRemoveCard(title, subtitle, body, null);
 };
 
