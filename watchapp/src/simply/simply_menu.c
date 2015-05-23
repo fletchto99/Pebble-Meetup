@@ -14,7 +14,7 @@
 
 #define MAX_CACHED_SECTIONS 10
 
-#define MAX_CACHED_ITEMS 6
+#define MAX_CACHED_ITEMS 20
 
 #define REQUEST_DELAY_MS 10
 

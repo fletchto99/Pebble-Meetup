@@ -19,7 +19,7 @@ var eventIndex = -1;
 function getEvents(lon, lat) {
     console.log('lat= ' + lat + ' lon= ' + lon);
     ajax({
-        url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
+        url: functions.getAPIURL(),
         type: 'json',
         method: 'post',
         data:{
@@ -89,7 +89,7 @@ function getEvents(lon, lat) {
                              Pebble.getTimelineToken(
                                  function (token) {
                                      ajax({
-                                             url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
+                                             url: functions.getAPIURL(),
                                              type: 'json',
                                              method: 'post',
                                              data:{

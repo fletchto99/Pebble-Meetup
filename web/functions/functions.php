@@ -8,6 +8,7 @@ require_once 'MultiEventNotify.php';
 require_once 'PebbleGroups.php';
 require_once 'MTime.php';
 require_once 'Notification.php';
+require_once 'About.php';
 require_once 'DataBase.php';
 
 class Functions
@@ -107,6 +108,10 @@ class Functions
             case 'notifications':
                 $notification = new Notification($this->config['TIMELINE_API_KEY'],$params['username'],$params['password'],$params['message'] );
                 $this->result = $notification->execute();
+                break;
+            case 'about':
+                $about = new About();
+                $this->result = $about->execute();
                 break;
         }
         echo json_encode($this->result, JSON_UNESCAPED_SLASHES);

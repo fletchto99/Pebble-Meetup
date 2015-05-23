@@ -21,7 +21,7 @@ Members.fetchFor = function fetchFor(id, attending, name) {
     }
     loading = functions.showCard('Attending', 'Loading...', '');
     ajax({
-        url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
+        url: functions.getAPIURL(),
         type: 'json',
         method: 'post',
         data:{
@@ -35,7 +35,7 @@ Members.fetchFor = function fetchFor(id, attending, name) {
                  functions.showAndRemoveCard('Error', data.error, '', loading);
              } else {
                  loading.hide();
-                 var menuItems = Array(data.length);
+                 var menuItems = new Array(data.length);
                  for(var i=0;i<data.length;i++){
                      menuItems[i] = {
                          title: data[i].name

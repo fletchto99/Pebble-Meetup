@@ -2,8 +2,12 @@ var UI = require('ui');
 var groups = require('Groups');
 var events = require('Events');
 var Settings = require('settings');
+var about = require('About');
 
 var functions = module.exports;
+
+const VERSION = 2.06;
+const API_URL = 'http://fletchto99.com/other/pebble/meetup/web/api.php';
 
 //Functions
 functions.setup = function setup() {
@@ -37,6 +41,10 @@ functions.setup = function setup() {
             {
                 title: 'Find Events',
                 subtitle: 'Find upcoming events.'
+            },
+            {
+                title: 'About',
+                subtitle: 'Find Meetup for Pebble.'
             }
         ];
         var mainMenu = new UI.Menu({
@@ -51,12 +59,17 @@ functions.setup = function setup() {
                 groups.fetch();
             } else if (event.itemIndex === 1) {
                 events.fetch();
+            } else if (event.itemIndex === 2) {
+                about.fetch();
             }
         });
 };
 
-functions.getSetting = function getSetting(setting) {
-    return Settings.data(setting) !==null ? Settings.data(setting) : false;
+functions.getSetting = function getSetting(setting, default_setting) {
+    if (!default_setting) {
+        default_setting = false;
+    }
+    return Settings.data(setting) !==null ? Settings.data(setting) : default_setting;
 };
 
 functions.showCard = function showCard(title, subtitle, body) {
@@ -76,4 +89,12 @@ functions.updateCard = function updateCard(title, subtitle, card) {
     card.title(title);
     card.subtitle(subtitle);
     card.show();
+};
+
+functions.getVersion = function() {
+    return VERSION;
+};
+
+functions.getAPIURL = function() {
+    return API_URL;
 };

@@ -18,7 +18,7 @@ var eventIndex = -1;
 function getGroups(lon, lat) {
     console.log('lat= ' + lat + ' lon= ' + lon);
     ajax({
-        url: 'http://fletchto99.com/other/pebble/meetup/web/api.php',
+        url: functions.getAPIURL(),
         type: 'json',
         method: 'post',
         data:{
@@ -168,8 +168,13 @@ function locationSuccess(pos) {
 }
 
 function locationError(err) {
-    functions.showAndRemoveCard('Error', 'Error determining location.', '', loading);
-    console.log('location error (' + err.code + '): ' + err.message);
+    if (!typeof err == 'undefined') {
+        functions.showAndRemoveCard('Error', 'Error determining location.', '', loading);
+        console.log('location error (' + err.code + '): ' + err.message);
+    } else {
+        functions.showAndRemoveCard('Error', '', 'App not connected to the internet! This app requires an internet or data connection.', loading);
+    }
+
 }
 
 

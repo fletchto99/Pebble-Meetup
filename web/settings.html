@@ -31,6 +31,7 @@
             var options =  {
                 'radius': $('#radius').val(),
                 'units': $('#units').val(),
+                'prerelease': $('#prerelease').is(":checked"),
                 'location': $('#location').is(":checked"),
                 'events': $('#events').is(":checked"),
                 'address': $('#address').val(),
@@ -47,6 +48,7 @@
                 return $(this).val() == getQueryParam('units', 'km');
             }).prop('selected', true);
             $('#radius').val(parseInt(getQueryParam('radius', '100')));
+            $('#prerelease').prop('checked', 'true' === getQueryParam('prerelease', 'false'));
             $('#location').prop('checked', 'true' === getQueryParam('location', 'false'));
             $('#events').prop('checked', 'true' === getQueryParam('events', 'false'));
             if ('false' === getQueryParam('location', 'false')) {
@@ -136,6 +138,10 @@
         <div class="form-group">
             <label for="events" class="form-label">Show all events on timeline:</label>
             <input type="checkbox" class="form-control" id="events">
+        </div>
+        <div class="form-group">
+            <label for="prerelease" class="form-label">Show Pre-release:</label>
+            <input type="checkbox" class="form-control" id="prerelease">
         </div>
         <div class="form-group">
             <label for="location" class="form-label">Use custom location:</label>
