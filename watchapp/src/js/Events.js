@@ -25,9 +25,9 @@ function getEvents(lon, lat) {
         data:{
             lat:lat,
             lon:lon,
-            distance: functions.getSetting('radius') ? functions.getSetting('radius') : 250,
+            distance: functions.getSetting('radius', 250),
             groupID: groupID,
-            units: functions.getSetting('units') ? functions.getSetting('units') : 'm',
+            units: functions.getSetting('units', 'm'),
             method:'events'
         },
         cache: false
@@ -59,12 +59,15 @@ function getEvents(lon, lat) {
                      {
                          title: 'Get Info',
                          subtitle: 'Retrieve the event info.'
-                     },
-                     {
-                         title: 'Pin Event',
-                         subtitle: 'Add to Timeline.'
                      }
                  ];
+                 if (typeof Pebble.getTimelineToken == 'function') {
+                    optionItems.push({
+                        title: 'Pin Event',
+                        subtitle: 'Add to Timeline.'
+                    });
+                 }
+
                  menu = new UI.Menu({
                      sections: [{
                          title: 'Events',
@@ -83,42 +86,38 @@ function getEvents(lon, lat) {
                      }
                      if (event.itemIndex === 0) {
                          functions.showCard(menuItems[eventIndex].title, '','Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress: ' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country : '') +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
-                     } else if (event.itemIndex === 1) {
+                     } else if (event.itemIndex === 1 && typeof Pebble.getTimelineToken == 'function') {
                          var pinning = functions.showCard('Events','Pinning...','');
-                         if (typeof Pebble.getTimelineToken == 'function') {
-                             Pebble.getTimelineToken(
-                                 function (token) {
-                                     ajax({
-                                             url: functions.getAPIURL(),
-                                             type: 'json',
-                                             method: 'post',
-                                             data:{
-                                                 userToken: token,
-                                                 eventID: menuItems[eventIndex].id.toString(),
-                                                 method:'eventnotify'
-                                             },
-                                             cache: false
+                         Pebble.getTimelineToken(
+                             function (token) {
+                                 ajax({
+                                         url: functions.getAPIURL(),
+                                         type: 'json',
+                                         method: 'post',
+                                         data:{
+                                             userToken: token,
+                                             eventID: menuItems[eventIndex].id.toString(),
+                                             method:'eventnotify'
                                          },
-                                         function(data) {
-                                             if (data.error) {
-                                                 functions.showAndRemoveCard('Error', data.error, '', pinning);
-                                             } else if (data.status.code != 200) {
-                                                 functions.showAndRemoveCard('Error', data.status.message, '', pinning);
-                                             } else {
-                                                 functions.showAndRemoveCard('Success', data.status.message, '', pinning);
-                                             }
-                                         },
-                                         function(error) {
-                                             functions.showAndRemoveCard('Error', 'Error pinning event!', '',pinning);
-                                         });
-                                 },
-                                 function (error) {
-                                     functions.showAndREmoveCard('Error', 'Error fetching timeline token!', '',pinning);
-                                 }
-                             );
-                         } else {
-                             functions.showAndRemoveCard('Error', 'This functionality is not supported on SDK 2.9!', '',pinning);
-                         }
+                                         cache: false
+                                     },
+                                     function(data) {
+                                         if (data.error) {
+                                             functions.showAndRemoveCard('Error', data.error, '', pinning);
+                                         } else if (data.status.code != 200) {
+                                             functions.showAndRemoveCard('Error', data.status.message, '', pinning);
+                                         } else {
+                                             functions.showAndRemoveCard('Success', data.status.message, '', pinning);
+                                         }
+                                     },
+                                     function(error) {
+                                         functions.showAndRemoveCard('Error', 'Error pinning event!', '',pinning);
+                                     });
+                             },
+                             function (error) {
+                                 functions.showAndRemoveCard('Error', 'Error fetching timeline token!', '',pinning);
+                             }
+                         );
                      }
                  });
                  menu.on('select', function(event) {
@@ -161,11 +160,11 @@ Events.fetch = function fetch() {
     }
     groupID = -1;
     loading = functions.showCard('Events', 'Loading...', '');
-    if (!functions.getSetting('location')) {
+    if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
     } else {
-        var lon = functions.getSetting('lon');
-        var lat = functions.getSetting('lat');
+        var lon = functions.getSetting('lon', 0);
+        var lat = functions.getSetting('lat', 0);
         if (lon && lat) {
             getEvents(lon, lat);
         } else {
@@ -185,15 +184,14 @@ Events.fetchFor = function fetchFor(gid) {
     }
     if (loading !== null) {
         loading.hide();
-        loading = null;
     }
     groupID = gid;
     loading = functions.showCard('Events', 'Loading...', '');
-    if (!functions.getSetting('location')) {
+    if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
     } else {
-        var lon = functions.getSetting('lon');
-        var lat = functions.getSetting('lat');
+        var lon = functions.getSetting('lon', 0);
+        var lat = functions.getSetting('lat', 0);
         if (lon && lat) {
             getEvents(lon, lat);
         } else {

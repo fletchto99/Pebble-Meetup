@@ -24,7 +24,7 @@ function getGroups(lon, lat) {
         data:{
             lat:lat,
             lon:lon,
-            units: functions.getSetting('units') ? functions.getSetting('units') : 'm',
+            units: functions.getSetting('units', 'm'),
             method:'groups'
         },
         cache: false
@@ -59,12 +59,14 @@ function getGroups(lon, lat) {
                      {
                          title: 'Find Events',
                          subtitle: 'Find group\'s events.'
-                     },
-                     {
-                         title: 'Toggle Timeline',
-                         subtitle: 'Events on Timeline.'
                      }
                  ];
+                 if (typeof Pebble.timelineSubscriptions == 'function') {
+                     optionItems.push({
+                         title: 'Toggle Timeline',
+                         subtitle: 'Events on Timeline.'
+                     });
+                 }
                  var menu = new UI.Menu({
                      sections: [{
                          title: 'Groups',
@@ -87,45 +89,41 @@ function getGroups(lon, lat) {
                          members.fetchFor(menuItems[eventIndex].id,menuItems[eventIndex].members,menuItems[eventIndex].who);
                      } else if (event.itemIndex == 2) {
                          events.fetchFor(menuItems[eventIndex].id);
-                     } else if (event.itemIndex === 3) {
-                         if (typeof Pebble.timelineSubscriptions == 'function') {
-                             var subscribing = functions.showCard('Subscription...', (optionItems[3].title.indexOf('Toggle') < 0 ? optionItems[3].title.substring(0, optionItems[3].title.length-1) +'ing...' : 'Toggling Subscription'),'');
-                             Pebble.timelineSubscriptions(
-                                 function (topics) {
-                                     if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
-                                         Pebble.timelineUnsubscribe(menuItems[eventIndex].id.toString(),
-                                             function () {
-                                                 functions.showAndRemoveCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing);
-                                                 optionItems[3].title = 'Subscribe';
-                                                 options.items(0, optionItems);
-                                             },
-                                             function (errorString) {
-                                                 functions.showAndRemoveCard('Error!', '', 'Error unsubscribing from the group ' + menuItems[eventIndex].title + '.', subscribing);
-                                                 console.log('Error unsubscribing from group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
-                                             }
-                                         );
-                                     } else {
-                                         Pebble.timelineSubscribe(menuItems[eventIndex].id.toString(),
-                                             function () {
-                                                 functions.showAndRemoveCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing);
-                                                 optionItems[3].title = 'Unsubscribe';
-                                                 options.items(0, optionItems);
-                                             },
-                                             function (errorString) {
-                                                 functions.showAndRemoveCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing);
-                                                 console.log('Error subscribing to group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
-                                             }
-                                         );
-                                     }
-                                 },
-                                 function (errorString) {
-                                     functions.showAndRemoveCard('Error!', '', 'Error determining subscription status!', subscribing);
-                                     console.log('Error getting subscriptions to toggle subscription for group ' + menuItems[eventIndex].title + ' error code: ' +errorString);
+                     } else if (event.itemIndex === 3 && typeof Pebble.timelineSubscriptions == 'function') {
+                         var subscribing = functions.showCard('Subscription...', (optionItems[3].title.indexOf('Toggle') < 0 ? optionItems[3].title.substring(0, optionItems[3].title.length-1) +'ing...' : 'Toggling Subscription'),'');
+                         Pebble.timelineSubscriptions(
+                             function (topics) {
+                                 if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
+                                     Pebble.timelineUnsubscribe(menuItems[eventIndex].id.toString(),
+                                         function () {
+                                             functions.showAndRemoveCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing);
+                                             optionItems[3].title = 'Subscribe';
+                                             options.items(0, optionItems);
+                                         },
+                                         function (errorString) {
+                                             functions.showAndRemoveCard('Error!', '', 'Error unsubscribing from the group ' + menuItems[eventIndex].title + '.', subscribing);
+                                             console.log('Error unsubscribing from group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
+                                         }
+                                     );
+                                 } else {
+                                     Pebble.timelineSubscribe(menuItems[eventIndex].id.toString(),
+                                         function () {
+                                             functions.showAndRemoveCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing);
+                                             optionItems[3].title = 'Unsubscribe';
+                                             options.items(0, optionItems);
+                                         },
+                                         function (errorString) {
+                                             functions.showAndRemoveCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing);
+                                             console.log('Error subscribing to group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
+                                         }
+                                     );
                                  }
-                             );
-                         } else {
-                             functions.showCard('Error', 'This functionality is not supported on SDK 2.9!', '');
-                         }
+                             },
+                             function (errorString) {
+                                 functions.showAndRemoveCard('Error!', '', 'Error determining subscription status!', subscribing);
+                                 console.log('Error getting subscriptions to toggle subscription for group ' + menuItems[eventIndex].title + ' error code: ' +errorString);
+                             }
+                         );
                     }
                  });
                  menu.on('select', function(event) {
@@ -160,6 +158,7 @@ function getGroups(lon, lat) {
          },
          function(error) {
              functions.showAndRemoveCard('Error', 'Error contacting server.', '', loading);
+             console.log('Error loading groups ' + error)
          });
 }
 
@@ -182,11 +181,11 @@ function locationError(err) {
 
 Groups.fetch = function fetch() { 
     loading = functions.showCard('Groups', 'Loading...', '');
-    if (!functions.getSetting('location')) {
+    if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
     } else {
-        var lon = functions.getSetting('lon');
-        var lat = functions.getSetting('lat');        
+        var lon = functions.getSetting('lon', 0);
+        var lat = functions.getSetting('lat', 0);
         if (lon && lat) {
             getGroups(lon, lat);
         } else {

@@ -85,12 +85,6 @@ functions.showAndRemoveCard = function showAndRemoveCard(title, subtitle, body, 
     return card;
 };
 
-functions.updateCard = function updateCard(title, subtitle, card) {
-    card.title(title);
-    card.subtitle(subtitle);
-    card.show();
-};
-
 functions.getVersion = function() {
     return VERSION;
 };

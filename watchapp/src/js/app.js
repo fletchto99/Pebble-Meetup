@@ -31,7 +31,7 @@ Settings.config(
         if (typeof Pebble.timelineSubscriptions == 'function') {
             Pebble.timelineSubscriptions(
                 function (topics) {
-                    if (topics.indexOf('all-events') < 1 && functions.getSetting('events')) {
+                    if (topics.indexOf('all-events') < 1 && functions.getSetting('events', false)) {
                         Pebble.timelineSubscribe('all-events',
                             function () {
                                 functions.showCard('Success','You have subscribed to notifications for all events!','')
@@ -40,7 +40,7 @@ Settings.config(
                                 console.log('Error subscribing from all events');
                             }
                         );
-                    } else if (topics.indexOf('all-events') > 0 && !functions.getSetting('events')) {
+                    } else if (topics.indexOf('all-events') > 0 && !functions.getSetting('events', false)) {
                         Pebble.timelineUnsubscribe('all-events',
                             function () {
                                 functions.showCard('Success','You have removed your subscription to notifications for all events!','')

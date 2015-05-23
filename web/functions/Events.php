@@ -25,7 +25,11 @@ class Events
 
     function execute()
     {
-        $arr = array('error' => 'No events found!');
+        if ($this -> distance && $this -> units && $this -> distance < 10000000) {
+            $arr = array('error' => 'No upcoming events found within a '.$this -> distance.$this->units.' radius!');
+        } else {
+            $arr = array('error' => 'No upcoming events found!');
+        }
         if (empty($this->groupIDS)) {
             return $arr;
         } else {
