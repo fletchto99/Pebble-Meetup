@@ -46,7 +46,7 @@ Settings.config(
                                 functions.showCard('Success','You have removed your subscription to notifications for all events!','')
                             },
                             function (errorString) {
-                                console.log('Error removing subscription from all events');
+                                console.log('Error removing subscription from all events!');
                             }
                         );
                     }

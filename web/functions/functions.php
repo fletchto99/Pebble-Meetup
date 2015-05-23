@@ -110,7 +110,7 @@ class Functions
                 $this->result = $notification->execute();
                 break;
             case 'about':
-                $about = new About();
+                $about = new About($params['prerelease']);
                 $this->result = $about->execute();
                 break;
         }

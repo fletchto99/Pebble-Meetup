@@ -22,7 +22,7 @@ About.fetch = function fetch() {
             if (data.error) {
                 functions.showAndRemoveCard('Meetup for Pebble', 'Version: 2.06', 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', loading);
             } else {
-                functions.showAndRemoveCard('Meetup for Pebble', 'Version: 2.06\nLatest: ' + data.Version_Code, data.Version_Details, loading);
+                functions.showAndRemoveCard('Meetup for Pebble', 'Version: 2.06\nLatest: ' + data.Version_Code, data.Version_Description, loading);
             }
         },
         function(error) {
