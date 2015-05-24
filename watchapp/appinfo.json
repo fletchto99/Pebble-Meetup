@@ -26,6 +26,51 @@
                   "file": "images/tile_splash.png"
                   },
                   {
+                  "type": "png",
+                  "name": "IMAGE_INFO_ICON",
+                  "file": "images/info.png"
+                  },
+                  {
+                  "type": "png",
+                  "name": "IMAGE_ERROR_ICON",
+                  "file": "images/error.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_EVENT_ICON",
+                    "file": "images/event.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_GROUP_ICON",
+                    "file": "images/group.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_MEMBERS_ICON",
+                    "file": "images/members.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_PIN_ICON",
+                    "file": "images/pin.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_UNPIN_ICON",
+                    "file": "images/unpin.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_SUBSCRIBE_ICON",
+                    "file": "images/subscribe.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_UNSUBSCRIBE_ICON",
+                    "file": "images/unsubscribe.png"
+                  },
+                  {
                   "type": "font",
                   "name": "MONO_FONT_14",
                   "file": "fonts/UbuntuMono-Regular.ttf"

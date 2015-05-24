@@ -19,7 +19,7 @@ Members.fetchFor = function fetchFor(id, attending, name) {
         loading.hide();
         loading = null;
     }
-    loading = functions.showCard('Attending', 'Loading...', '');
+    loading = functions.showCard('Attending', 'Loading...', '', 'IMAGE_MEMBERS_ICON');
     ajax({
         url: functions.getAPIURL(),
         type: 'json',
@@ -32,7 +32,7 @@ Members.fetchFor = function fetchFor(id, attending, name) {
     },
          function(data) {
              if (data.error) {
-                 functions.showAndRemoveCard('Error', data.error, '', loading);
+                 functions.showAndRemoveCard('Error', data.error, '', loading, 'IMAGE_ERROR_ICON');
              } else {
                  loading.hide();
                  var menuItems = new Array(data.length);
@@ -51,6 +51,6 @@ Members.fetchFor = function fetchFor(id, attending, name) {
              }
          },
          function(error) {
-             functions.showAndRemoveCard('Error', 'Error contacting server.', '', loading);
+             functions.showAndRemoveCard('Error', 'Error contacting server.', '', loading, 'IMAGE_ERROR_ICON');
          });
 };

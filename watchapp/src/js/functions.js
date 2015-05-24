@@ -36,15 +36,17 @@ functions.setup = function setup() {
         var menuItems = [
             {
                 title: 'Find Groups',
-                subtitle: 'Find the closest groups.'
+                subtitle: 'Pebble Groups',
+                icon: 'IMAGE_GROUP_ICON'
             },
             {
                 title: 'Find Events',
-                subtitle: 'Find upcoming events.'
+                subtitle: 'Pebble Events',
+                icon: 'IMAGE_EVENT_ICON'
             },
             {
                 title: 'About',
-                subtitle: 'Find Meetup for Pebble.'
+                icon: 'IMAGE_INFO_ICON'
             }
         ];
         var mainMenu = new UI.Menu({
@@ -72,15 +74,15 @@ functions.getSetting = function getSetting(setting, default_setting) {
     return Settings.data(setting) !==null ? Settings.data(setting) : default_setting;
 };
 
-functions.showCard = function showCard(title, subtitle, body) {
-    return functions.showAndRemoveCard(title, subtitle, body, null);
+functions.showCard = function showCard(title, subtitle, body, icon) {
+    return functions.showAndRemoveCard(title, subtitle, body, null, icon);
 };
 
-functions.showAndRemoveCard = function showAndRemoveCard(title, subtitle, body, old) {
+functions.showAndRemoveCard = function showAndRemoveCard(title, subtitle, body, old, icon) {
     if (old !== null) {
         old.hide();
     }
-    var card = new UI.Card({title: title,subtitle: subtitle, body: body, scrollable: true});
+    var card = new UI.Card({title: title,subtitle: subtitle, body: body, icon:icon, scrollable: true});
     card.show();
     return card;
 };

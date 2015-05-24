@@ -34,7 +34,7 @@ function getEvents(lon, lat) {
     },
          function(data) {
              if (data.error) {
-                 functions.showAndRemoveCard('Error', data.error, '', loading);
+                 functions.showAndRemoveCard('Error', data.error, '', loading, 'IMAGE_ERROR_ICON');
              } else {
                  loading.hide();
                  var menuItems = [data.length];
@@ -58,13 +58,15 @@ function getEvents(lon, lat) {
                  var optionItems = [
                      {
                          title: 'Get Info',
-                         subtitle: 'Retrieve the event info.'
+                         subtitle: 'Retrieve the event info.',
+                         icon: 'IMAGE_INFO_ICON'
                      }
                  ];
                  if (typeof Pebble.getTimelineToken == 'function') {
                     optionItems.push({
                         title: 'Pin Event',
-                        subtitle: 'Add to Timeline.'
+                        subtitle: 'Add to Timeline.',
+                        icon: 'IMAGE_PIN_ICON'
                     });
                  }
 
@@ -85,9 +87,9 @@ function getEvents(lon, lat) {
                          return;
                      }
                      if (event.itemIndex === 0) {
-                         functions.showCard(menuItems[eventIndex].title, '','Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress: ' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country : '') +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
+                         functions.showCard(menuItems[eventIndex].title, '','Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress: ' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country : '') +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group, 'IMAGE_INFO_ICON');
                      } else if (event.itemIndex === 1 && typeof Pebble.getTimelineToken == 'function') {
-                         var pinning = functions.showCard('Events','Pinning...','');
+                         var pinning = functions.showCard('Events','Pinning...','', 'IMAGE_PIN_ICON');
                          Pebble.getTimelineToken(
                              function (token) {
                                  ajax({
@@ -103,19 +105,19 @@ function getEvents(lon, lat) {
                                      },
                                      function(data) {
                                          if (data.error) {
-                                             functions.showAndRemoveCard('Error', data.error, '', pinning);
+                                             functions.showAndRemoveCard('Error', data.error, '', pinning, 'IMAGE_ERROR_ICON');
                                          } else if (data.status.code != 200) {
-                                             functions.showAndRemoveCard('Error', data.status.message, '', pinning);
+                                             functions.showAndRemoveCard('Error', data.status.message, '', pinning, 'IMAGE_ERROR_ICON');
                                          } else {
-                                             functions.showAndRemoveCard('Success', data.status.message, '', pinning);
+                                             functions.showAndRemoveCard('Success', data.status.message, '', pinning, 'IMAGE_EVENT_ICON');
                                          }
                                      },
                                      function(error) {
-                                         functions.showAndRemoveCard('Error', 'Error pinning event!', '',pinning);
+                                         functions.showAndRemoveCard('Error', 'Error pinning event!', '',pinning, 'IMAGE_ERROR_ICON');
                                      });
                              },
                              function (error) {
-                                 functions.showAndRemoveCard('Error', 'Error fetching timeline token!', '',pinning);
+                                 functions.showAndRemoveCard('Error', 'Error fetching timeline token!', '',pinning, 'IMAGE_ERROR_ICON');
                              }
                          );
                      }
@@ -129,7 +131,7 @@ function getEvents(lon, lat) {
              }
          },
          function(error) {
-             functions.showAndRemoveCard('Error', 'Error contacting server.', '', loading);
+             functions.showAndRemoveCard('Error', 'Error contacting server.', '', loading, 'IMAGE_ERROR_ICON');
          });
 }
 
@@ -138,7 +140,7 @@ function locationSuccess(pos) {
 }
 
 function locationError(err) {
-    functions.showAndRemoveCard('Error', 'Error determining location.', 'If you keep recieving this message, a manual location can be set in the settings.', loading);
+    functions.showAndRemoveCard('Error', 'Error determining location.', 'If you keep recieving this message, a manual location can be set in the settings.', loading, 'IMAGE_ERROR_ICON');
     console.log('location error (' + err.code + '): ' + err.message);
 }
 
@@ -159,7 +161,7 @@ Events.fetch = function fetch() {
         loading = null;
     }
     groupID = -1;
-    loading = functions.showCard('Events', 'Loading...', '');
+    loading = functions.showCard('Events', 'Loading...', '', 'IMAGE_EVENT_ICON');
     if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
     } else {
@@ -168,7 +170,7 @@ Events.fetch = function fetch() {
         if (lon && lat) {
             getEvents(lon, lat);
         } else {
-            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading);
+            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
         }
     }
 };
@@ -186,7 +188,7 @@ Events.fetchFor = function fetchFor(gid) {
         loading.hide();
     }
     groupID = gid;
-    loading = functions.showCard('Events', 'Loading...', '');
+    loading = functions.showCard('Events', 'Loading...', '', 'IMAGE_EVENT_ICON');
     if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
     } else {
@@ -195,7 +197,7 @@ Events.fetchFor = function fetchFor(gid) {
         if (lon && lat) {
             getEvents(lon, lat);
         } else {
-            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading);
+            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
         }
     }
 
