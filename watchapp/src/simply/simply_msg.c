@@ -255,8 +255,8 @@ void simply_msg_show_disconnected(SimplyMsg *self) {
   SimplyUi *ui = simply->ui;
 
   simply_ui_clear(ui, ~0);
-  simply_ui_set_text(ui, UiSubtitle, "Disconnected");
-  simply_ui_set_text(ui, UiBody, "Run the Pebble Phone App");
+  simply_ui_set_text(ui, UiSubtitle, "Phone Disconnected");
+  simply_ui_set_text(ui, UiBody, "Meetup requires a phone connection to properly load. Please connect to your phone and run the Pebble app.");
 
   if (window_stack_get_top_window() != ui->window.window) {
     bool was_broadcast = simply_window_stack_set_broadcast(false);
