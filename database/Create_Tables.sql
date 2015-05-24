@@ -36,6 +36,7 @@ UNIQUE(Login_Name)
 CREATE TABLE Versions (
 Version_ID INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 Version_Code VARCHAR(32) NOT NULL,
+Version_Code_Decimal DECIMAL(10,2) NOT NULL,
 Version_Description TEXT NOT NULL,
 Version_Changes TEXT NOT NULL,
 Pre_Release TINYINT(1) NOT NULL,
