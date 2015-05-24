@@ -67,7 +67,7 @@ function getGroups(lon, lat) {
                  if (typeof Pebble.timelineSubscriptions == 'function') {
                      optionItems.push({
                          title: 'Toggle Timeline',
-                         subtitle: 'Events on Timeline.',
+                         subtitle: 'Group Timeline',
                          icon: 'IMAGE_SUBSCRIBE_ICON'
                      });
                  }
@@ -94,7 +94,7 @@ function getGroups(lon, lat) {
                      } else if (event.itemIndex == 2) {
                          events.fetchFor(menuItems[eventIndex].id);
                      } else if (event.itemIndex === 3 && typeof Pebble.timelineSubscriptions == 'function') {
-                         var subscribing = functions.showCard('Subscription...', (optionItems[3].title.indexOf('Toggle') < 0 ? optionItems[3].title.substring(0, optionItems[3].title.length-1) +'ing...' : 'Toggling Subscription'),'', optionItems[3].icon);
+                         var subscribing = functions.showCard('Subscription', (optionItems[3].title.indexOf('Toggle') < 0 ? optionItems[3].title.substring(0, optionItems[3].title.length-1) +'ing' : 'Toggling Subscription'),'', optionItems[3].icon);
                          Pebble.timelineSubscriptions(
                              function (topics) {
                                  if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
