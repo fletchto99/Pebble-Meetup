@@ -3,11 +3,9 @@ var groups = require('Groups');
 var events = require('Events');
 var Settings = require('settings');
 var about = require('About');
+var config = require('Config.json');
 
 var functions = module.exports;
-
-const VERSION = 2.08;
-const API_URL = 'http://fletchto99.com/other/pebble/meetup/web/api.php';
 
 //Functions
 functions.setup = function setup() {
@@ -88,9 +86,9 @@ functions.showAndRemoveCard = function showAndRemoveCard(title, subtitle, body, 
 };
 
 functions.getVersion = function() {
-    return VERSION;
+    return config.VERSION;
 };
 
 functions.getAPIURL = function() {
-    return API_URL;
+    return config.API_URL;
 };
