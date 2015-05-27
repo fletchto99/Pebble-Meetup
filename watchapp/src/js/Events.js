@@ -87,34 +87,68 @@ function getEvents(lon, lat) {
                          return;
                      }
                      if (event.itemIndex === 0) {
-                         functions.showCard(menuItems[eventIndex].title, '','Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress: ' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country : '') +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group, 'IMAGE_INFO_ICON');
+                         functions.showCard(menuItems[eventIndex].title, '','Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ?'\nAddress: ' + menuItems[eventIndex].address:'') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state?(menuItems[eventIndex].state + ', '): '') + menuItems[eventIndex].country : '') +'\nAttending: '+ menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
                      } else if (event.itemIndex === 1 && typeof Pebble.getTimelineToken == 'function') {
-                         var pinning = functions.showCard('Events','Pinning...','', 'IMAGE_PIN_ICON');
+                         var pinning = functions.showCard('Events',optionItems[1].title + 'ning...','', optionItems[1].icon);
                          Pebble.getTimelineToken(
                              function (token) {
-                                 ajax({
-                                         url: functions.getAPIURL(),
-                                         type: 'json',
-                                         method: 'post',
-                                         data:{
-                                             userToken: token,
-                                             eventID: menuItems[eventIndex].id.toString(),
-                                             method:'eventnotify'
+                                 if (optionItems[1].title == 'Unpin') {
+                                     ajax({
+                                             url: functions.getAPIURL(),
+                                             type: 'json',
+                                             method: 'post',
+                                             data:{
+                                                 userToken: token,
+                                                 eventID: menuItems[eventIndex].id.toString(),
+                                                 method:'removeeventpin'
+                                             },
+                                             cache: false
                                          },
-                                         cache: false
-                                     },
-                                     function(data) {
-                                         if (data.error) {
-                                             functions.showAndRemoveCard('Error', data.error, '', pinning, 'IMAGE_ERROR_ICON');
-                                         } else if (data.status.code != 200) {
-                                             functions.showAndRemoveCard('Error', data.status.message, '', pinning, 'IMAGE_ERROR_ICON');
-                                         } else {
-                                             functions.showAndRemoveCard('Success', data.status.message, '', pinning, 'IMAGE_EVENT_ICON');
+                                         function(data) {
+                                             if (data.error) {
+                                                 functions.showAndRemoveCard('Error', data.error, '', pinning, 'IMAGE_ERROR_ICON');
+                                             } else if (data.status.code != 200) {
+                                                 functions.showAndRemoveCard('Error', data.status.message, '', pinning, 'IMAGE_ERROR_ICON');
+                                             } else {
+                                                 functions.showAndRemoveCard('Success', data.status.message, '', pinning, 'IMAGE_EVENT_ICON');
+                                                 optionItems[1].title = 'Pin';
+                                                 optionItems[1].icon = 'IMAGE_PIN_ICON';
+                                                 options.items(0, optionItems);
+                                             }
+                                         },
+                                         function(error) {
+                                             functions.showAndRemoveCard('Error', 'Error unpinning event!', '',pinning, 'IMAGE_ERROR_ICON');
                                          }
-                                     },
-                                     function(error) {
-                                         functions.showAndRemoveCard('Error', 'Error pinning event!', '',pinning, 'IMAGE_ERROR_ICON');
-                                     });
+                                     );
+                                 } else {
+                                     ajax({
+                                             url: functions.getAPIURL(),
+                                             type: 'json',
+                                             method: 'post',
+                                             data:{
+                                                 userToken: token,
+                                                 eventID: menuItems[eventIndex].id.toString(),
+                                                 method:'eventnotify'
+                                             },
+                                             cache: false
+                                         },
+                                         function(data) {
+                                             if (data.error) {
+                                                 functions.showAndRemoveCard('Error', data.error, '', pinning, 'IMAGE_ERROR_ICON');
+                                             } else if (data.status.code != 200) {
+                                                 functions.showAndRemoveCard('Error', data.status.message, '', pinning, 'IMAGE_ERROR_ICON');
+                                             } else {
+                                                 functions.showAndRemoveCard('Success', data.status.message, '', pinning, 'IMAGE_EVENT_ICON');
+                                                 optionItems[1].title = 'Unpin';
+                                                 optionItems[1].icon = 'IMAGE_UNPIN_ICON';
+                                                 options.items(0, optionItems);
+                                             }
+                                         },
+                                         function(error) {
+                                             functions.showAndRemoveCard('Error', 'Error pinning event!', '',pinning, 'IMAGE_ERROR_ICON');
+                                         }
+                                     );
+                                 }
                              },
                              function (error) {
                                  functions.showAndRemoveCard('Error', 'Error fetching timeline token!', '',pinning, 'IMAGE_ERROR_ICON');
@@ -125,7 +159,52 @@ function getEvents(lon, lat) {
                  menu.on('select', function(event) {
                      eventIndex = event.itemIndex;
                      options.hide();
-                     options.show();
+                     if (typeof Pebble.getTimelineToken == 'function') {
+                         optionItems[1].title = 'Pin';
+                         optionItems[1].icon = 'IMAGE_PIN_ICON';
+                         options.items(0, optionItems);
+                         var pinstatus = functions.showCard('Loading...', 'Determining event pin status','', 'IMAGE_PIN_ICON');
+                         Pebble.getTimelineToken(
+                             function (token) {
+                                 ajax({
+                                         url: functions.getAPIURL(),
+                                         type: 'json',
+                                         method: 'post',
+                                         data:{
+                                             userToken: token,
+                                             eventID: menuItems[eventIndex].id.toString(),
+                                             method:'checkforpin'
+                                         },
+                                         cache: false
+                                     },
+                                     function(data) {
+                                         if (data.error) {
+                                             pinstatus.hide();
+                                             options.show();
+                                         } else {
+                                             if (data.pinned == 'true') {
+                                                 optionItems[1].title = 'Unpin';
+                                                 optionItems[1].icon = 'IMAGE_UNPIN_ICON';
+                                                 options.items(0, optionItems);
+                                             }
+                                             pinstatus.hide();
+                                             options.show();
+                                           }
+                                     },
+                                     function(error) {
+                                         pinstatus.hide();
+                                         options.show();
+                                     }
+                                 );
+                             },
+                             function (error) {
+                                 pinstatus.hide();
+                                 options.show();
+                             }
+                         );
+                     } else {
+                         options.show();
+                     }
                  });
                  menu.show();
              }

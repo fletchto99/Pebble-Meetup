@@ -3,13 +3,16 @@
 require_once 'Groups.php';
 require_once 'Events.php';
 require_once 'Members.php';
+require_once 'RemoveEventPin.php';
 require_once 'SingleEventNotify.php';
 require_once 'MultiEventNotify.php';
 require_once 'PebbleGroups.php';
 require_once 'MTime.php';
 require_once 'Notification.php';
 require_once 'About.php';
+require_once 'CheckForPin.php';
 require_once 'DataBase.php';
+
 
 class Functions
 {
@@ -89,9 +92,17 @@ class Functions
                 $events = new Events($this->config['API_URL'] . $this->config['EVENTS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['distance'], $ids, $params['units']);
                 $this->result = $events->execute();
                 break;
+            case 'checkforpin':
+                $check = new CheckForPin($params['userToken'], $params['eventID']);
+                $this->result = $check->execute();
+                break;
             case 'eventnotify':
                 $pin = new SingleEventNotify($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $params['userToken'], $params['eventID']);
                 $this->result = $pin->execute();
+                break;
+            case 'removeeventpin':
+                $toRemove = new RemoveEventPin($params['userToken'], $params['eventID']);
+                $this->result = $toRemove->execute();
                 break;
             case 'multieventnotify':
                 $pin = new MultiEventNotify($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $this -> config['TIMELINE_API_KEY'], $params['eventID']);
@@ -118,5 +129,3 @@ class Functions
     }
 
 }
-
-?>

@@ -134,17 +134,16 @@ function getGroups(lon, lat) {
                      options.hide();
                      eventIndex = event.itemIndex;
                      if (typeof Pebble.timelineSubscriptions == 'function') {
+                         optionItems[3].title = 'Subscribe';
+                         optionItems[3].icon = 'IMAGE_SUBSCRIBE_ICON';
+                         options.items(0, optionItems);
                          var subscriptions = functions.showCard('Loading...', 'Determining group subscription status','', 'IMAGE_SUBSCRIBE_ICON');
                          Pebble.timelineSubscriptions(
                              function (topics) {
                                  if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
                                     optionItems[3].title = 'Unsubscribe';
-                                     optionItems[3].icon = 'IMAGE_UNSUBSCRIBE_ICON';
+                                    optionItems[3].icon = 'IMAGE_UNSUBSCRIBE_ICON';
                                     options.items(0, optionItems);
-                                 } else {
-                                     optionItems[3].title = 'Subscribe';
-                                     optionItems[3].icon = 'IMAGE_SUBSCRIBE_ICON';
-                                     options.items(0, optionItems);
                                  }
                                  subscriptions.hide();
                                  options.show();

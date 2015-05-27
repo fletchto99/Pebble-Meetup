@@ -66,4 +66,18 @@ class DataBase {
         return $stmt -> rowCount();
     }
 
+    public function delete($query_string, $values) {
+        if (sizeof($values) !== substr_count($query_string, '?')) {
+            throw new Exception("Size mismatch: Number of parameters passed does not match the number of parameters expected!");
+        }
+        $stmt = $this -> dbh->prepare($query_string);
+        if (!$stmt) {
+            throw new Exception("Error building query! " . $stmt->errorInfo()[2]);
+        }
+        if (!($stmt->execute($values))) {
+            throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
+        }
+        return $stmt -> rowCount();
+    }
+
 }
