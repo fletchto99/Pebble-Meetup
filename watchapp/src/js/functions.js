@@ -6,7 +6,7 @@ var about = require('About');
 
 var functions = module.exports;
 
-const VERSION = 2.07;
+const VERSION = 2.08;
 const API_URL = 'http://fletchto99.com/other/pebble/meetup/web/api.php';
 
 //Functions

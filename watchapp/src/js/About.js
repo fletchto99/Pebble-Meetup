@@ -20,12 +20,12 @@ About.fetch = function fetch() {
         },
         function(data) {
             if (data.error) {
-                functions.showAndRemoveCard('Meetup for Pebble', 'Version: 2.06', 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', loading);
+                functions.showAndRemoveCard('Meetup for Pebble', 'Version: ' + functions.getVersion(), 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', loading);
             } else {
-                functions.showAndRemoveCard('Meetup for Pebble', 'Version: 2.06\nLatest: ' + data.Version_Code, data.Version_Description, loading);
+                functions.showAndRemoveCard('Meetup for Pebble', 'Version: ' + functions.getVersion() +'\nLatest: ' + data.Version_Code, data.Version_Description, loading);
             }
         },
         function(error) {
-            functions.showAndRemoveCard('Pebble Meetup', 'Version: 2.0.6', 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', loading);
+            functions.showAndRemoveCard('Pebble Meetup', 'Version: ' + functions.getVersion(), 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', loading);
         });
 };
