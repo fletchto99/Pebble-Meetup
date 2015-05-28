@@ -85,6 +85,10 @@ functions.showAndRemoveCard = function showAndRemoveCard(title, subtitle, body, 
     return card;
 };
 
+functions.getVersionString = function() {
+    return config.VERSION_STRING;
+};
+
 functions.getVersion = function() {
     return config.VERSION;
 };

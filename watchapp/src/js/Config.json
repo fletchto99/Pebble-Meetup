@@ -1,4 +1,5 @@
 {
   "API_URL": "http://fletchto99.com/other/pebble/meetup/web/api.php",
-  "VERSION": 2.08
+  "VERSION": 2.10,
+  "VERSION_STRING": "2.10"
 }
