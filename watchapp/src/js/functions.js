@@ -8,7 +8,7 @@ var config = require('Config.json');
 var functions = module.exports;
 
 //Functions
-functions.setup = function setup() {
+functions.init = function() {
         if (typeof Pebble.timelineSubscriptions == 'function') {
             Pebble.timelineSubscriptions(
                 function (topics) {
@@ -33,13 +33,23 @@ functions.setup = function setup() {
         }
         var menuItems = [
             {
-                title: 'Find Groups',
-                subtitle: 'Pebble Groups',
+                title: 'Pebble Groups',
+                subtitle: 'Group list',
                 icon: 'IMAGE_GROUP_ICON'
             },
             {
-                title: 'Find Events',
-                subtitle: 'Pebble Events',
+                title: 'Pebble Events',
+                subtitle: 'Event list',
+                icon: 'IMAGE_EVENT_ICON'
+            },
+            {
+                title: 'My Groups',
+                subtitle: 'Group list',
+                icon: 'IMAGE_GROUP_ICON'
+            },
+            {
+                title: 'My Events',
+                subtitle: 'Event list',
                 icon: 'IMAGE_EVENT_ICON'
             },
             {
@@ -60,23 +70,27 @@ functions.setup = function setup() {
             } else if (event.itemIndex === 1) {
                 events.fetch();
             } else if (event.itemIndex === 2) {
+                groups.fetchCustom(functions.getSetting('customgroups'));
+            } else if (event.itemIndex === 3) {
+                events.fetchCustom(functions.getSetting('customgroups'));
+            } else if (event.itemIndex === 4) {
                 about.fetch();
             }
         });
 };
 
-functions.getSetting = function getSetting(setting, default_setting) {
+functions.getSetting = function(setting, default_setting) {
     if (!default_setting) {
         default_setting = false;
     }
     return Settings.data(setting) !==null ? Settings.data(setting) : default_setting;
 };
 
-functions.showCard = function showCard(title, subtitle, body, icon) {
+functions.showCard = function(title, subtitle, body, icon) {
     return functions.showAndRemoveCard(title, subtitle, body, null, icon);
 };
 
-functions.showAndRemoveCard = function showAndRemoveCard(title, subtitle, body, old, icon) {
+functions.showAndRemoveCard = function(title, subtitle, body, old, icon) {
     if (old !== null) {
         old.hide();
     }

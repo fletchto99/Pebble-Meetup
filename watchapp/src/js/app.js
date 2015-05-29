@@ -10,10 +10,11 @@ var lon = (Settings.data('lon')? '&lon='+encodeURIComponent(Settings.data('lon')
 var lat = (Settings.data('lat')? '&lat='+encodeURIComponent(Settings.data('lat')) : '');
 var events = (Settings.data('events')? '&events='+encodeURIComponent(Settings.data('events')) : '');
 var prerelease = (Settings.data('prerelease')? '&prerelease='+encodeURIComponent(Settings.data('prerelease')) : '');
+var customgroups = (Settings.data('customgroups')? '&customgroups='+encodeURIComponent(Settings.data('customgroups')) : '');
 
 
 Settings.config(
-    { url: ('http://fletchto99.com/other/pebble/meetup/web/settings.html?' + radius + units + location + address + lon + lat + events + prerelease) },
+    { url: ('http://fletchto99.com/other/pebble/meetup/web/settings.html?' + radius + units + location + address + lon + lat + events + prerelease + customgroups) },
     function(e) {
         if (!e.response){
             console.log("No response from server?");
@@ -28,6 +29,7 @@ Settings.config(
         Settings.data('lon', data.lon);
         Settings.data('events', data.events);
         Settings.data('prerelease', data.prerelease);
+        Settings.data('customgroups', data.customgroups);
         if (typeof Pebble.timelineSubscriptions == 'function') {
             Pebble.timelineSubscriptions(
                 function (topics) {
@@ -61,4 +63,4 @@ Settings.config(
 );
 
 //Setup the app
-functions.setup();
+functions.init();

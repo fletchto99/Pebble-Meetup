@@ -6,7 +6,7 @@ var About = module.exports;
 
 // Make an asynchronous request
 
-About.fetch = function fetch() {
+About.fetch = function() {
     var loading = functions.showCard('About', 'Loading...', '', 'IMAGE_INFO_ICON');
     ajax({
             url: functions.getAPIURL(),

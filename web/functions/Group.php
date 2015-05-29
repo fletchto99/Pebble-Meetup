@@ -1,27 +1,31 @@
 <?php
 
-class Groups
+class Group
 {
+
+    private $lat = null;
+    private $lon = null;
+    private $key = null;
+    private $radius = null;
+    private $url = null;
+    private $units = null;
     private $exclusions = array('country', 'state', 'city', 'id', 'name', 'lat', 'lon', 'members', 'who');
 
-    function __construct($url, $key, $lat, $lon, $units, $categories)
+    function __construct($url, $key, $lat, $lon, $units, $radius = 1000000)
     {
         $this->lat = $lat;
         $this->lon = $lon;
         $this->key = $key;
+        $this->radius = $radius;
         $this->url = $url;
         $this->units = $units;
-        $this->categories  = explode(',',$categories);
     }
 
     function execute()
     {
         $arr = array('error' => 'No groups found!');
-        if ($this->lat && $this->lon && $this -> categories) {
-            $response = [];
-            foreach($this -> categories as $category) {
-                $response = array_merge($response, functions::cleanAPICall($this->url . 'sign=true&photo-host=public&ordering=distance&radius=global&text='.urlencode(trim($category)).'&lat=' . $this->lat . '&lon=' . $this->lon . '&key=' . $this->key, $this -> exclusions, ''));
-            }
+        if ($this->lat && $this->lon) {
+            $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&topic=pebble&lat=' . $this->lat . '&lon=' . $this->lon . '&radius=' . $this->radius . '&key=' . $this->key, $this -> exclusions);
             array_walk($response,function(&$v, $k) {
                 if (is_array($v)) {
                     if (is_numeric($v['lat']) && is_numeric($v['lon'])) {
@@ -35,10 +39,9 @@ class Groups
             usort($response, function($a, $b) {
                 return floatval($a['distance']) - floatval($b['distance']);
             });
-            $response = array_slice($response, 0, 100, true); //Limit to top 100 closest groups... This should be enough
             return !empty($response) ? $response : $arr;
         }
-        return $arr = array('error' => 'Error determining location and categories!');
+        return $arr = array('error' => 'Error determining location');
     }
 
 

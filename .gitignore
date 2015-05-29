@@ -4,3 +4,4 @@ watchapp/build
 web/node_modules
 node.core
 Configuration.json
+web/vendor

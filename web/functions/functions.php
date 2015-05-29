@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Group.php';
 require_once 'Groups.php';
 require_once 'Events.php';
 require_once 'Members.php';
@@ -16,7 +17,6 @@ require_once 'DataBase.php';
 
 class Functions
 {
-    private $config = array();
 
     private $result = array('error' => 'Error executing option, please try again later.');
 
@@ -76,19 +76,31 @@ class Functions
                 $this->result = $members->execute();
                 break;
             case 'groups':
-                $groups = new Groups($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units']);
+                $group = new Group($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units']);
+                $this->result = $group->execute();
+                break;
+            case 'customgroups':
+                $groups = new Groups($this->config['API_URL'] . $this->config['GROUPS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units'], $params['categories']);
                 $this->result = $groups->execute();
                 break;
             case 'events':
                 if (empty($params['groupID']) || $params['groupID'] < 0) {
-                    $groups = new Groups($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units']);
-                    $ids = implode(array_map(function ($el) {
-                        return $el['id'];
+                    $groups = new Group($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units']);
+                    $ids = implode(array_map(function ($group) {
+                        return $group['id'];
                     }, $groups->execute()), ',');
                 } else {
                     $ids = intval($params['groupID']);
                     $params['distance'] = '10000000';
                 }
+                $events = new Events($this->config['API_URL'] . $this->config['EVENTS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['distance'], $ids, $params['units']);
+                $this->result = $events->execute();
+                break;
+            case 'customevents':
+                $groups = new Groups($this->config['API_URL'] . $this->config['GROUPS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units'], $params['categories']);
+                $ids = implode(array_map(function ($group) {
+                    return $group['id'];
+                }, $groups->execute()), ',');
                 $events = new Events($this->config['API_URL'] . $this->config['EVENTS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['distance'], $ids, $params['units']);
                 $this->result = $events->execute();
                 break;

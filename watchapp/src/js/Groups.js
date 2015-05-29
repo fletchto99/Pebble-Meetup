@@ -15,7 +15,7 @@ var locationOptions = {
 var loading = null;
 var eventIndex = -1;
 
-function getGroups(lon, lat) {
+function getGroups(lon, lat, ids) {
     console.log('lat= ' + lat + ' lon= ' + lon);
     ajax({
         url: functions.getAPIURL(),
@@ -24,14 +24,15 @@ function getGroups(lon, lat) {
         data:{
             lat:lat,
             lon:lon,
+            categories: ids,
             units: functions.getSetting('units', 'm'),
-            method:'groups'
+            method: (ids ? 'customgroups' : 'groups')
         },
         cache: false
     },
          function(data) {
              if (data.error) {
-                 functions.showAndRemoveCard('Error', data.error, '', loading, 'IMAGE_ERROR_ICON');
+                 functions.showAndRemoveCard('Error', '', data.error, loading, 'IMAGE_ERROR_ICON');
              } else {
                  loading.hide();
                  var menuItems = [data.length];
@@ -171,6 +172,10 @@ function locationSuccess(pos) {
     getGroups(pos.coords.longitude, pos.coords.latitude);
 }
 
+function locationSuccessCustom(pos) {
+    getGroups(pos.coords.longitude, pos.coords.latitude, functions.getSetting('customgroups'));
+}
+
 function locationError(err) {
     if (!typeof err == 'undefined') {
         functions.showAndRemoveCard('Error', 'Error determining location.', '', loading, 'IMAGE_ERROR_ICON');
@@ -184,7 +189,7 @@ function locationError(err) {
 
 // Make an asynchronous request
 
-Groups.fetch = function fetch() { 
+Groups.fetch = function() {
     loading = functions.showCard('Groups', 'Loading...', '', 'IMAGE_GROUP_ICON');
     if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
@@ -197,4 +202,25 @@ Groups.fetch = function fetch() {
             functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
         }
     }
+};
+
+Groups.fetchCustom = function () {
+    if (functions.getSetting('customgroups')) {
+        loading = functions.showCard('Groups', 'Loading...', '', 'IMAGE_GROUP_ICON');
+        if (!functions.getSetting('location', false)) {
+            navigator.geolocation.getCurrentPosition(locationSuccessCustom, locationError, locationOptions);
+        } else {
+            var lon = functions.getSetting('lon', 0);
+            var lat = functions.getSetting('lat', 0);
+            console.log('loading groups for ' + functions.getSetting('customgroups'))
+            if (lon && lat) {
+                getGroups(lon, lat, functions.getSetting('customgroups'));
+            } else {
+                functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
+            }
+        }
+    } else {
+        functions.showCard('Error', '', 'You have no custom groups configured! Please add some in the settings!', 'IMAGE_ERROR_ICON');
+    }
+
 };

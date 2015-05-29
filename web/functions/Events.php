@@ -64,6 +64,7 @@ class Events
                 usort($response, function ($a, $b) {
                     return new DateTime($a['date']) > new DateTime($b['date']) ? 1 : -1;
                 });
+                $response = array_slice($response, 0, 100, true); //Limit to top 100 closest 100 events... This should be enough,  prevent slow load time
                 return !empty($response) ? $response : $arr;
             }
         }

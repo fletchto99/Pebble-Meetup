@@ -9,6 +9,7 @@ class Configuration
         $config['TIMELINE_API_KEY'] = 'YOUR_TIMELINE_API_KEY_HERE';
         $config['API_URL'] = 'https://api.meetup.com';
         $config['GROUP_CALL'] = '/2/groups?';
+        $config['GROUPS_CALL'] = '/find/groups?';
         $config['EVENTS_CALL'] = '/2/events?';
         $config['EVENT_CALL'] = '/2/event/';
         $config['MEMBERS_CALL'] = '/2/members?';
@@ -16,6 +17,7 @@ class Configuration
         $config['DATABASE_NAME'] = 'YOUR_DATABASE';
         $config['DATABASE_USER'] = 'YOUR_DB_USERNAME';
         $config['DATABASE_PASS'] = 'YOUR_DB_PASSWORD';
+        $config['MAINTENANCE_MODE'] = false;
         return $config;
     }
 }

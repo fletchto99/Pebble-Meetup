@@ -10,7 +10,7 @@ var menu = null;
 
 // Make an asynchronous request
 
-Members.fetchFor = function fetchFor(id, attending, name) { 
+Members.fetchFor = function(id, attending, name) {
     if (menu !== null) {
         menu.hide();
         menu = null;
