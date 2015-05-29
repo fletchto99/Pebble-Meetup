@@ -12,3 +12,6 @@ VALUES ('2.10-ALPHA', 2.10, 'This is a minor app which allows users to check upc
 
 INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
 VALUES ('2.10', 2.10, 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', 'Determine a pin status allowing a user to directly remove a pin', 0)
+
+INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
+VALUES ('2.11', 2.11, 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', 'Custom group/event searches', 0)
