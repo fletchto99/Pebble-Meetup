@@ -18,6 +18,7 @@ class Configuration
         $config['DATABASE_USER'] = 'YOUR_DB_USERNAME';
         $config['DATABASE_PASS'] = 'YOUR_DB_PASSWORD';
         $config['MAINTENANCE_MODE'] = false;
+
         return $config;
     }
 }
