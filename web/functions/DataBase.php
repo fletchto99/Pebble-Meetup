@@ -1,14 +1,12 @@
 <?php
-require_once dirname(__FILE__) . '/../configuration.php';
+require_once __DIR__ . '/../configuration.php';
 
 class DataBase {
-
-    private $dbh;
 
     private function __construct() {
         $config = Configuration::getConfiguration();
         try {
-            $this -> dbh = new PDO('mysql:host='.$config['DATABASE_HOST'].';dbname='.$config['DATABASE_NAME'], $config['DATABASE_USER'], $config['DATABASE_PASS']);
+            $this->dbh = new PDO('mysql:host=' . $config['DATABASE_HOST'] . ';dbname=' . $config['DATABASE_NAME'], $config['DATABASE_USER'], $config['DATABASE_PASS']);
         } catch (PDOException $e) {
             echo 'Connection failed: ' . $e->getMessage();
         }
@@ -20,21 +18,23 @@ class DataBase {
         if (self::$instance == null) {
             return new self();
         }
+
         return self::$instance;
     }
 
 
-    public function select($query_string, $values =[]) {
+    public function select($query_string, $values = []) {
         if (sizeof($values) !== substr_count($query_string, '?')) {
             throw new Exception("Size mismatch: Number of parameters passed does not match the number of parameters expected!");
         }
-        $stmt = $this -> dbh->prepare($query_string);
+        $stmt = $this->dbh->prepare($query_string);
         if (!$stmt) {
             throw new Exception("Error building query! " . $stmt->errorInfo()[2]);
         }
         if (!($stmt->execute($values))) {
-            throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
+            throw new Exception("Error executing query! " . $stmt->errorInfo()[2]);
         }
+
         return $stmt->fetchAll();
     }
 
@@ -42,42 +42,45 @@ class DataBase {
         if (sizeof($values) !== substr_count($query_string, '?')) {
             throw new Exception("Size mismatch: Number of parameters passed does not match the number of parameters expected!");
         }
-        $stmt = $this -> dbh->prepare($query_string);
+        $stmt = $this->dbh->prepare($query_string);
         if (!$stmt) {
             throw new Exception("Error building query! " . $stmt->errorInfo()[2]);
         }
         if (!($stmt->execute($values))) {
-            throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
+            throw new Exception("Error executing query! " . $stmt->errorInfo()[2]);
         }
-        return $this -> dbh ->lastInsertId();
+
+        return $this->dbh->lastInsertId();
     }
 
     public function update($query_string, $values) {
         if (sizeof($values) !== substr_count($query_string, '?')) {
             throw new Exception("Size mismatch: Number of parameters passed does not match the number of parameters expected!");
         }
-        $stmt = $this -> dbh->prepare($query_string);
+        $stmt = $this->dbh->prepare($query_string);
         if (!$stmt) {
             throw new Exception("Error building query! " . $stmt->errorInfo()[2]);
         }
         if (!($stmt->execute($values))) {
-            throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
+            throw new Exception("Error executing query! " . $stmt->errorInfo()[2]);
         }
-        return $stmt -> rowCount();
+
+        return $stmt->rowCount();
     }
 
     public function delete($query_string, $values) {
         if (sizeof($values) !== substr_count($query_string, '?')) {
             throw new Exception("Size mismatch: Number of parameters passed does not match the number of parameters expected!");
         }
-        $stmt = $this -> dbh->prepare($query_string);
+        $stmt = $this->dbh->prepare($query_string);
         if (!$stmt) {
             throw new Exception("Error building query! " . $stmt->errorInfo()[2]);
         }
         if (!($stmt->execute($values))) {
-            throw new Exception( "Error executing query! " . $stmt ->errorInfo()[2]);
+            throw new Exception("Error executing query! " . $stmt->errorInfo()[2]);
         }
-        return $stmt -> rowCount();
+
+        return $stmt->rowCount();
     }
 
 }

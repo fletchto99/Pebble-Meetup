@@ -16,44 +16,15 @@ require_once 'CheckForPin.php';
 require_once 'DataBase.php';
 
 
-class Functions
-{
+class Functions {
 
-    private $result = array('error' => 'Error executing option, please try again later.');
+    private $result = ['error' => 'Error executing option, please try again later.'];
 
-    function __construct($config)
-    {
+    function __construct($config) {
         $this->config = $config;
     }
 
-    static function cleanAPICall($url, $exclusions, $key = 'results') {
-        $response = json_decode(file_get_contents($url.'&only='.implode(',',$exclusions)), true);
-        return !empty($key) ? $response[$key] : $response;
-    }
-
-    static function distance($lat1, $lon1, $lat2, $lon2, $unit)
-    {
-        $theta = $lon1 - $lon2;
-        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
-        $dist = acos($dist);
-        $dist = rad2deg($dist);
-        $miles = $dist * 60 * 1.1515;
-        $unit = strtoupper($unit);
-        return $unit === 'KM' ? (round(($miles * 1.609344), 1) . 'km') : (round($miles, 1) . 'mi');
-    }
-
-    static function generateRandomString($length = 10)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-        return $randomString;
-    }
-
-    function execute($method, $params) {
+    public function execute($method, $params) {
         date_default_timezone_set('UTC');
         switch ($method) {
             case 'members':
@@ -102,7 +73,7 @@ class Functions
                 $this->result = $toRemove->execute();
                 break;
             case 'multieventnotify':
-                $pin = new MultiEventNotify($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $this -> config['TIMELINE_API_KEY'], $params['eventID']);
+                $pin = new MultiEventNotify($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $this->config['TIMELINE_API_KEY'], $params['eventID']);
                 $this->result = $pin->execute();
                 break;
             case 'groupids':
@@ -118,7 +89,7 @@ class Functions
                 $this->result = $mtime->execute();
                 break;
             case 'notifications':
-                $notification = new Notification($this->config['TIMELINE_API_KEY'],$params['username'],$params['password'],$params['message'] );
+                $notification = new Notification($this->config['TIMELINE_API_KEY'], $params['username'], $params['password'], $params['message']);
                 $this->result = $notification->execute();
                 break;
             case 'about':
@@ -127,6 +98,34 @@ class Functions
                 break;
         }
         echo json_encode($this->result, JSON_UNESCAPED_SLASHES);
+    }
+
+    public static function cleanAPICall($url, $exclusions, $key = 'results') {
+        $response = json_decode(file_get_contents($url . '&only=' . implode(',', $exclusions)), true);
+
+        return !empty($key) ? $response[$key] : $response;
+    }
+
+    public static function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+
+        return $unit === 'KM' ? (round(($miles * 1.609344), 1) . 'km') : (round($miles, 1) . 'mi');
+    }
+
+    public static function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
     }
 
 }

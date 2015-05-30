@@ -1,18 +1,10 @@
 <?php
 
-class Group
-{
+class Group {
 
-    private $lat = null;
-    private $lon = null;
-    private $key = null;
-    private $radius = null;
-    private $url = null;
-    private $units = null;
-    private $exclusions = array('country', 'state', 'city', 'id', 'name', 'lat', 'lon', 'members', 'who');
+    private $exclusions = ['country', 'state', 'city', 'id', 'name', 'lat', 'lon', 'members', 'who'];
 
-    function __construct($url, $key, $lat, $lon, $units, $radius = 1000000)
-    {
+    function __construct($url, $key, $lat, $lon, $units, $radius = 1000000) {
         $this->lat = $lat;
         $this->lon = $lon;
         $this->key = $key;
@@ -21,30 +13,28 @@ class Group
         $this->units = $units;
     }
 
-    function execute()
-    {
-        $arr = array('error' => 'No groups found!');
+    function execute() {
+        $arr = ['error' => 'No groups found!'];
         if ($this->lat && $this->lon) {
-            $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&topic=pebble&lat=' . $this->lat . '&lon=' . $this->lon . '&radius=' . $this->radius . '&key=' . $this->key, $this -> exclusions);
-            array_walk($response,function(&$v, $k) {
+            $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&topic=pebble&lat=' . $this->lat . '&lon=' . $this->lon . '&radius=' . $this->radius . '&key=' . $this->key, $this->exclusions);
+            array_walk($response, function (&$v) {
                 if (is_array($v)) {
                     if (is_numeric($v['lat']) && is_numeric($v['lon'])) {
-                        $v['distance'] = functions::distance($this->lat, $this->lon, $v['lat'], $v['lon'], $this -> units);
+                        $v['distance'] = functions::distance($this->lat, $this->lon, $v['lat'], $v['lon'], $this->units);
                     }
                     if (!array_key_exists('state', $v) || is_numeric($v['state'])) {
                         $v['state'] = '';
                     }
                 }
             });
-            usort($response, function($a, $b) {
+            usort($response, function ($a, $b) {
                 return floatval($a['distance']) - floatval($b['distance']);
             });
+
             return !empty($response) ? $response : $arr;
         }
-        return $arr = array('error' => 'Error determining location');
+
+        return $arr = ['error' => 'Error determining location'];
     }
 
-
 }
-
-?>

@@ -1,31 +1,24 @@
 <?php
 
-class PebbleGroups
-{
+class PebbleGroups {
 
-    private $key = null;
-    private $url = null;
-    private $exclusions = array('id');
+    private $exclusions = ['id'];
 
-    function __construct($url, $key)
-    {
+    function __construct($url, $key) {
         $this->key = $key;
         $this->url = $url;
     }
 
-    function execute()
-    {
-        $arr = array('error' => 'No groups found!');
-        $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&topic=pebble&key=' . $this->key, $this -> exclusions);
-        $result = array();
-        foreach($response as $v) {
+    function execute() {
+        $arr = ['error' => 'No groups found!'];
+        $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&topic=pebble&key=' . $this->key, $this->exclusions);
+        $result = [];
+        foreach ($response as $v) {
             array_push($result, $v['id']);
         }
-        $result = array('groups' => $result);
+        $result = ['groups' => $result];
+
         return !empty($result) ? $result : $arr;
     }
 
-
 }
-
-?>

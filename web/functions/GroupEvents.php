@@ -1,19 +1,10 @@
 <?php
 
-class GroupEvents
-{
+class GroupEvents {
 
-    private $lat = null;
-    private $lon = null;
-    private $key = null;
-    private $distance = null;
-    private $url = null;
-    private $exclusions = array('distance', 'id', 'name', 'venue', 'time', 'utc_offset', 'address', 'group', 'yes_rsvp_count');
-    private $groupIDS = null;
-    private $units = null;
+    private $exclusions = ['distance', 'id', 'name', 'venue', 'time', 'utc_offset', 'address', 'group', 'yes_rsvp_count'];
 
-    function __construct($url, $key, $lat, $lon, $distance, $groupIDS, $units)
-    {
+    function __construct($url, $key, $lat, $lon, $distance, $groupIDS, $units) {
         $this->lat = $lat;
         $this->lon = $lon;
         $this->key = $key;
@@ -23,19 +14,18 @@ class GroupEvents
         $this->units = $units;
     }
 
-    function execute()
-    {
-        if ($this -> distance && $this -> units && $this -> distance < 10000000) {
-            $arr = array('error' => 'No upcoming events found within a '.$this -> distance.$this->units.' radius!');
+    function execute() {
+        if ($this->distance && $this->units && $this->distance < 10000000) {
+            $arr = ['error' => 'No upcoming events found within a ' . $this->distance . $this->units . ' radius!'];
         } else {
-            $arr = array('error' => 'No upcoming events found!');
+            $arr = ['error' => 'No upcoming events found!'];
         }
         if (empty($this->groupIDS)) {
             return $arr;
         } else {
             if ($this->lat && $this->lon) {
                 $response = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&group_id=' . $this->groupIDS . '&status=upcoming&key=' . $this->key, $this->exclusions);
-                array_walk($response, function (&$v, $k) {
+                array_walk($response, function (&$v) {
                     if (is_array($v)) {
                         if (empty($v['venue'])) {
                             $v['venue'] = ['city' => '', 'state' => '', 'country' => '', 'name' => 'Undetermined', 'address_1' => ''];
@@ -68,10 +58,8 @@ class GroupEvents
                 return !empty($response) ? $response : $arr;
             }
         }
+
         return $arr;
     }
 
-
 }
-
-?>

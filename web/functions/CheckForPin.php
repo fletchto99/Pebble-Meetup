@@ -1,20 +1,14 @@
 <?php
 
-class CheckForPin
-{
+class CheckForPin {
 
-    private $eventID;
-    private $userToken;
-
-    function __construct($userToken, $eventID)
-    {
-        $this -> userToken = $userToken;
-        $this-> eventID = $eventID;
+    function __construct($userToken, $eventID) {
+        $this->userToken = $userToken;
+        $this->eventID = $eventID;
     }
 
-    function execute()
-    {
-        if (empty($this->eventID) || empty($this -> userToken)) {
+    function execute() {
+        if (empty($this->eventID) || empty($this->userToken)) {
             return ['error' => 'Event id or usertoken left blank!'];
         } else {
 
@@ -27,16 +21,15 @@ class CheckForPin
                         WHERE
                             Users.User_Token=? AND
                             Events.Event_Token=?';
-                $count = $db -> select($sql, [$this -> userToken, $this -> eventID])[0]['count'];
-                return !empty($count) && $count > 0? ['pinned' => 'true']:['pinned' => 'false'];
-            } catch(Exception $error) {
+                $count = $db->select($sql, [$this->userToken, $this->eventID])[0]['count'];
+
+                return !empty($count) && $count > 0 ? ['pinned' => 'true'] : ['pinned' => 'false'];
+            } catch (Exception $error) {
                 //Supress errors, pin the event and sadly this user won't see event updates
             }
+
             return ['error' => 'Cannot determine pin to check'];
         }
     }
 
-
 }
-
-?>

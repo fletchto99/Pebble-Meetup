@@ -1,14 +1,9 @@
 <?php
 
-class GroupSubscription
-{
+class GroupSubscription {
 
-    function execute()
-    {
-        return array('error' => 'This function is not yet implemented! Sorry!');
+    function execute() {
+        return ['error' => 'This function is not yet implemented! Sorry!'];
     }
 
-
 }
-
-?>

@@ -22,8 +22,8 @@ if (!$config['MAINTENANCE_MODE'] || isset($_POST['developer'])) {
         $functions = new functions($config);
         $functions->execute($params['method'], $params);
     } else {
-        echo json_encode(array('error' => 'Server side error, please try again later.'));
+        echo json_encode(['error' => 'Server side error, please try again later.']);
     }
 } else {
-    echo json_encode(array('error' => 'The server is currently undergoing maintenance, please try again later.'));
+    echo json_encode(['error' => 'The server is currently undergoing maintenance, please try again later.']);
 }
