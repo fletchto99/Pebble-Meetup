@@ -62,7 +62,7 @@ function getEvents(lon, lat, topics) {
 
                 menu = new UI.Menu({
                     sections: [{
-                        title: 'Events', items: menuItems
+                        title: 'Events - ' + data.length, items: menuItems
                     }]
                 });
                 options = new UI.Menu({

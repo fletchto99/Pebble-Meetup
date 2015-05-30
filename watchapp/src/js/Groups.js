@@ -55,7 +55,7 @@ function getGroups(lon, lat, topics) {
                 }
                 var menu = new UI.Menu({
                     sections: [{
-                        title: 'Groups', items: menuItems
+                        title: 'Groups - ' + data.length, items: menuItems
                     }]
                 });
                 var options = new UI.Menu({
