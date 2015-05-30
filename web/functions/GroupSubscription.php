@@ -3,7 +3,7 @@
 class GroupSubscription {
 
     function execute() {
-        return ['error' => 'This function is not yet implemented! Sorry!'];
+        return ['error' => 'Cannot subscribe to custom groups currently!'];
     }
 
 }
