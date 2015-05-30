@@ -1,7 +1,5 @@
 <?php
 
-require_once 'TimelineAPI/Timeline.php';
-
 use TimelineAPI\Pin;
 use TimelineAPI\PinLayout;
 use TimelineAPI\PinLayoutType;

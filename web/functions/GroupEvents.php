@@ -1,6 +1,6 @@
 <?php
 
-class Events
+class GroupEvents
 {
 
     private $lat = null;

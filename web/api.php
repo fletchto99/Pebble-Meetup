@@ -6,7 +6,10 @@ $config = Configuration::getConfiguration();
 
 if (!$config['MAINTENANCE_MODE'] || isset($_POST['developer'])) {
     require_once 'functions/functions.php';
-
+    require_once 'vendor/TimelineAPI/Timeline.php';
+    if ($config['MAINTENANCE_MODE'] && isset($_POST['developer'])) {
+        ini_set('display_errors', 1);
+    }
     $params = null;
 
     if (count($_POST) == 0) {

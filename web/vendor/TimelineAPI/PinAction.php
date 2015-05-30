@@ -10,7 +10,7 @@ class PinAction {
     private $launchcode;
     private $type;
 
-    function __construct($title, $launchcode, PinActionType $type) {
+    function __construct($title, $launchcode, $type) {
         if ($title == null || $launchcode == null) {
             throw new Exception("Launchcode and title both must be specified");
         }
@@ -20,7 +20,7 @@ class PinAction {
     }
 
     function getData() {
-        return array_filter([ 'type' => $this -> type, 'title' => $this -> title, 'launchcode' => $this -> launchcode]);
+        return array_filter([ 'type' => $this -> type, 'title' => $this -> title, 'launchCode' => $this -> launchcode]);
     }
 
 }

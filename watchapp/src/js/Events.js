@@ -16,9 +16,9 @@ var menu = null;
 var options = null;
 var eventIndex = -1;
 
-function getEvents(lon, lat, ids) {
+function getEvents(lon, lat, topics) {
     console.log('lat= ' + lat + ' lon= ' + lon);
-    console.log(ids);
+    console.log(topics);
     ajax({
         url: functions.getAPIURL(),
         type: 'json',
@@ -29,8 +29,8 @@ function getEvents(lon, lat, ids) {
             distance: functions.getSetting('radius', 250),
             groupID: groupID,
             units: functions.getSetting('units', 'm'),
-            categories: ids,
-            method: (ids? 'customevents':'events')
+            categories: topics,
+            method: (topics? 'customevents':'events')
         },
         cache: false
     },
@@ -53,6 +53,7 @@ function getEvents(lon, lat, ids) {
                          location: data[i].venue.name,
                          address: data[i].venue.address_1,
                          group: data[i].group.name,
+                         groupid: data[i].group.id,
                          who: data[i].group.who,
                          attending: data[i].yes_rsvp_count
                      };
@@ -144,6 +145,19 @@ function getEvents(lon, lat, ids) {
                                                  optionItems[1].title = 'Unpin';
                                                  optionItems[1].icon = 'IMAGE_UNPIN_ICON';
                                                  options.items(0, optionItems);
+                                                 if (topics) {
+                                                     ajax({
+                                                             url: functions.getAPIURL(),
+                                                             type: 'json',
+                                                             method: 'post',
+                                                             data:{
+                                                                 method:'addeventlistener',
+                                                                 groupID: menuItems[eventIndex].groupid.toString()
+                                                             },
+                                                             cache: false
+                                                         }
+                                                     );
+                                                 }
                                              }
                                          },
                                          function(error) {

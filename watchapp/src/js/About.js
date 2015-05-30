@@ -27,5 +27,6 @@ About.fetch = function() {
         },
         function(error) {
             functions.showAndRemoveCard('Pebble Meetup', 'Version: ' + functions.getVersionString(), 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', loading);
-        });
+        }
+    );
 };

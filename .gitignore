@@ -1,7 +1,5 @@
-web/configuration.php
 .lock-waf_darwin_build
 watchapp/build
-web/node_modules
 node.core
 Configuration.json
-web/vendor
+configuration.php
