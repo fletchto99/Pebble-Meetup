@@ -6,120 +6,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
         <title>Meetup Pebble Settings</title>
 
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="style/custom.css"/>
+        <link rel="stylesheet" href="resources/vendor/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="resources/vendor/bootstrap/css/bootstrap-theme.min.css"/>
+        <link rel="stylesheet" href="resources/vendor/bootstrap-switch/bootstrap-switch.min.css"/>
+        <link rel="stylesheet" href="resources/style/custom.css"/>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <script src="resources/vendor/jquery/jquery.min.js"></script>
+        <script src="resources/vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script src="resources/vendor/bootstrap-switch/bootstrap-switch.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?v=3"></script>
-
-        <script>
-
-            function getQueryParam(variable, default_) {
-                var query = location.search.substring(1);
-                var vars = query.split('&');
-                for (var i = 0; i < vars.length; i++) {
-                    var pair = vars[i].split('=');
-                    if (pair[0] == variable) {
-                        return decodeURIComponent(pair[1]);
-                    }
-                }
-                return default_ || '';
-            }
-
-            function saveOptions() {
-                return {
-                    'radius': $('#radius').val(),
-                    'units': $('#units').val(),
-                    'customgroups': $('#customgroups').val(),
-                    'prerelease': $('#prerelease').is(":checked"),
-                    'location': $('#location').is(":checked"),
-                    'events': $('#events').is(":checked"),
-                    'address': $('#address').val(),
-                    'lon': $('#lon').val(),
-                    'lat': $('#lat').val()
-                };
-            }
-
-            $(document).ready(function () {
-                var geocoder = new google.maps.Geocoder();
-                $("#progress").hide();
-                $("#units option").filter(function () {
-                    return $(this).val() == getQueryParam('units', 'km');
-                }).prop('selected', true);
-                $('#radius').val(parseInt(getQueryParam('radius', '100')));
-                $('#customgroups').val(getQueryParam('customgroups', ''));
-                $('#prerelease').prop('checked', 'true' === getQueryParam('prerelease', 'false'));
-                $('#location').prop('checked', 'true' === getQueryParam('location', 'false'));
-                $('#events').prop('checked', 'true' === getQueryParam('events', 'false'));
-                if ('false' === getQueryParam('location', 'false')) {
-                    $('#addressOption').hide();
-                }
-                $('#lon').val(getQueryParam('lon', '0'));
-                $('#lat').val(getQueryParam('lat', '0'));
-                $('#address').val(getQueryParam('address', ' '));
-
-                $("#radius").keydown(function (e) {
-                    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 || (e.keyCode == 65 && e.ctrlKey === true) || (e.keyCode == 67 && e.ctrlKey === true) || (e.keyCode == 88 && e.ctrlKey === true) || (e.keyCode >= 35 && e.keyCode <= 39)) {
-                        return;
-                    }
-                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                        e.preventDefault();
-                    }
-                });
-                $('#cancel').click(function () {
-                    document.location = getQueryParam('return_to', 'pebblejs://close#');
-                });
-                $('#location').click(function () {
-                    $('#addressOption').slideToggle('1000');
-                });
-                $('#save').click(function () {
-
-                    if ($('#radius').val() == '' || $('#units').val() == '') {
-                        alert('Invalid radius entered!');
-                        return;
-                    }
-                    $('#options').fadeToggle('1000', function () {
-                        $('#progress').fadeToggle('1000');
-                    });
-
-                    if ($('#location').prop('checked')) {
-                        var address = document.getElementById('address').value;
-                        geocoder.geocode({'address': address}, function (results, status) {
-                            if (status == google.maps.GeocoderStatus.OK) {
-                                $('#progress').fadeToggle('1000');
-                                $('#address').val(results[0].formatted_address);
-                                $('#lat').val(results[0].geometry.location.lat());
-                                $('#lon').val(results[0].geometry.location.lng());
-                                document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(saveOptions()));
-                            } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
-                                alert('Address not found!');
-                                $('#progress').fadeToggle('1000', function () {
-                                    console.log('Fading?!?!?');
-                                    $('#options').fadeToggle('1000');
-                                });
-                            } else {
-                                alert('Invalid address entered!');
-                                $('#progress').fadeToggle('1000', function () {
-                                    $('#options').fadeToggle('1000');
-                                });
-                            }
-                        });
-                    } else {
-                        document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(saveOptions()));
-                    }
-
-                });
-
-            });
-
-        </script>
+        <script src="resources/js/settings.js"></script>
     </head>
     <body>
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <img src="style/logo.png"/>
+                        <img id="banner" src="resources/images/logo.png"/>
                 </div>
             </div>
             <div class="options">
@@ -150,7 +52,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="events" class="form-label">Show all events on Timeline:</label>
-                                            <input type="checkbox" class="form-control" id="events">
+                                            <br>
+                                            <input type="checkbox" data-off-text="No" data-on-text="Yes" checked="false" class="form-control" id="events">
                                         </div>
                                     </div>
                                 </div>
@@ -171,12 +74,14 @@
                                     <div class="col-xs-12">
                                         <h2>Advanced</h2>
                                         <div class="form-group">
-                                            <label for="prerelease" class="form-label">Show Pre-release:</label>
-                                            <input type="checkbox" class="form-control" id="prerelease">
+                                            <label for="prerelease" class="form-label">Show Pre-release Versions:</label>
+                                            <br/>
+                                            <input type="checkbox" data-off-text="No" data-on-text="Yes" checked="false"  class="form-control" id="prerelease">
                                         </div>
                                         <div class="form-group">
                                             <label for="location" class="form-label">Use custom location:</label>
-                                            <input type="checkbox" class="form-control" id="location">
+                                            <br/>
+                                            <input type="checkbox" data-off-text="No" data-on-text="Yes" checked="false"  class="form-control" id="location">
                                         </div>
                                         <div class="form-group" id="addressOption">
                                             <label for="address" class="form-label">Address:</label>
@@ -221,16 +126,16 @@
                 </div>
             </div>
             <div id="progress">
-                <h2>
-                    Saving....
-                </h2>
-
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h2>
+                            Saving....
+                        </h2>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-
             </div>
         </div>
     </body>
