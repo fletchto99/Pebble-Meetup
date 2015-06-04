@@ -32,15 +32,15 @@ Settings.config({url: ('http://fletchto99.com/other/pebble/meetup/web/settings.h
             Pebble.timelineSubscriptions(function (topics) {
                     if (topics.indexOf('all-events') < 1 && functions.getSetting('events', false)) {
                         Pebble.timelineSubscribe('all-events', function () {
-                                functions.showCard('Success', 'You have subscribed to notifications for all events!', '')
+                                functions.showCard('IMAGE_SUBSCRIBE_ICON', 'Success','', 'You have subscribed to notifications for all events!')
                             }, function (errorString) {
-                                console.log('Error subscribing from all events');
+                                console.log('Error subscribing from all events! ' + errorString);
                             });
                     } else if (topics.indexOf('all-events') > 0 && !functions.getSetting('events', false)) {
                         Pebble.timelineUnsubscribe('all-events', function () {
-                                functions.showCard('Success', 'You have removed your subscription to notifications for all events!', '')
+                                functions.showCard('IMAGE_UNSUBSCRIBE_ICON', 'Success','', 'You have removed your subscription to notifications for all events!')
                             }, function (errorString) {
-                                console.log('Error removing subscription from all events!');
+                                console.log('Error removing subscription from all events! ' + errorString);
                             });
                     }
                 }, function (errorString) {

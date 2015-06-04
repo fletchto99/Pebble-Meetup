@@ -29,7 +29,7 @@ function getEvents(lon, lat, topics) {
             }, cache: false
         }, function (data) {
             if (data.error) {
-                functions.showAndRemoveCard('Error', '', data.error, loading, 'IMAGE_ERROR_ICON');
+                functions.showErrorCard(data.error, loading);
             } else {
                 loading.hide();
                 var menuItems = [data.length];
@@ -75,9 +75,9 @@ function getEvents(lon, lat, topics) {
                         return;
                     }
                     if (event.itemIndex === 0) {
-                        functions.showCard(menuItems[eventIndex].title, '', 'Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ? '\nAddress: ' + menuItems[eventIndex].address : '') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state ? (menuItems[eventIndex].state + ', ') : '') + menuItems[eventIndex].country : '') + '\nAttending: ' + menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group);
+                        functions.showCard(null, menuItems[eventIndex].title, '', 'Date: ' + menuItems[eventIndex].subtitle + '\nLocation: ' + menuItems[eventIndex].location + (menuItems[eventIndex].location.toLowerCase() !== 'undetermined' ? '\nDistance: ' + menuItems[eventIndex].distance + (menuItems[eventIndex].address ? '\nAddress: ' + menuItems[eventIndex].address : '') + '\n' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state ? (menuItems[eventIndex].state + ', ') : '') + menuItems[eventIndex].country : '') + '\nAttending: ' + menuItems[eventIndex].attending + ' ' + menuItems[eventIndex].who + '\nHost Group: ' + menuItems[eventIndex].group, functions.getColorOptions('DATA'));
                     } else if (event.itemIndex === 1 && typeof Pebble.getTimelineToken == 'function') {
-                        var pinning = functions.showCard('Events', optionItems[1].title + 'ning...', '', optionItems[1].icon);
+                        var pinning = functions.showLoadingCard('Events', optionItems[1].title + 'ning...');
                         Pebble.getTimelineToken(function (token) {
                                 if (optionItems[1].title == 'Unpin') {
                                     ajax({
@@ -88,17 +88,17 @@ function getEvents(lon, lat, topics) {
                                             }, cache: false
                                         }, function (data) {
                                             if (data.error) {
-                                                functions.showAndRemoveCard('Error', data.error, '', pinning, 'IMAGE_ERROR_ICON');
+                                                functions.showErrorCard(data.error, pinning);
                                             } else if (data.status.code != 200) {
-                                                functions.showAndRemoveCard('Error', data.status.message, '', pinning, 'IMAGE_ERROR_ICON');
+                                                functions.showErrorCard(data.status.message, pinning);
                                             } else {
-                                                functions.showAndRemoveCard('Success', data.status.message, '', pinning, 'IMAGE_EVENT_ICON');
+                                                functions.showCard('IMAGE_EVENT_ICON', 'Success','', data.status.message, functions.getColorOptions('SUCCESS'), pinning);
                                                 optionItems[1].title = 'Pin';
                                                 optionItems[1].icon = 'IMAGE_PIN_ICON';
                                                 options.items(0, optionItems);
                                             }
-                                        }, function (error) {
-                                            functions.showAndRemoveCard('Error', 'Error unpinning event!', '', pinning, 'IMAGE_ERROR_ICON');
+                                        }, function () {
+                                            functions.showErrorCard('Error unpinning event!', pinning);
                                         });
                                 } else {
                                     ajax({
@@ -109,11 +109,11 @@ function getEvents(lon, lat, topics) {
                                             }, cache: false
                                         }, function (data) {
                                             if (data.error) {
-                                                functions.showAndRemoveCard('Error', data.error, '', pinning, 'IMAGE_ERROR_ICON');
+                                                functions.showErrorCard(data.error, pinning);
                                             } else if (data.status.code != 200) {
-                                                functions.showAndRemoveCard('Error', data.status.message, '', pinning, 'IMAGE_ERROR_ICON');
+                                                functions.showErrorCard(data.status.message, pinning);
                                             } else {
-                                                functions.showAndRemoveCard('Success', data.status.message, '', pinning, 'IMAGE_EVENT_ICON');
+                                                functions.showCard('IMAGE_EVENT_ICON', 'Success', '', data.status.message, functions.getColorOptions('SUCCESS'), pinning);
                                                 optionItems[1].title = 'Unpin';
                                                 optionItems[1].icon = 'IMAGE_UNPIN_ICON';
                                                 options.items(0, optionItems);
@@ -130,12 +130,12 @@ function getEvents(lon, lat, topics) {
                                                         });
                                                 }
                                             }
-                                        }, function (error) {
-                                            functions.showAndRemoveCard('Error', 'Error pinning event!', '', pinning, 'IMAGE_ERROR_ICON');
+                                        }, function () {
+                                            functions.showErrorCard('Error pinning event!', pinning);
                                         });
                                 }
-                            }, function (error) {
-                                functions.showAndRemoveCard('Error', 'Error fetching timeline token!', '', pinning, 'IMAGE_ERROR_ICON');
+                            }, function () {
+                                functions.showErrorCard('Error retrieving timeline token!', pinning);
                             });
                     }
                 });
@@ -146,7 +146,7 @@ function getEvents(lon, lat, topics) {
                         optionItems[1].title = 'Pin';
                         optionItems[1].icon = 'IMAGE_PIN_ICON';
                         options.items(0, optionItems);
-                        var pinstatus = functions.showCard('Loading...', 'Determining event pin status', '', 'IMAGE_PIN_ICON');
+                        var pinstatus = functions.showLoadingCard('Event', '', 'Determining event pin status');
                         Pebble.getTimelineToken(function (token) {
                                 ajax({
                                         url: functions.getAPIURL(), type: 'json', method: 'post', data: {
@@ -167,11 +167,11 @@ function getEvents(lon, lat, topics) {
                                             pinstatus.hide();
                                             options.show();
                                         }
-                                    }, function (error) {
+                                    }, function () {
                                         pinstatus.hide();
                                         options.show();
                                     });
-                            }, function (error) {
+                            }, function () {
                                 pinstatus.hide();
                                 options.show();
                             });
@@ -181,8 +181,8 @@ function getEvents(lon, lat, topics) {
                 });
                 menu.show();
             }
-        }, function (error) {
-            functions.showAndRemoveCard('Error', 'Error contacting server.', '', loading, 'IMAGE_ERROR_ICON');
+        }, function () {
+            functions.showErrorCard('Connection to server failed!', loading);
         });
 }
 
@@ -195,8 +195,12 @@ function locationSuccessCustom(pos) {
 }
 
 function locationError(err) {
-    functions.showAndRemoveCard('Error', 'Error determining location.', 'If you keep recieving this message, a manual location can be set in the settings.', loading, 'IMAGE_ERROR_ICON');
-    console.log('location error (' + err.code + '): ' + err.message);
+    if (typeof err !== undefined) {
+        functions.showErrorCard('Could not determine your location.\nIf you keep receiving this message, a manual location can be set in the settings.', loading);
+        console.log('location error (' + err.code + '): ' + err.message);
+    } else {
+        functions.showErrorCard('App not connected to the internet! This app requires an internet or data connection.', loading);
+    }
 }
 
 
@@ -216,7 +220,7 @@ Events.fetch = function () {
         loading = null;
     }
     groupID = -1;
-    loading = functions.showCard('Events', 'Loading...', '', 'IMAGE_EVENT_ICON');
+    loading = functions.showLoadingCard('Events', 'Populating events list');
     if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
     } else {
@@ -225,7 +229,7 @@ Events.fetch = function () {
         if (lon && lat) {
             getEvents(lon, lat);
         } else {
-            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
+            functions.showErrorCard('Error determining the custom location you have set.', loading);
         }
     }
 };
@@ -243,7 +247,7 @@ Events.fetchFor = function (gid) {
         loading.hide();
     }
     groupID = gid;
-    loading = functions.showCard('Events', 'Loading...', '', 'IMAGE_EVENT_ICON');
+    loading = functions.showLoadingCard('Events', 'Populating events list');
     if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
     } else {
@@ -252,28 +256,28 @@ Events.fetchFor = function (gid) {
         if (lon && lat) {
             getEvents(lon, lat);
         } else {
-            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
+            functions.showErrorCard('Error determining the custom location you have set.', loading);
         }
     }
 };
 
 Events.fetchCustom = function () {
     if (functions.getSetting('customgroups')) {
-        loading = functions.showCard('Events', 'Loading...', '', 'IMAGE_EVENT_ICON');
+        loading = functions.showLoadingCard('Events', 'Populating events list');
         if (!functions.getSetting('location', false)) {
             navigator.geolocation.getCurrentPosition(locationSuccessCustom, locationError, locationOptions);
         } else {
             var lon = functions.getSetting('lon', 0);
             var lat = functions.getSetting('lat', 0);
-            console.log('loading events for ' + functions.getSetting('customgroups'))
+            console.log('loading events for ' + functions.getSetting('customgroups'));
             if (lon && lat) {
                 getEvents(lon, lat, functions.getSetting('customgroups'));
             } else {
-                functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
+                functions.showErrorCard('Error determining the custom location you have set.', loading);
             }
         }
     } else {
-        functions.showCard('Error', '', 'You have no custom groups configured! Please add some in the settings!', 'IMAGE_ERROR_ICON');
+        functions.showErrorCard('You have no custom groups configured! Please add some in the settings!');
     }
 
 };

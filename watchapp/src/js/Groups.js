@@ -13,19 +13,19 @@ var locationOptions = {
 var loading = null;
 var eventIndex = -1;
 
-function getGroups(lon, lat, topics) {
+function getGroups(lon, lat, customTopics) {
     console.log('lat= ' + lat + ' lon= ' + lon);
     ajax({
             url: functions.getAPIURL(), type: 'json', method: 'post', data: {
                 lat: lat,
                 lon: lon,
-                categories: topics,
+                categories: customTopics,
                 units: functions.getSetting('units', 'm'),
-                method: (topics ? 'customgroups' : 'groups')
+                method: (customTopics ? 'customgroups' : 'groups')
             }, cache: false
         }, function (data) {
             if (data.error) {
-                functions.showAndRemoveCard('Error', '', data.error, loading, 'IMAGE_ERROR_ICON');
+                functions.showErrorCard(data.error, loading);
             } else {
                 loading.hide();
                 var menuItems = [data.length];
@@ -68,25 +68,25 @@ function getGroups(lon, lat, topics) {
                         return;
                     }
                     if (event.itemIndex === 0) {
-                        functions.showCard(menuItems[eventIndex].title, '', 'Location: ' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state ? menuItems[eventIndex].state : menuItems[eventIndex].country ) + '\n' + menuItems[eventIndex].subtitle + '\nWe\'re ' + menuItems[eventIndex].members + ' ' + menuItems[eventIndex].who);
+                        functions.showCard(null, menuItems[eventIndex].title, '', 'Location: ' + menuItems[eventIndex].city + ', ' + (menuItems[eventIndex].state ? menuItems[eventIndex].state : menuItems[eventIndex].country ) + '\n' + menuItems[eventIndex].subtitle + '\nWe\'re ' + menuItems[eventIndex].members + ' ' + menuItems[eventIndex].who, functions.getColorOptions('DATA'));
                     } else if (event.itemIndex == 1) {
                         members.fetchFor(menuItems[eventIndex].id, menuItems[eventIndex].members, menuItems[eventIndex].who);
                     } else if (event.itemIndex == 2) {
                         events.fetchFor(menuItems[eventIndex].id);
                     } else if (event.itemIndex === 3 && typeof Pebble.timelineSubscriptions == 'function') {
-                        var subscribing = functions.showCard('Subscription', (optionItems[3].title.indexOf('Toggle') < 0 ? optionItems[3].title.substring(0, optionItems[3].title.length - 1) + 'ing' : 'Toggling Subscription'), '', optionItems[3].icon);
+                        var subscribing = functions.showLoadingCard('Subscription',(optionItems[3].title.indexOf('Toggle') < 0 ? optionItems[3].title.substring(0, optionItems[3].title.length - 1) + 'ing' : 'Toggling Subscription'));
                         Pebble.timelineSubscriptions(function (topics) {
                                 if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
                                     Pebble.timelineUnsubscribe(menuItems[eventIndex].id.toString(), function () {
-                                            functions.showAndRemoveCard('Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing, 'IMAGE_UNSUBSCRIBE_ICON');
+                                            functions.showCard('IMAGE_UNSUBSCRIBE_ICON', 'Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with ' + menuItems[eventIndex].title + '.',functions.getColorOptions('SUCCESS'), subscribing);
                                             optionItems[3].title = 'Subscribe';
                                             options.items(0, optionItems);
                                         }, function (errorString) {
-                                            functions.showAndRemoveCard('Error!', '', 'Error unsubscribing from the group ' + menuItems[eventIndex].title + '.', subscribing, 'IMAGE_ERROR_ICON');
+                                            functions.showErrorCard('Error unsubscribing from the group ' + menuItems[eventIndex].title + '.', subscribing);
                                             console.log('Error unsubscribing from group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
                                         });
                                 } else {
-                                    if (topics) {
+                                    if (customTopics !== undefined) {
                                         ajax({
                                                 url: functions.getAPIURL(), type: 'json', method: 'post', data: {
                                                     method: 'addeventlistener',
@@ -94,33 +94,33 @@ function getGroups(lon, lat, topics) {
                                                 }, cache: false
                                             }, function (data) {
                                                 if (data.error) {
-                                                    functions.showAndRemoveCard('Error!', '', data.error, subscribing, 'IMAGE_ERROR_ICON');
+                                                    functions.showErrorCard(data.error, subscribing);
                                                 } else {
                                                     Pebble.timelineSubscribe(menuItems[eventIndex].id.toString(), function () {
-                                                            functions.showAndRemoveCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing, 'IMAGE_SUBSCRIBE_ICON');
+                                                            functions.showCard('IMAGE_SUBSCRIBE_ICON', 'Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', functions.getColorOptions('SUCCESS'), subscribing);
                                                             optionItems[3].title = 'Unsubscribe';
                                                             options.items(0, optionItems);
                                                         }, function (errorString) {
-                                                            functions.showAndRemoveCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing, 'IMAGE_ERROR_ICON');
+                                                            functions.showErrorCard('Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing);
                                                             console.log('Error subscribing to group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
                                                         });
                                                 }
                                             }, function (error) {
-                                                functions.showAndRemoveCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + error, subscribing, 'IMAGE_ERROR_ICON');
+                                                functions.showErrorCard('Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + error, subscribing);
                                             });
                                     } else {
                                         Pebble.timelineSubscribe(menuItems[eventIndex].id.toString(), function () {
-                                                functions.showAndRemoveCard('Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', subscribing, 'IMAGE_SUBSCRIBE_ICON');
+                                                functions.showCard('IMAGE_SUBSCRIBE_ICON', 'Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', functions.getColorOptions('SUCCESS'), subscribing);
                                                 optionItems[3].title = 'Unsubscribe';
                                                 options.items(0, optionItems);
                                             }, function (errorString) {
-                                                functions.showAndRemoveCard('Error!', '', 'Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing, 'IMAGE_ERROR_ICON');
+                                                functions.showErrorCard('Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing);
                                                 console.log('Error subscribing to group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
                                             });
                                     }
                                 }
                             }, function (errorString) {
-                                functions.showAndRemoveCard('Error!', '', 'Error determining subscription status!', subscribing, 'IMAGE_ERROR_ICON');
+                                functions.showErrorCard('Error determining subscription status!', subscribing);
                                 console.log('Error getting subscriptions to toggle subscription for group ' + menuItems[eventIndex].title + ' error code: ' + errorString);
                             });
                     }
@@ -132,7 +132,7 @@ function getGroups(lon, lat, topics) {
                         optionItems[3].title = 'Subscribe';
                         optionItems[3].icon = 'IMAGE_SUBSCRIBE_ICON';
                         options.items(0, optionItems);
-                        var subscriptions = functions.showCard('Loading...', 'Determining group subscription status', '', 'IMAGE_SUBSCRIBE_ICON');
+                        var subscriptions = functions.showLoadingCard('Group', 'Determining group subscription status');
                         Pebble.timelineSubscriptions(function (topics) {
                                 if (topics.indexOf(menuItems[eventIndex].id.toString()) > 0) {
                                     optionItems[3].title = 'Unsubscribe';
@@ -153,7 +153,7 @@ function getGroups(lon, lat, topics) {
                 menu.show();
             }
         }, function (error) {
-            functions.showAndRemoveCard('Error', 'Error contacting server.', '', loading, 'IMAGE_ERROR_ICON');
+            functions.showErrorCard('Error contacting server.', loading);
             console.log('Error loading groups ' + error)
         });
 }
@@ -167,20 +167,19 @@ function locationSuccessCustom(pos) {
 }
 
 function locationError(err) {
-    if (!typeof err == 'undefined') {
-        functions.showAndRemoveCard('Error', 'Error determining location.', '', loading, 'IMAGE_ERROR_ICON');
+    if (typeof err !== undefined) {
+        functions.showErrorCard('Could not determine your location.\nIf you keep receiving this message, a manual location can be set in the settings.', loading);
         console.log('location error (' + err.code + '): ' + err.message);
     } else {
-        functions.showAndRemoveCard('Error', '', 'App not connected to the internet! This app requires an internet or data connection.', loading, 'IMAGE_ERROR_ICON');
+        functions.showErrorCard('App not connected to the internet! This app requires an internet or data connection.', loading);
     }
-
 }
 
 
 // Make an asynchronous request
 
 Groups.fetch = function () {
-    loading = functions.showCard('Groups', 'Loading...', '', 'IMAGE_GROUP_ICON');
+    loading = functions.showLoadingCard('Groups', 'Populating groups list');
     if (!functions.getSetting('location', false)) {
         navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
     } else {
@@ -189,28 +188,28 @@ Groups.fetch = function () {
         if (lon && lat) {
             getGroups(lon, lat);
         } else {
-            functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
+            functions.showErrorCard('Error using custom location.', loading);
         }
     }
 };
 
 Groups.fetchCustom = function () {
     if (functions.getSetting('customgroups')) {
-        loading = functions.showCard('Groups', 'Loading...', '', 'IMAGE_GROUP_ICON');
+        loading = functions.showLoadingCard('Groups', 'Populating groups list');
         if (!functions.getSetting('location', false)) {
             navigator.geolocation.getCurrentPosition(locationSuccessCustom, locationError, locationOptions);
         } else {
             var lon = functions.getSetting('lon', 0);
             var lat = functions.getSetting('lat', 0);
-            console.log('loading groups for ' + functions.getSetting('customgroups'))
+            console.log('loading groups for ' + functions.getSetting('customgroups'));
             if (lon && lat) {
                 getGroups(lon, lat, functions.getSetting('customgroups'));
             } else {
-                functions.showAndRemoveCard('Error', 'Error using custom location.', '', loading, 'IMAGE_ERROR_ICON');
+                functions.showErrorCard('Error using custom location.', loading);
             }
         }
     } else {
-        functions.showCard('Error', '', 'You have no custom groups configured! Please add some in the settings!', 'IMAGE_ERROR_ICON');
+        functions.showErrorCard('You have no custom groups configured! Please add some in the settings!');
     }
 
 };

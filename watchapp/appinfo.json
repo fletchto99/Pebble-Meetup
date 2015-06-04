@@ -47,6 +47,11 @@
                   },
                   {
                     "type": "png",
+                    "name": "IMAGE_PEBBLE_GROUP_ICON",
+                    "file": "images/pebble-group.png"
+                  },
+                  {
+                    "type": "png",
                     "name": "IMAGE_MEMBERS_ICON",
                     "file": "images/members.png"
                   },
@@ -69,6 +74,11 @@
                     "type": "png",
                     "name": "IMAGE_UNSUBSCRIBE_ICON",
                     "file": "images/unsubscribe.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_LOADING_ICON",
+                    "file": "images/loading.png"
                   },
                   {
                   "type": "font",

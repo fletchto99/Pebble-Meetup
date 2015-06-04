@@ -27,7 +27,7 @@ functions.init = function () {
             });
     }
     var menuItems = [{
-        title: 'Pebble Groups', subtitle: 'Group list', icon: 'IMAGE_GROUP_ICON'
+        title: 'Pebble Groups', subtitle: 'Group list', icon: 'IMAGE_PEBBLE_GROUP_ICON'
     }, {
         title: 'Pebble Events', subtitle: 'Event list', icon: 'IMAGE_EVENT_ICON'
     }, {
@@ -65,15 +65,33 @@ functions.getSetting = function (setting, default_setting) {
     return Settings.data(setting) !== null ? Settings.data(setting) : default_setting;
 };
 
-functions.showCard = function (title, subtitle, body, icon) {
-    return functions.showAndRemoveCard(title, subtitle, body, null, icon);
+
+functions.showErrorCard = function(errorMessage, cardToHide) {
+    return functions.showCard('IMAGE_ERROR_ICON', 'Error!', '', errorMessage, functions.getColorOptions('ERROR'), cardToHide);
 };
 
-functions.showAndRemoveCard = function (title, subtitle, body, old, icon) {
-    if (old !== null) {
-        old.hide();
+functions.showLoadingCard = function(module, loadingMessage) {
+    return functions.showCard('IMAGE_LOADING_ICON', 'Loading', module, loadingMessage, functions.getColorOptions('LOADING'));
+};
+
+functions.showCard = function (icon, title, subtitle, body, colorOptions, cardToHide) {
+    if (cardToHide !== undefined) {
+        cardToHide.hide();
     }
-    var card = new UI.Card({title: title, subtitle: subtitle, body: body, icon: icon, scrollable: true});
+    if (icon !== null) {
+        title = '   ' + title;
+    }
+    scrollable = body != null && body.length > 0;
+    var card = new UI.Card({
+        title: title,
+        titleColor: colorOptions.titleColor ? colorOptions.titleColor : 'blue',
+        subtitle: subtitle,
+        subtitleColor: colorOptions.subtitleColor ? colorOptions.subtitleColor : 'black',
+        body: body,
+        bodyColor: colorOptions.bodyColor ? colorOptions.bodyColor : 'black',
+        icon: icon,
+        scrollable: scrollable
+    });
     card.show();
     return card;
 };
@@ -88,4 +106,23 @@ functions.getVersion = function () {
 
 functions.getAPIURL = function () {
     return config.API_URL;
+};
+
+functions.getColorOptions = function(type) {
+    if (Pebble.timelineSubscribe === undefined) {
+        return {titleColor: 'black', subtitleColor: 'black', bodyColor: 'black'};
+    }
+    switch(type){
+        case 'ERROR':
+            return {titleColor: 'red', subtitleColor: 'black', bodyColor: 'black'};
+        case 'SUCCESS':
+            return {titleColor: 'islamicGreen', subtitleColor: 'black', bodyColor: 'black'};
+        case 'LOADING':
+            return {titleColor: 'blue', subtitleColor: 'black', bodyColor: 'black'};
+        case 'DATA':
+            return {titleColor: 'orange', subtitleColor: 'black', bodyColor: 'black'};
+        default:
+            return {titleColor: 'black', subtitleColor: 'black', bodyColor: 'black'};
+    }
+
 };

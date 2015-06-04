@@ -19,14 +19,14 @@ Members.fetchFor = function (id, attending, name) {
         loading.hide();
         loading = null;
     }
-    loading = functions.showCard('Attending', 'Loading...', '', 'IMAGE_MEMBERS_ICON');
+    loading = functions.showLoadingCard('Members', 'Populating members list...');
     ajax({
             url: functions.getAPIURL(), type: 'json', method: 'post', data: {
                 groupID: id, method: 'members'
             }, cache: false
         }, function (data) {
             if (data.error) {
-                functions.showAndRemoveCard('Error', data.error, '', loading, 'IMAGE_ERROR_ICON');
+                functions.showErrorCard(data.error, '', loading);
             } else {
                 loading.hide();
                 var menuItems = new Array(data.length);
@@ -42,7 +42,7 @@ Members.fetchFor = function (id, attending, name) {
                 });
                 menu.show();
             }
-        }, function (error) {
-            functions.showAndRemoveCard('Error', 'Error contacting server.', '', loading, 'IMAGE_ERROR_ICON');
+        }, function () {
+            functions.showErrorCard('Connection to server failed!', loading);
         });
 };

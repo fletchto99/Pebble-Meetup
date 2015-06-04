@@ -14,9 +14,7 @@
 
 #define MAX_CACHED_SECTIONS 10
 
-#define MAX_CACHED_ITEMS 20
-
-#define REQUEST_DELAY_MS 10
+#define MAX_CACHED_ITEMS 100
 
 typedef Packet MenuClearPacket;
 
