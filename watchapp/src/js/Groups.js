@@ -80,6 +80,7 @@ function getGroups(lon, lat, customTopics) {
                                     Pebble.timelineUnsubscribe(menuItems[eventIndex].id.toString(), function () {
                                             functions.showCard('IMAGE_UNSUBSCRIBE_ICON', 'Success!', '', 'You have unsubscribed from upcoming notifications about upcoming events with ' + menuItems[eventIndex].title + '.',functions.getColorOptions('SUCCESS'), subscribing);
                                             optionItems[3].title = 'Subscribe';
+                                            optionItems[3].icon = 'IMAGE_SUBSCRIBE_ICON';
                                             options.items(0, optionItems);
                                         }, function (errorString) {
                                             functions.showErrorCard('Error unsubscribing from the group ' + menuItems[eventIndex].title + '.', subscribing);
@@ -99,6 +100,7 @@ function getGroups(lon, lat, customTopics) {
                                                     Pebble.timelineSubscribe(menuItems[eventIndex].id.toString(), function () {
                                                             functions.showCard('IMAGE_SUBSCRIBE_ICON', 'Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', functions.getColorOptions('SUCCESS'), subscribing);
                                                             optionItems[3].title = 'Unsubscribe';
+                                                            optionItems[3].icon = 'IMAGE_UNSUBSCRIBE_ICON';
                                                             options.items(0, optionItems);
                                                         }, function (errorString) {
                                                             functions.showErrorCard('Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing);
@@ -112,6 +114,7 @@ function getGroups(lon, lat, customTopics) {
                                         Pebble.timelineSubscribe(menuItems[eventIndex].id.toString(), function () {
                                                 functions.showCard('IMAGE_SUBSCRIBE_ICON', 'Success!', '', 'You have subscribed for timeline notifications about upcoming events with ' + menuItems[eventIndex].title + '.', functions.getColorOptions('SUCCESS'), subscribing);
                                                 optionItems[3].title = 'Unsubscribe';
+                                                optionItems[3].icon = 'IMAGE_UNSUBSCRIBE_ICON';
                                                 options.items(0, optionItems);
                                             }, function (errorString) {
                                                 functions.showErrorCard('Error subscribing to the group ' + menuItems[eventIndex].title + '. Error: ' + errorString, subscribing);
