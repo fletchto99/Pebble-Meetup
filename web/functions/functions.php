@@ -4,6 +4,7 @@ require_once 'Group.php';
 require_once 'Groups.php';
 require_once 'GroupEvents.php';
 require_once 'Members.php';
+require_once 'Event.php';
 require_once 'RemoveEventPin.php';
 require_once 'SingleEventNotify.php';
 require_once 'MultiEventNotify.php';
@@ -51,6 +52,10 @@ class Functions {
                 }
                 $events = new GroupEvents($this->config['API_URL'] . $this->config['EVENTS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['distance'], $ids, $params['units']);
                 $this->result = $events->execute();
+                break;
+            case 'event':
+                $event = new Event($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $params['eventID'], $params['lat'], $params['lon'], $params['units']);
+                $this->result = $event->execute();
                 break;
             case 'customevents':
                 $groups = new Groups($this->config['API_URL'] . $this->config['GROUPS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units'], $params['categories']);
@@ -101,9 +106,23 @@ class Functions {
     }
 
     public static function cleanAPICall($url, $exclusions, $key = 'results') {
-        $response = json_decode(file_get_contents($url . '&only=' . implode(',', $exclusions)), true);
-
+        $response = json_decode(self::cURL($url . '&only=' . implode(',', $exclusions)), true);
         return !empty($key) ? $response[$key] : $response;
+    }
+
+    private static function cURL($url) {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_FORBID_REUSE, TRUE);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, FALSE);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return $result;
     }
 
     public static function distance($lat1, $lon1, $lat2, $lon2, $unit) {

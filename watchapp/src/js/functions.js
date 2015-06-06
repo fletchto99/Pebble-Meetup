@@ -1,5 +1,7 @@
 var UI = require('ui');
+var Timeline = require('timeline');
 var groups = require('Groups');
+var event = require('Event');
 var events = require('Events');
 var Settings = require('settings');
 var about = require('About');
@@ -43,17 +45,27 @@ functions.init = function () {
         }]
     });
     mainMenu.show();
-    mainMenu.on('select', function (event) {
-        if (event.itemIndex === 0) {
-            groups.fetch();
-        } else if (event.itemIndex === 1) {
-            events.fetch();
-        } else if (event.itemIndex === 2) {
-            groups.fetchCustom(functions.getSetting('customgroups'));
-        } else if (event.itemIndex === 3) {
-            events.fetchCustom(functions.getSetting('customgroups'));
-        } else if (event.itemIndex === 4) {
-            about.fetch();
+    var registerHandlers = function() {
+        mainMenu.on('select', function (event) {
+            if (event.itemIndex === 0) {
+                groups.fetch();
+            } else if (event.itemIndex === 1) {
+                events.fetch();
+            } else if (event.itemIndex === 2) {
+                groups.fetchCustom();
+            } else if (event.itemIndex === 3) {
+                events.fetchCustom();
+            } else if (event.itemIndex === 4) {
+                about.fetch();
+            }
+        });
+    };
+    Timeline.launch(function(timelineEvent) {
+        if (timelineEvent.action) {
+            registerHandlers();
+            event.fetchFor(timelineEvent.launchCode);
+        } else {
+            registerHandlers();
         }
     });
 };

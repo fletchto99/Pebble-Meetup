@@ -17,7 +17,8 @@ class Groups {
         if ($this->lat && $this->lon && $this->categories) {
             $response = [];
             foreach ($this->categories as $category) {
-                $response = array_merge($response, functions::cleanAPICall($this->url . 'sign=true&photo-host=public&ordering=distance&radius=global&text=' . urlencode(trim($category)) . '&lat=' . $this->lat . '&lon=' . $this->lon . '&key=' . $this->key, $this->exclusions, ''));
+                $responseCategory = functions::cleanAPICall($this->url . 'sign=true&photo-host=public&order=distance&radius=global&text=' . urlencode(trim($category)) . '&lat=' . $this->lat . '&lon=' . $this->lon . '&key=' . $this->key, $this->exclusions, '');
+                $response = array_merge($response, $responseCategory);
             }
             array_walk($response, function (&$v) {
                 if (is_array($v)) {

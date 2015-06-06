@@ -8,6 +8,8 @@ use TimelineAPI\PinReminder;
 use TimelineAPI\Timeline;
 use TimelineAPI\PebbleColour;
 use TimelineAPI\PinNotification;
+use TimelineAPI\PinActionType;
+use TimelineAPI\PinAction;
 
 
 class SingleEventNotify {
@@ -64,12 +66,18 @@ class SingleEventNotify {
             $reminder1 = new PinReminder($reminder1Layout, (new DateTime($response['date']))->sub(new DateInterval('PT24H')));
             $reminder2 = new PinReminder($reminder2Layout, (new DateTime($response['date']))->sub(new DateInterval('PT1H')));
 
+            //Actions
+            $openAction = new PinAction('Event Details', intval($this->eventID), PinActionType::OPEN_WATCH_APP);
+
             //Pin
             $pin = new Pin($this->eventID, new DateTime($response['date']), $pinLayout, null, $createNotification, $updateNotification);
 
             //Add reminders
             $pin->addReminder($reminder1);
             $pin->addReminder($reminder2);
+
+            //Add Actions
+            $pin->addAction($openAction);
 
             //Push the pin
             $response = Timeline::pushPin($this->userToken, $pin);

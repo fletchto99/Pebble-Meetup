@@ -16,7 +16,6 @@ var eventIndex = -1;
 
 function getEvents(lon, lat, topics) {
     console.log('lat= ' + lat + ' lon= ' + lon);
-    console.log(topics);
     ajax({
             url: functions.getAPIURL(), type: 'json', method: 'post', data: {
                 lat: lat,
@@ -146,7 +145,7 @@ function getEvents(lon, lat, topics) {
                         optionItems[1].title = 'Pin';
                         optionItems[1].icon = 'IMAGE_PIN_ICON';
                         options.items(0, optionItems);
-                        var pinstatus = functions.showLoadingCard('Event', '', 'Determining event pin status');
+                        var pinstatus = functions.showLoadingCard('Event', 'Determining event pin status');
                         Pebble.getTimelineToken(function (token) {
                                 ajax({
                                         url: functions.getAPIURL(), type: 'json', method: 'post', data: {
