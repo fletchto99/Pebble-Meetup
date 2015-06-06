@@ -31,7 +31,7 @@ Menu.prototype._show = function() {
   simply.impl.menuSelection(select.sectionIndex, select.itemIndex);
 };
 
-Menu.prototype._numPreloadItems = 100;
+Menu.prototype._numPreloadItems = 50;
 
 Menu.prototype._prop = function(state, clear, pushing) {
   if (this === WindowStack.top()) {

@@ -166,7 +166,7 @@ function locationSuccess(pos) {
 }
 
 function locationSuccessCustom(pos) {
-    getGroups(pos.coords.longitude, pos.coords.latitude, functions.getSetting('customgroups'));
+    getGroups(pos.coords.longitude, pos.coords.latitude, 'photography');
 }
 
 function locationError(err) {
@@ -197,7 +197,7 @@ Groups.fetch = function () {
 };
 
 Groups.fetchCustom = function () {
-    if (functions.getSetting('customgroups')) {
+    if (true) {
         loading = functions.showLoadingCard('Groups', 'Populating groups list');
         if (!functions.getSetting('location', false)) {
             navigator.geolocation.getCurrentPosition(locationSuccessCustom, locationError, locationOptions);

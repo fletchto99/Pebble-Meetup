@@ -12,9 +12,9 @@
 
 #include <pebble.h>
 
-#define MAX_CACHED_SECTIONS 10
+#define MAX_CACHED_SECTIONS 1
 
-#define MAX_CACHED_ITEMS 100
+#define MAX_CACHED_ITEMS 51
 
 typedef Packet MenuClearPacket;
 
