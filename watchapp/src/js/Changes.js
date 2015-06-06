@@ -15,7 +15,7 @@ Changes.fetch = function () {
         if (data.error) {
             functions.showErrorCard('Could not load change log. Please use the pebble app to view the changes.', loading);
         } else {
-            functions.showCard('IMAGE_CHANGES_ICON', 'Changelog', 'Version: ' + functions.getVersionString(), data.Version_Changes, functions.getColorOptions('DATA'), loading);
+            functions.showCard('IMAGE_CHANGES_ICON', 'Changelog', 'Version: ' + functions.getVersionString(), data.Version_Changes.split('\\n').join('\n'), functions.getColorOptions('DATA'), loading);
         }
     }, function () {
         functions.showErrorCard('Could not load change log. Please use the pebble app to view the changes.', loading);

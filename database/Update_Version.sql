@@ -18,3 +18,6 @@ VALUES ('2.11', 2.11, 'This is a minor app which allows users to check upcoming 
 
 INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
 VALUES ('2.12-ALPHA', 2.12, 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', 'Ability to subscribe to custom groups', 1)
+
+INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
+VALUES ('2.12', 2.12, 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', 'Fixed: Scrolling issue where items are blank\\nFixed: Custom groups\\nUpdated: New settings page look & feel\\nAdded: Ability to fetch event information directly from a timeline pin\\nAdded: First run welcome screen\\nAdded: Changelog screen\\nAdded: More colors and better PT support', 0)
