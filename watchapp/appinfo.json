@@ -52,6 +52,16 @@
                   },
                   {
                     "type": "png",
+                    "name": "IMAGE_WELCOME_ICON",
+                    "file": "images/welcome.png"
+                  },
+                  {
+                    "type": "png",
+                    "name": "IMAGE_CHANGES_ICON",
+                    "file": "images/changes.png"
+                  },
+                  {
+                    "type": "png",
                     "name": "IMAGE_MEMBERS_ICON",
                     "file": "images/members.png"
                   },

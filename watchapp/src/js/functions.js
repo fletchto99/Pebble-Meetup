@@ -5,6 +5,7 @@ var event = require('Event');
 var events = require('Events');
 var Settings = require('settings');
 var about = require('About');
+var changes = require('Changes');
 var config = require('Config.json');
 
 var functions = module.exports;
@@ -65,6 +66,14 @@ functions.init = function () {
             registerHandlers();
             event.fetchFor(timelineEvent.launchCode);
         } else {
+            if (!functions.getSetting('firstrun')) {
+                functions.showCard('IMAGE_WELCOME_ICON', 'Welcome', '', 'Thank you for choosing to use Meetup for Pebble! We hope you enjoy the app.', functions.getColorOptions('DATA'));
+                Settings.data('firstrun', true);
+                Settings.data('latestver', functions.getVersionString());
+            } else if (functions.getVersionString() != functions.getSetting('latestver')) {
+                changes.fetch();
+                Settings.data('latestver', functions.getVersionString());
+            }
             registerHandlers();
         }
     });

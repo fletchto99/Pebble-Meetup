@@ -14,6 +14,7 @@ require_once 'MTime.php';
 require_once 'Notification.php';
 require_once 'About.php';
 require_once 'CheckForPin.php';
+require_once 'Changes.php';
 require_once 'DataBase.php';
 
 
@@ -100,6 +101,10 @@ class Functions {
             case 'about':
                 $about = new About($params['prerelease']);
                 $this->result = $about->execute();
+                break;
+            case 'changes':
+                $changes = new Changes($params['version']);
+                $this->result = $changes->execute();
                 break;
         }
         echo json_encode($this->result, JSON_UNESCAPED_SLASHES);
