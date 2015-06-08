@@ -12,7 +12,7 @@ class DataBase {
         }
     }
 
-    private static $instance = null;
+    private static $instance;
 
     public static function getInstance() {
         if (self::$instance == null) {
@@ -22,7 +22,7 @@ class DataBase {
     }
 
     public function select($query_string, $values = []) {
-        if (self::$instance == null || $this -> dbh = null) {
+        if (self::$instance == null || $this -> dbh == null) {
             throw new Exception("Connection to database not established!");
         }
         if (sizeof($values) !== substr_count($query_string, '?')) {
@@ -40,7 +40,7 @@ class DataBase {
     }
 
     public function insert($query_string, $values) {
-        if (self::$instance == null || $this -> dbh = null) {
+        if (self::$instance == null || $this -> dbh == null) {
             throw new Exception("Connection to database not established!");
         }
         if (sizeof($values) !== substr_count($query_string, '?')) {
@@ -58,7 +58,7 @@ class DataBase {
     }
 
     public function update($query_string, $values) {
-        if (self::$instance == null || $this -> dbh = null) {
+        if (self::$instance == null || $this -> dbh == null) {
             throw new Exception("Connection to database not established!");
         }
         if (sizeof($values) !== substr_count($query_string, '?')) {
@@ -76,7 +76,7 @@ class DataBase {
     }
 
     public function delete($query_string, $values) {
-        if (self::$instance == null || $this -> dbh = null) {
+        if (self::$instance == null || $this -> dbh == null) {
             throw new Exception("Connection to database not established!");
         }
         if (sizeof($values) !== substr_count($query_string, '?')) {
