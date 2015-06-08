@@ -7,6 +7,9 @@ var simply = require('ui/simply');
 
 var defaults = {
   backgroundColor: 'white',
+    textColor: 'black',
+    highlightBackgroundColor: 'black',
+    highlightTextColor: 'white',
   fullscreen: false,
 };
 
