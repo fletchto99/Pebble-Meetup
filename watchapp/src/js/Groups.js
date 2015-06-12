@@ -60,7 +60,7 @@ function getGroups(lon, lat, customTopics) {
                 });
                 var options = new UI.Menu({
                     sections: [{
-                        title: 'Options', items: optionItems
+                        title: 'Group Options', items: optionItems
                     }]
                 });
                 options.on('select', function (event) {

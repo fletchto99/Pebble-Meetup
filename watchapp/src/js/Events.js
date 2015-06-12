@@ -66,7 +66,7 @@ function getEvents(lon, lat, topics) {
                 });
                 options = new UI.Menu({
                     sections: [{
-                        title: 'Options', items: optionItems
+                        title: 'Event Options', items: optionItems
                     }]
                 });
                 options.on('select', function (event) {
