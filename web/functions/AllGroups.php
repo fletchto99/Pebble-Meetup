@@ -1,6 +1,6 @@
 <?php
 
-class PebbleGroups {
+class AllGroups {
 
     private $exclusions = ['id'];
 
@@ -15,6 +15,15 @@ class PebbleGroups {
         $result = [];
         foreach ($response as $v) {
             array_push($result, $v['id']);
+        }
+        try {
+            $db = DataBase::getInstance();
+            $groups = $db -> select("SELECT Group_Token FROM Groups");
+            foreach($groups as $group) {
+                array_push($result, intval($group['Group_Token']));
+            }
+        } catch (Exception $exception) {
+
         }
         $result = ['groups' => $result];
 

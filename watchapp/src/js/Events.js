@@ -260,17 +260,17 @@ Events.fetchFor = function (gid) {
     }
 };
 
-Events.fetchCustom = function () {
-    if (functions.getSetting('customgroups')) {
+Events.fetchCustom = function (groupIDs) {
+    if (groupIds) {
         loading = functions.showLoadingCard('Events', 'Populating events list');
         if (!functions.getSetting('location', false)) {
             navigator.geolocation.getCurrentPosition(locationSuccessCustom, locationError, locationOptions);
         } else {
             var lon = functions.getSetting('lon', 0);
             var lat = functions.getSetting('lat', 0);
-            console.log('loading events for ' + functions.getSetting('customgroups'));
+            console.log('loading events for ' + groupIDs);
             if (lon && lat) {
-                getEvents(lon, lat, functions.getSetting('customgroups'));
+                getEvents(lon, lat, groupIds);
             } else {
                 functions.showErrorCard('Error determining the custom location you have set.', loading);
             }

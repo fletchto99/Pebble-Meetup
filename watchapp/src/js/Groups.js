@@ -166,7 +166,7 @@ function locationSuccess(pos) {
 }
 
 function locationSuccessCustom(pos) {
-    getGroups(pos.coords.longitude, pos.coords.latitude, 'photography');
+    getGroups(pos.coords.longitude, pos.coords.latitude, functions.getSetting('customgroups'));
 }
 
 function locationError(err) {
@@ -196,17 +196,17 @@ Groups.fetch = function () {
     }
 };
 
-Groups.fetchCustom = function () {
-    if (true) {
+Groups.fetchCustom = function (groupIDs) {
+    if (groupIDs) {
         loading = functions.showLoadingCard('Groups', 'Populating groups list');
         if (!functions.getSetting('location', false)) {
             navigator.geolocation.getCurrentPosition(locationSuccessCustom, locationError, locationOptions);
         } else {
             var lon = functions.getSetting('lon', 0);
             var lat = functions.getSetting('lat', 0);
-            console.log('loading groups for ' + functions.getSetting('customgroups'));
+            console.log('loading groups for ' + groupIDS);
             if (lon && lat) {
-                getGroups(lon, lat, functions.getSetting('customgroups'));
+                getGroups(lon, lat, groupIDS);
             } else {
                 functions.showErrorCard('Error using custom location.', loading);
             }

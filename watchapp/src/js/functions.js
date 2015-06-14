@@ -53,9 +53,9 @@ functions.init = function () {
             } else if (event.itemIndex === 1) {
                 events.fetch();
             } else if (event.itemIndex === 2) {
-                groups.fetchCustom();
+                groups.fetchCustom(functions.getSetting('customgroups'));
             } else if (event.itemIndex === 3) {
-                events.fetchCustom();
+                events.fetchCustom(functions.getSetting('customgroups'));
             } else if (event.itemIndex === 4) {
                 about.fetch();
             }

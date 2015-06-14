@@ -8,7 +8,7 @@ require_once 'Event.php';
 require_once 'RemoveEventPin.php';
 require_once 'SingleEventNotify.php';
 require_once 'MultiEventNotify.php';
-require_once 'PebbleGroups.php';
+require_once 'AllGroups.php';
 require_once 'GroupSubscription.php';
 require_once 'MTime.php';
 require_once 'Notification.php';
@@ -83,11 +83,11 @@ class Functions {
                 $this->result = $pin->execute();
                 break;
             case 'groupids':
-                $ids = new PebbleGroups($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY']);
+                $ids = new AllGroups($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY']);
                 $this->result = $ids->execute();
                 break;
             case 'addeventlistener':
-                $subscribe = new GroupSubscription();
+                $subscribe = new GroupSubscription($params['groupID']);
                 $this->result = $subscribe->execute();
                 break;
             case 'mtime':
