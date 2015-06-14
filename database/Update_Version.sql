@@ -30,3 +30,6 @@ VALUES ('2.13', 2.13, 'This is a minor app which allows users to check upcoming 
 
 INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
 VALUES ('2.14', 2.14, 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', 'Fixed: Custom events error introduced in 2.13', 0)
+
+INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
+VALUES ('2.15', 2.15, 'Meetup is an app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', 'Fixed: Crashing on Pebble Time right after loading screen', 0)
