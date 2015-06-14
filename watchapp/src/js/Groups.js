@@ -165,8 +165,8 @@ function locationSuccess(pos) {
     getGroups(pos.coords.longitude, pos.coords.latitude);
 }
 
-function locationSuccessCustom(pos) {
-    getGroups(pos.coords.longitude, pos.coords.latitude, functions.getSetting('customgroups'));
+function locationSuccessCustom(pos, groupIDs) {
+    getGroups(pos.coords.longitude, pos.coords.latitude, groupIDs);
 }
 
 function locationError(err) {
@@ -200,13 +200,15 @@ Groups.fetchCustom = function (groupIDs) {
     if (groupIDs) {
         loading = functions.showLoadingCard('Groups', 'Populating groups list');
         if (!functions.getSetting('location', false)) {
-            navigator.geolocation.getCurrentPosition(locationSuccessCustom, locationError, locationOptions);
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                locationSuccessCustom(pos, groupIDs)
+            }, locationError, locationOptions);
         } else {
             var lon = functions.getSetting('lon', 0);
             var lat = functions.getSetting('lat', 0);
-            console.log('loading groups for ' + groupIDS);
+            console.log('loading groups for ' + groupIDs);
             if (lon && lat) {
-                getGroups(lon, lat, groupIDS);
+                getGroups(lon, lat, groupIDs);
             } else {
                 functions.showErrorCard('Error using custom location.', loading);
             }
