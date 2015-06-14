@@ -53,4 +53,4 @@ Settings.config({url: ('http://fletchto99.com/other/pebble/meetup/web/settings.h
 //Setup the app
 setTimeout(function() {
     functions.init();
-}, 500);
+}, 800);

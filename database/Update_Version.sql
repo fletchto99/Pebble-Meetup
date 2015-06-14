@@ -24,3 +24,6 @@ VALUES ('2.12', 2.12, 'This is a minor app which allows users to check upcoming 
 
 INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
 VALUES ('2.13-ALPHA', 2.13, 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', 'Fixed: Decreased cached menu items to 50 instead of 100\\nAdded: Loading message if the menu item is still loading\\nAdded: Server backend for custom groups\\nUpdated: Menu option headers', 1)
+
+INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
+VALUES ('2.13', 2.13, 'This is a minor app which allows users to check upcoming events in their area. Currently it supports searching for Pebble Meetups and Pebble Groups.', 'Fixed: Decreased cached menu items to 50 instead of 100\\nAdded: Splash screen while app loads\\nAdded: Loading message if the menu item is still loading\\nAdded: Server backend for custom groups\\nUpdated: Menu option headers', 0)
