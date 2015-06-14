@@ -12,7 +12,9 @@ var functions = module.exports;
 
 //Functions
 functions.init = function () {
+    console.log("init called...");
     if (typeof Pebble.timelineSubscriptions == 'function') {
+        console.log("Checking for notifications");
         Pebble.timelineSubscriptions(function (topics) {
                 if (topics.indexOf('notifications') < 1) {
                     Pebble.timelineSubscribe('notifications', function () {
@@ -29,6 +31,7 @@ functions.init = function () {
                 //Error subscribing to notifications -- keep the error transparent to the user
             });
     }
+    console.log("Creating menuitems");
     var menuItems = [{
         title: 'Pebble Groups', subtitle: 'Group list', icon: 'IMAGE_PEBBLE_GROUP_ICON'
     }, {
@@ -40,13 +43,16 @@ functions.init = function () {
     }, {
         title: 'About', icon: 'IMAGE_INFO_ICON'
     }];
+    console.log("Creating menu");
     var mainMenu = new UI.Menu({
         sections: [{
             title: 'Pebble Meetup', items: menuItems
         }]
     });
+    console.log("Displaying menu");
     mainMenu.show();
     var registerHandlers = function() {
+        console.log("Registering menu handlers");
         mainMenu.on('select', function (event) {
             if (event.itemIndex === 0) {
                 groups.fetch();
@@ -61,16 +67,20 @@ functions.init = function () {
             }
         });
     };
+    console.log("Checking for special launch");
     Timeline.launch(function(timelineEvent) {
         if (timelineEvent.action) {
             registerHandlers();
+            console.log("Special launch found, launchcode: " + timelineEvent.launchCode);
             event.fetchFor(timelineEvent.launchCode);
         } else {
             if (!functions.getSetting('firstrun')) {
+                console.log("First run launch, enjoy the app!");
                 functions.showCard('IMAGE_WELCOME_ICON', 'Welcome', '', 'Thank you for choosing to use Meetup for Pebble! We hope you enjoy the app.', functions.getColorOptions('DATA'));
                 Settings.data('firstrun', true);
                 Settings.data('latestver', functions.getVersionString());
             } else if (functions.getVersionString() != functions.getSetting('latestver')) {
+                console.log("Updated version! Displaying new version information.");
                 changes.fetch();
                 Settings.data('latestver', functions.getVersionString());
             }

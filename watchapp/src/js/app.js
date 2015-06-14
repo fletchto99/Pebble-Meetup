@@ -50,7 +50,10 @@ Settings.config({url: ('http://fletchto99.com/other/pebble/meetup/web/settings.h
         }
     });
 
+console.log("Displaying splash screen");
 //Setup the app
 setTimeout(function() {
+    console.log("init stage");
     functions.init();
+    console.log("Done init stage");
 }, 800);
