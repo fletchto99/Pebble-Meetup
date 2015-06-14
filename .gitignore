@@ -3,3 +3,5 @@ watchapp/build
 node.core
 Configuration.json
 configuration.php
+background/node_modules
+*.log
