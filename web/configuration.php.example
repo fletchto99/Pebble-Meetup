@@ -1,10 +1,7 @@
 <?php
 
-class Configuration
-{
-
-    static function getConfiguration()
-    {
+class Configuration {
+    static function getConfiguration() {
         $config['MEETUP_API_KEY'] = 'YOUR_MEETUP_API_KEY_HERE';
         $config['TIMELINE_API_KEY'] = 'YOUR_TIMELINE_API_KEY_HERE';
         $config['API_URL'] = 'https://api.meetup.com';
@@ -22,5 +19,3 @@ class Configuration
         return $config;
     }
 }
-
-?>
