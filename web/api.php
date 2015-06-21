@@ -2,12 +2,10 @@
 
 require_once 'configuration.php';
 
-$config = Configuration::getConfiguration();
-
-if (!$config['MAINTENANCE_MODE'] || isset($_POST['developer'])) {
+if (!Configuration::MAINTENANCE_MODE || isset($_POST['developer'])) {
     require_once 'functions/functions.php';
     require_once 'vendor/TimelineAPI/Timeline.php';
-    if ($config['MAINTENANCE_MODE'] && isset($_POST['developer'])) {
+    if (Configuration::MAINTENANCE_MODE && isset($_POST['developer'])) {
         ini_set('display_errors', 1);
     }
     $params = null;
@@ -19,8 +17,7 @@ if (!$config['MAINTENANCE_MODE'] || isset($_POST['developer'])) {
     }
 
     if ($params !== null) {
-        $functions = new functions($config);
-        $functions->execute($params['method'], $params);
+        Functions::execute($params['method'], $params);
     } else {
         echo json_encode(['error' => 'Server side error, please try again later.']);
     }

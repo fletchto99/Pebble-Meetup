@@ -1,21 +1,25 @@
 <?php
 
 class Configuration {
-    static function getConfiguration() {
-        $config['MEETUP_API_KEY'] = 'YOUR_MEETUP_API_KEY_HERE';
-        $config['TIMELINE_API_KEY'] = 'YOUR_TIMELINE_API_KEY_HERE';
-        $config['API_URL'] = 'https://api.meetup.com';
-        $config['GROUP_CALL'] = '/2/groups?';
-        $config['GROUPS_CALL'] = '/find/groups?';
-        $config['EVENTS_CALL'] = '/2/events?';
-        $config['EVENT_CALL'] = '/2/event/';
-        $config['MEMBERS_CALL'] = '/2/members?';
-        $config['DATABASE_HOST'] = 'localhost';
-        $config['DATABASE_NAME'] = 'YOUR_DATABASE';
-        $config['DATABASE_USER'] = 'YOUR_DB_USERNAME';
-        $config['DATABASE_PASS'] = 'YOUR_DB_PASSWORD';
-        $config['MAINTENANCE_MODE'] = false;
 
-        return $config;
-    }
+    //API KEYS
+    CONST MEETUP_API_KEY = '<MEETUP_API_KEY>';
+    CONST TIMELINE_API_KEY = '<TIMELINE_API_KEY>';
+
+    //Meetup API and Endpoints
+    CONST API_URL = 'https://api.meetup.com';
+    CONST GROUP_ENDPOINT = '/2/groups?';
+    CONST EVENT_ENDPOINT = '/2/event/';
+    CONST GROUPS_ENDPOINT = '/find/groups?';
+    CONST EVENTS_ENDPOINT = '/2/events?';
+    CONST MEMBERS_ENDPOINT = '/2/members?';
+
+    //DB connection information
+    CONST DATABASE_HOST = 'localhost';
+    CONST DATABASE_NAME = '<DATABASE_NAME>';
+    CONST DATABASE_USER = '<DATABASE_USER>';
+    CONST DATABASE_PASSWORD = '<DATABASE_PASSWORD>';
+
+    //Other settings
+    CONST MAINTENANCE_MODE = false;
 }

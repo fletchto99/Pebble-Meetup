@@ -16,34 +16,30 @@ require_once 'About.php';
 require_once 'CheckForPin.php';
 require_once 'Changes.php';
 require_once 'DataBase.php';
+require_once __DIR__ . '/../configuration.php';
 
 
 class Functions {
 
-    private $result = ['error' => 'Error executing option, please try again later.'];
-
-    function __construct($config) {
-        $this->config = $config;
-    }
-
-    public function execute($method, $params) {
+    public static function execute($method, $params) {
+        $result = ['error' => 'Error executing option, please try again later.'];
         date_default_timezone_set('UTC');
         switch ($method) {
             case 'members':
-                $members = new Members($this->config['API_URL'] . $this->config['MEMBERS_CALL'], $this->config['MEETUP_API_KEY'], $params['groupID']);
-                $this->result = $members->execute();
+                $members = new Members(Configuration::API_URL . Configuration::MEMBERS_ENDPOINT, Configuration::MEETUP_API_KEY, $params['groupID']);
+                $result = $members->execute();
                 break;
             case 'groups':
-                $group = new Group($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units']);
-                $this->result = $group->execute();
+                $group = new Group(Configuration::API_URL . Configuration::GROUP_ENDPOINT, Configuration::MEETUP_API_KEY, $params['lat'], $params['lon'], $params['units']);
+                $result = $group->execute();
                 break;
             case 'customgroups':
-                $groups = new Groups($this->config['API_URL'] . $this->config['GROUPS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units'], $params['categories']);
-                $this->result = $groups->execute();
+                $groups = new Groups(Configuration::API_URL . Configuration::GROUPS_ENDPOINT, Configuration::MEETUP_API_KEY, $params['lat'], $params['lon'], $params['units'], $params['categories']);
+                $result = $groups->execute();
                 break;
             case 'events':
                 if (empty($params['groupID']) || $params['groupID'] < 0) {
-                    $groups = new Group($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units']);
+                    $groups = new Group(Configuration::API_URL . Configuration::GROUP_ENDPOINT, Configuration::MEETUP_API_KEY, $params['lat'], $params['lon'], $params['units']);
                     $ids = implode(array_map(function ($group) {
                         return $group['id'];
                     }, $groups->execute()), ',');
@@ -51,63 +47,63 @@ class Functions {
                     $ids = intval($params['groupID']);
                     $params['distance'] = '10000000';
                 }
-                $events = new GroupEvents($this->config['API_URL'] . $this->config['EVENTS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['distance'], $ids, $params['units']);
-                $this->result = $events->execute();
+                $events = new GroupEvents(Configuration::API_URL . Configuration::EVENTS_ENDPOINT, Configuration::MEETUP_API_KEY, $params['lat'], $params['lon'], $params['distance'], $ids, $params['units']);
+                $result = $events->execute();
                 break;
             case 'event':
-                $event = new Event($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $params['eventID'], $params['lat'], $params['lon'], $params['units']);
-                $this->result = $event->execute();
+                $event = new Event(Configuration::API_URL . Configuration::EVENT_ENDPOINT, Configuration::MEETUP_API_KEY, $params['eventID'], $params['lat'], $params['lon'], $params['units']);
+                $result = $event->execute();
                 break;
             case 'customevents':
-                $groups = new Groups($this->config['API_URL'] . $this->config['GROUPS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['units'], $params['categories']);
+                $groups = new Groups(Configuration::API_URL . Configuration::GROUPS_ENDPOINT, Configuration::MEETUP_API_KEY, $params['lat'], $params['lon'], $params['units'], $params['categories']);
                 $ids = implode(array_map(function ($group) {
                     return $group['id'];
                 }, $groups->execute()), ',');
-                $events = new GroupEvents($this->config['API_URL'] . $this->config['EVENTS_CALL'], $this->config['MEETUP_API_KEY'], $params['lat'], $params['lon'], $params['distance'], $ids, $params['units']);
-                $this->result = $events->execute();
+                $events = new GroupEvents(Configuration::API_URL . Configuration::EVENTS_ENDPOINT, Configuration::MEETUP_API_KEY, $params['lat'], $params['lon'], $params['distance'], $ids, $params['units']);
+                $result = $events->execute();
                 break;
             case 'checkforpin':
                 $check = new CheckForPin($params['userToken'], $params['eventID']);
-                $this->result = $check->execute();
+                $result = $check->execute();
                 break;
             case 'eventnotify':
-                $pin = new SingleEventNotify($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $params['userToken'], $params['eventID']);
-                $this->result = $pin->execute();
+                $pin = new SingleEventNotify(Configuration::API_URL . Configuration::EVENT_ENDPOINT, Configuration::MEETUP_API_KEY, $params['userToken'], $params['eventID']);
+                $result = $pin->execute();
                 break;
             case 'removeeventpin':
                 $toRemove = new RemoveEventPin($params['userToken'], $params['eventID']);
-                $this->result = $toRemove->execute();
+                $result = $toRemove->execute();
                 break;
             case 'multieventnotify':
-                $pin = new MultiEventNotify($this->config['API_URL'] . $this->config['EVENT_CALL'], $this->config['MEETUP_API_KEY'], $this->config['TIMELINE_API_KEY'], $params['eventID']);
-                $this->result = $pin->execute();
+                $pin = new MultiEventNotify(Configuration::API_URL . Configuration::EVENT_ENDPOINT, Configuration::MEETUP_API_KEY, Configuration::TIMELINE_API_KEY, $params['eventID']);
+                $result = $pin->execute();
                 break;
             case 'groupids':
-                $ids = new AllGroups($this->config['API_URL'] . $this->config['GROUP_CALL'], $this->config['MEETUP_API_KEY']);
-                $this->result = $ids->execute();
+                $ids = new AllGroups(Configuration::API_URL . Configuration::GROUP_ENDPOINT, Configuration::MEETUP_API_KEY);
+                $result = $ids->execute();
                 break;
             case 'addeventlistener':
                 $subscribe = new GroupSubscription($params['groupID']);
-                $this->result = $subscribe->execute();
+                $result = $subscribe->execute();
                 break;
             case 'mtime':
                 $mtime = isset($params['mtime']) ? new MTime($params['mtime']) : new MTime();
-                $this->result = $mtime->execute();
+                $result = $mtime->execute();
                 break;
             case 'notifications':
-                $notification = new Notification($this->config['TIMELINE_API_KEY'], $params['username'], $params['password'], $params['message']);
-                $this->result = $notification->execute();
+                $notification = new Notification(Configuration::TIMELINE_API_KEY, $params['username'], $params['password'], $params['message']);
+                $result = $notification->execute();
                 break;
             case 'about':
                 $about = new About($params['prerelease']);
-                $this->result = $about->execute();
+                $result = $about->execute();
                 break;
             case 'changes':
                 $changes = new Changes($params['version']);
-                $this->result = $changes->execute();
+                $result = $changes->execute();
                 break;
         }
-        echo json_encode($this->result, JSON_UNESCAPED_SLASHES);
+        echo json_encode($result, JSON_UNESCAPED_SLASHES);
     }
 
     public static function cleanAPICall($url, $exclusions, $key = 'results') {

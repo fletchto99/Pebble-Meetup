@@ -4,9 +4,8 @@ require_once __DIR__ . '/../configuration.php';
 class DataBase {
 
     private function __construct() {
-        $config = Configuration::getConfiguration();
         try {
-            $this->dbh = new PDO('mysql:host=' . $config['DATABASE_HOST'] . ';dbname=' . $config['DATABASE_NAME'], $config['DATABASE_USER'], $config['DATABASE_PASS']);
+            $this->dbh = new PDO('mysql:host=' . Configuration::DATABASE_HOST . ';dbname=' . Configuration::DATABASE_NAME, Configuration::DATABASE_USER, Configuration::DATABASE_PASSWORD);
         } catch (PDOException $e) {
             echo 'Connection failed: ' . $e->getMessage();
         }
