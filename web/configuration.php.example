@@ -20,6 +20,11 @@ class Configuration {
     CONST DATABASE_USER = '<DATABASE_USER>';
     CONST DATABASE_PASSWORD = '<DATABASE_PASSWORD>';
 
+
+    //Development settings
+    CONST DEBUG = false;
+    CONST DEVELOPER_PASSWORD = '<SOME_PASSKEY>';
+
     //Other settings
     CONST MAINTENANCE_MODE = false;
 }
