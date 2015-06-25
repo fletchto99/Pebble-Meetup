@@ -123,6 +123,12 @@ functions.showCard = function (icon, title, subtitle, body, colorOptions, cardTo
         icon: icon,
         scrollable: scrollable
     });
+    card.on('click', function(e) {
+        if (e.button == 'select') {
+            console.log('clicked');
+            card.hide();
+        }
+    });
     card.show();
     return card;
 };
