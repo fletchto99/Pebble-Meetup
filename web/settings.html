@@ -4,150 +4,171 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-        <title>Meetup Pebble Settings</title>
+        <title>Meetup for Pebble Settings</title>
 
-        <link rel="stylesheet" href="resources/vendor/bootstrap/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="resources/vendor/bootstrap/css/bootstrap-theme.min.css"/>
-        <link rel="stylesheet" href="resources/vendor/bootstrap-switch/bootstrap-switch.min.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <link rel='stylesheet' type='text/css' href='resources/vendor/slate/css/slate.min.css'>
         <link rel="stylesheet" href="resources/style/custom.css"/>
 
-        <script src="resources/vendor/jquery/jquery.min.js"></script>
-        <script src="resources/vendor/bootstrap/js/bootstrap.min.js"></script>
-        <script src="resources/vendor/bootstrap-switch/bootstrap-switch.min.js"></script>
+        <script src='resources/vendor/slate/js/slate.min.js'></script>
         <script src="https://maps.googleapis.com/maps/api/js?v=3"></script>
         <script src="resources/js/settings.js"></script>
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                        <img id="banner" src="resources/images/logo.png"/>
-                </div>
-            </div>
-            <div class="options">
-                <div class="row">
-                    <div  id="col-xs-12">
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#general">General</a></li>
-                            <li><a data-toggle="tab" href="#groups">Groups</a></li>
-                            <li><a data-toggle="tab" href="#advanced">Advanced</a></li>
-                            <li><a data-toggle="tab" href="#help">Help</a></li>
-                            <li><a data-toggle="tab" href="#donate">Donate</a></li>
-                        </ul>
-                        <div class="tab-content">
-                            <div id="general" class="tab-pane fade in active">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h2>General Settings</h2>
-                                        <div class="form-group">
-                                            <label for="units" class="form-label">Units:</label>
-                                            <select class="form-control" id="units">
-                                                <option value="km">kilometers</option>
-                                                <option value="m">miles</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="radius" class="form-label">Event Search Radius:</label>
-                                            <input type="number" min="0" class="form-control" id="radius">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="events" class="form-label">Show all events on Timeline:</label>
-                                            <br>
-                                            <input type="checkbox" data-off-text="No" data-on-text="Yes" checked="false" class="form-control" id="events">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="groups" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h2>Groups</h2>
-                                        <div class="form-group">
-                                            <label for="customgroups" class="form-label">Custom Groups:</label>
-                                            <input type="text" placeholder="Comma separated list" class="form-control" id="customgroups">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="advanced" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h2>Advanced</h2>
-                                        <div class="form-group">
-                                            <label for="prerelease" class="form-label">Show Pre-release Versions:</label>
-                                            <br/>
-                                            <input type="checkbox" data-off-text="No" data-on-text="Yes" checked="false"  class="form-control" id="prerelease">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="location" class="form-label">Use custom location:</label>
-                                            <br/>
-                                            <input type="checkbox" data-off-text="No" data-on-text="Yes" checked="false"  class="form-control" id="location">
-                                        </div>
-                                        <div class="form-group" id="addressOption">
-                                            <label for="address" class="form-label">Address:</label>
-                                            <input type="text" class="form-control" id="address">
-                                            <input type="hidden" id="lat" value="0">
-                                            <input type="hidden" id="lon" value="0">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="help" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h2>Help</h2>
-                                        <h3>General</h3>
-                                        <p>
-                                            <b>Units:</b> Metric or Imperial based in kilometers or miles.<br/>
-                                            <b>Event Search Radius:</b> The radius from your position (unless otherwise specified) to search for events.<br/>
-                                            <b>Show all Events on Timeline:</b> If Yes, this will send a pin for every pebble event, regardless of the location, to your timeline.<br/>
-                                        </p>
-                                        <h3>Groups</h3>
-                                        <p>
-                                            <b>Custom Groups:</b> A list of text to search for to find Meetup.com groups, separated by commas.<br/>
-                                        </p>
-                                        <h3>Advanced</h3>
-                                        <p>
-                                            <b>Show Pre-release Versions:</b> If toggled, this will show the latest pre-release version in the app's about screen.<br/>
-                                            <b>Use custom location:</b> Allows you to use a custom address to base searches for groups and events.<br/>
-                                            <b>Address:</b> If using a custom location, this is the full address of the location you wish to use. Including city, province/state, country.<br/>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="donate" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h2>Thank You</h2>
+        <img id="banner" src="resources/images/logo.png"/>
+        <nav id="tabs">
+            <ul>
+                <li>
+                    <a class="tab" href="#general">
+                        <i class="tab-icon fa fa-cog"></i>
+                        <span class="tab-title">General</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="tab" href="#customgroups">
+                        <i class="tab-icon fa fa-users"></i>
+                        <span class="tab-title">Groups</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="tab" href="#advanced">
+                        <i class="tab-icon fa fa-tasks"></i>
+                        <span class="tab-title">Advanced</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="tab" href="#help">
+                        <i class="tab-icon fa fa-question-circle"></i>
+                        <span class="tab-title">Help</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="tab" href="#donate">
+                        <i class="tab-icon fa fa-usd"></i>
+                        <span class="tab-title">Donate</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="content">
 
-                                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=3PXVE99RCWGRQ&lc=CA&item_name=Meetup%20for%20Pebble%20by%20Matt%20Langlois&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted&return=fletchto99.com/other/pebble/metup/settings.html">
-                                            <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="PayPal - The safer, easier way to pay online!">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+            <section id="general">
+                <div class="item-container">
+                    <div class="item-container-header">General Settings</div>
+                    <div class="item-container-content">
+                        <label class="item">
+                            Units
+                            <select id="units" class="item-select">
+                                <option class="item-select-option" value="km">Kilometers</option>
+                                <option class="item-select-option" value="m">Miles</option>
+                            </select>
+                        </label>
+                        <label class="item">
+                            Radius
+                            <input type="range" class="item-slider" name="radius" id="radiusslider" value="100" max="500" min="0">
+                            <span class="item-input-wrapper item-slider-text">
+                                <input type="text" class="item-input" name="radius" id="radius" value="100" min="0">
+                            </span>
+                        </label>
+                        <label class="item">
+                            Show all events on Timeline
+                            <input type="checkbox" class="item-toggle" id="events">
+                        </label>
+                    </div>
+                </div>
+            </section>
+            <section id="customgroups">
+                <div class="item-container">
+                    <div class="item-container-header">
+                        Custom Groups
+                    </div>
+                    <div class="item-container-content">
+                        <div id="customgroupscontainer" class="item-dynamic-list">
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <button type="submit" id="cancel" class="btn btn-primary btn-block">Cancel</button>
+            </section>
+            <section id="advanced">
+                <div class="item-container">
+                    <div class="item-container-header">
+                        Advanced
                     </div>
-                    <div class="col-xs-6">
-                        <button type="submit" id="save" class="btn btn-success btn-block">Save</button>
+                    <div class="item-container-content">
+                        <label class="item">
+                            Show Pre-release Versions
+                            <input type="checkbox" class="item-toggle" id="prerelease">
+                        </label>
+                        <label class="item">
+                            Use custom location
+                            <input type="checkbox" class="item-toggle" id="location">
+                        </label>
+                        <label id="locationcontainer" class="item hidden animated">
+                            <span class="item-input-wrapper">
+                                <input type="text" class="item-input" id="address" placeholder="Input field">
+                            </span>
+                        </label>
+                        <input type="hidden" id="lat" value="0">
+                        <input type="hidden" id="lon" value="0">
                     </div>
                 </div>
-            </div>
-            <div id="progress">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <h2>
-                            Saving....
-                        </h2>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
+            </section>
+            <section id="help">
+                <div class="item-container">
+                    <div class="item-container-header">
+                        Help
+                    </div>
+                    <div class="item-container-content">
+                        <div class="item-container-header">
+                            General
+                        </div>
+                        <div class="item">
+                            <b>Units:</b> Metric or Imperial based in kilometers or miles.<br/>
+                            <b>Event Search Radius:</b> The radius from your position (unless otherwise specified)
+                                          to
+                                          search for events.<br/>
+                            <b>Show all Events on Timeline:</b> If Yes, this will send a pin for every pebble event,
+                                          regardless of the location, to your timeline.<br/>
+                        </div>
+                        <div class="item-container-header">
+                            Groups
+                        </div>
+                        <div class="item">
+                            <b>Custom Groups:</b> A list of groups to search meetup.com for.
+                        </div>
+                        <div class="item-container-header">
+                            Advanced
+                        </div>
+                        <div class="item">
+                            <b>Show Pre-release Versions:</b> If toggled, this will show the latest pre-release
+                                                              version
+                                                              in the app's about screen.<br/>
+                            <b>Use custom location:</b> Allows you to use a custom address to base searches for
+                                                              groups
+                                                              and events.<br/>
+                            <b>Address:</b> If using a custom location, this is the full address of the location you
+                                                              wish to use. Including city, province/state,
+                                                              country.<br/>
                         </div>
                     </div>
+                </div>
+            </section>
+            <section id="donate">
+                <div class="item-container">
+                    <div class="item-container-header">
+                        Thank You!
+                    </div>
+                    <div class="item-container">
+                        <div class="button-container">
+                            <input type="button" value="Donate via Paypal" class="item-button" id="donatebutton" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div id="savecontainer" class="item-container hidden open">
+            <div class="item-container">
+                <div class="button-container">
+                    <input type="button" value="Save" class="item-button" id="savebutton" />
                 </div>
             </div>
         </div>

@@ -1,97 +1,245 @@
-function getQueryParam(variable, default_) {
+function getQueryParam(variable, defaultValue) {
     var query = location.search.substring(1);
     var vars = query.split('&');
     for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split('=');
-        if (pair[0] == variable) {
+        if (pair[0] === variable) {
             return decodeURIComponent(pair[1]);
         }
     }
-    return default_ || '';
+    return defaultValue || '';
 }
 
-function saveOptions() {
-    return {
-        'radius': $('#radius').val(),
-        'units': $('#units').val(),
-        'customgroups': $('#customgroups').val(),
-        'prerelease': $('#prerelease').is(":checked"),
-        'location': $('#location').is(":checked"),
-        'events': $('#events').is(":checked"),
-        'address': $('#address').val(),
-        'lon': $('#lon').val(),
-        'lat': $('#lat').val()
-    };
-}
+$(function () {
 
-$(document).ready(function () {
-    $.fn.bootstrapSwitch.defaults.size = 'small';
+    /** external APIs **/
     var geocoder = new google.maps.Geocoder();
-    $("#progress").hide();
-    $("#units option").filter(function () {
-        return $(this).val() == getQueryParam('units', 'km');
-    }).prop('selected', true);
-    $('#radius').val(parseInt(getQueryParam('radius', '100')));
-    $('#customgroups').val(getQueryParam('customgroups', ''));
-    $('#prerelease').bootstrapSwitch('state', 'true' === getQueryParam('prerelease', 'false'));
-    $('#location').bootstrapSwitch('state', 'true' === getQueryParam('location', 'false'));
-    $('#events').bootstrapSwitch('state', 'true' === getQueryParam('events', 'false'));
-    if ('false' === getQueryParam('location', 'false')) {
-        $('#addressOption').hide();
-    }
-    $('#lon').val(getQueryParam('lon', '0'));
-    $('#lat').val(getQueryParam('lat', '0'));
-    $('#address').val(getQueryParam('address', ' '));
-    $("#radius").keydown(function (e) {
-        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 || (e.keyCode == 65 && e.ctrlKey === true) || (e.keyCode == 67 && e.ctrlKey === true) || (e.keyCode == 88 && e.ctrlKey === true) || (e.keyCode >= 35 && e.keyCode <= 39)) {
-            return;
-        }
-        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-            e.preventDefault();
-        }
-    });
-    $('#cancel').click(function () {
-        document.location = getQueryParam('return_to', 'pebblejs://close#');
-    });
-    $('#location').on('switchChange.bootstrapSwitch', function(event, state) {
-        $('#addressOption').slideToggle('1000');
-    });
-    $('#save').click(function () {
 
-        if ($('#radius').val() == '' || $('#units').val() == '') {
-            alert('Invalid radius entered!');
-            return;
-        }
-        $('#options').fadeToggle('1000', function () {
-            $('#progress').fadeToggle('1000');
+    /** conatiners **/
+    var customgroupscontainer = document.getElementById('customgroupscontainer');
+    var locationcontainer = document.getElementById('locationcontainer');
+    var savecontainer = document.getElementById('savecontainer');
+
+    /**inputs **/
+    var units = document.getElementById('units');
+    var radius = document.getElementById('radius');
+    var allevents = document.getElementById('events');
+    var prerelease = document.getElementById('prerelease');
+    var location = document.getElementById('location');
+    var address = document.getElementById('address');
+    var lat = document.getElementById('lat');
+    var lon = document.getElementById('lon');
+    var savebutton = document.getElementById('savebutton');
+    var donatebutton = document.getElementById('donatebutton');
+
+    /** Helper Functions **/
+    var getCustomGroupsAsList = function () {
+        var children = [];
+        [].slice.call(customgroupscontainer.children).forEach(function (child) {
+            if (child.classList.contains('item') && !child.classList.contains('add-item')) {
+                children.push(child.innerText);
+            }
         });
+        return children.join(',');
+    };
 
-        if ($('#location').prop('checked')) {
-            var address = document.getElementById('address').value;
-            geocoder.geocode({'address': address}, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    $('#progress').fadeToggle('1000');
-                    $('#address').val(results[0].formatted_address);
-                    $('#lat').val(results[0].geometry.location.lat());
-                    $('#lon').val(results[0].geometry.location.lng());
-                    document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(saveOptions()));
-                } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
-                    alert('Address not found!');
-                    $('#progress').fadeToggle('1000', function () {
-                        console.log('Fading?!?!?');
-                        $('#options').fadeToggle('1000');
-                    });
-                } else {
-                    alert('Invalid address entered!');
-                    $('#progress').fadeToggle('1000', function () {
-                        $('#options').fadeToggle('1000');
-                    });
+    var addCustomGroupFromString = function(group) {
+        var item = createElement({
+            elem: 'div',
+            className: 'item',
+            textContent: group,
+            inside: [
+                {
+                    elem: 'div',
+                    className: 'delete-item',
+                    onclick: function () {
+                        item.parentNode.removeChild(item);
+                    }
                 }
-            });
-        } else {
-            document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(saveOptions()));
-        }
+            ]
+        });
+        customgroupscontainer.insertBefore(item, customgroupscontainer.lastChild)
+    };
 
+    /** Event Handlers **/
+    Slate.tabs.onchange = function (tab, index) {
+        if (index > 2) {
+            if (savecontainer.classList.contains('open')) {
+                savecontainer.classList.remove('open');
+            }
+        } else {
+            if (!savecontainer.classList.contains('open')) {
+                savecontainer.classList.add('open');
+            }
+        }
+    };
+
+    /** Add event listeners **/
+    donatebutton.addEventListener('click', function() {
+        document.location = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=3PXVE99RCWGRQ&lc=CA&item_name=Meetup%20for%20Pebble%20by%20Matt%20Langlois&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted&return=fletchto99.com/other/pebble/metup/settings.html';
     });
+
+    location.addEventListener('change', function() {
+       if (location.checked) {
+           if (!locationcontainer.classList.contains('open')) {
+               locationcontainer.classList.add('open');
+           }
+       }  else {
+           if (locationcontainer.classList.contains('open')) {
+               locationcontainer.classList.remove('open');
+           }
+       }
+    });
+
+    address.addEventListener('blur', function() {
+        geocoder.geocode({'address': address.value}, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                address.value = results[0].formatted_address;
+                lat.value = results[0].geometry.location.lat();
+                lon.value = results[0].geometry.location.lng();
+            } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+                alert('Address not found!');
+            } else {
+                alert('Invalid address entered!');
+            }
+        });
+    });
+
+    savebutton.addEventListener('click', function() {
+        document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify({
+                'radius':  radius.value,
+                'units': units.value,
+                'events': allevents.checked ? 1 : 0,
+                'customgroups': getCustomGroupsAsList(),
+                'prerelease': prerelease.checked ? 1 : 0,
+                'location': location.checked ? 1 : 0,
+                'address': address.value,
+                'lon': lon.value,
+                'lat': lat.value
+        }));
+    });
+
+    /** Set loaded values **/
+    units.value = getQueryParam('units', 'km');
+    radius.value = getQueryParam('radius', '100');
+    allevents.checked = getQueryParam('events', false);
+    prerelease.checked = getQueryParam('prereelease', false);
+    location.checked = getQueryParam('location');
+    address.value = getQueryParam('address', false);
+    lat.value = getQueryParam('lat');
+    lon.value = getQueryParam('lon');
+
+    if (location.checked) {
+        if (!locationcontainer.classList.contains('open')) {
+            locationcontainer.classList.add('open');
+        }
+    }
+
+    /** Dynamic lists management */
+    var groups = getQueryParam('customgroups').split(',');
+    if (groups.length > 0) {
+        groups.forEach(function(group) {
+            if (group.length > 0) {
+                addCustomGroupFromString(group);
+           }
+        });
+    }
 
 });
+
+
+/** Helper functions taken from my other projects **/
+
+/**
+ *
+ * @param params
+ * @returns {Element}
+ */
+window.createElement = function (params) {
+    if (!params) {
+        throw Error('No parameters passed to create element');
+    }
+
+    if (typeof params === 'string') {
+        return document.createElement(params);
+    }
+
+    if (params instanceof HTMLElement) {
+        throw Error('createElement called with an HTML element as a parameter.');
+    }
+
+    var elem = document.createElement(params.elem || 'span');
+    params = cloneBasicObject(params);
+    delete params.elem;
+
+    // Put this element into a parent
+    if (params.putIn) {
+        params.putIn.appendChild(elem);
+        delete params.putIn;
+    }
+
+    // Get array of elements to put into this
+    var toGoInside = [];
+    if (params.inside) {
+        toGoInside = params.inside;
+        delete params.inside;
+    }
+
+    // Apply HTML attributes
+    for (var key in params.attributes) {
+        elem.setAttribute(key, params.attributes[key]);
+    }
+    delete params.attributes;
+
+    // Apply javascript attributes
+    for (key in params) {
+        elem[key] = params[key];
+    }
+
+    // Iterate over putIn array and put them into elem
+    for (var i = 0, l = toGoInside.length; i < l; i++) {
+        var e = toGoInside[i];
+        if (!(e instanceof Element)) {
+            e = createElement(e);
+        }
+
+        elem.appendChild(e);
+    }
+
+    return elem;
+};
+
+window.cloneBasicObject = function (obj) {
+    if (null === obj || "object" != typeof obj) {
+        return obj;
+    }
+
+    var copy;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = obj.slice();
+        for (var i = 0; i < copy.length; i++) {
+            copy[i] = cloneBasicObject(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) {
+                copy[attr] = obj[attr];
+            }
+        }
+        return copy;
+    }
+};
