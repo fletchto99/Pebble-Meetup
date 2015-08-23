@@ -60,19 +60,19 @@ function getEvents(lon, lat, topics) {
                 }
 
                 menu = new UI.Menu({
-                    backgroundColor: functions.getSetting('menubgcolor', 'white'),
-                    textColor: functions.getSetting('menutextcolor', 'black'),
-                    highlightBackgroundColor: functions.getSetting('hmenubgcolor', 'black'),
-                    highlightTextColor: functions.getSetting('hmenutextcolor', 'white'),
+                    backgroundColor: functions.colorMap(functions.getSetting('menubgcolor', 'FFFFFF')),
+                    textColor: functions.colorMap(functions.getSetting('menutextcolor', '000000')),
+                    highlightBackgroundColor: functions.colorMap(functions.getSetting('hmenubgcolor', '000000')),
+                    highlightTextColor: functions.colorMap(functions.getSetting('hmenutextcolor', 'FFFFFF')),
                     sections: [{
                         title: 'Events - ' + data.length, items: menuItems
                     }]
                 });
                 options = new UI.Menu({
-                    backgroundColor: functions.getSetting('menubgcolor', 'white'),
-                    textColor: functions.getSetting('menutextcolor', 'black'),
-                    highlightBackgroundColor: functions.getSetting('hmenubgcolor', 'black'),
-                    highlightTextColor: functions.getSetting('hmenutextcolor', 'white'),
+                    backgroundColor: functions.colorMap(functions.getSetting('menubgcolor', 'FFFFFF')),
+                    textColor: functions.colorMap(functions.getSetting('menutextcolor', '000000')),
+                    highlightBackgroundColor: functions.colorMap(functions.getSetting('hmenubgcolor', '000000')),
+                    highlightTextColor: functions.colorMap(functions.getSetting('hmenutextcolor', 'FFFFFF')),
                     sections: [{
                         title: 'Event Options', items: optionItems
                     }]

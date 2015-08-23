@@ -45,10 +45,10 @@ functions.init = function () {
     }];
     console.log("Creating menu");
     var mainMenu = new UI.Menu({
-        backgroundColor: functions.getSetting('menubgcolor', 'white'),
-        textColor: functions.getSetting('menutextcolor', 'black'),
-        highlightBackgroundColor: functions.getSetting('hmenubgcolor', 'black'),
-        highlightTextColor: functions.getSetting('hmenutextcolor', 'white'),
+        backgroundColor: functions.colorMap(functions.getSetting('menubgcolor', 'FFFFFF')),
+        textColor: functions.colorMap(functions.getSetting('menutextcolor', '000000')),
+        highlightBackgroundColor: functions.colorMap(functions.getSetting('hmenubgcolor', '000000')),
+        highlightTextColor: functions.colorMap(functions.getSetting('hmenutextcolor', 'FFFFFF')),
         sections: [{
             title: 'Pebble Meetup', items: menuItems
         }]
@@ -165,5 +165,129 @@ functions.getColorOptions = function(type) {
         default:
             return {titleColor: 'black', subtitleColor: 'black', bodyColor: 'black'};
     }
+};
 
+functions.colorMap = function(hexcode) {
+    switch(hexcode) {
+        case '000000':
+            return 'black';
+        case 'FFFFFF':
+            return 'white';
+        case 'AAAAAA':
+            return 'lightGrey';
+        case '555555':
+            return 'darkGrey';
+        case 'FFFFAA':
+            return 'pastelYellow';
+        case 'FFFF55':
+            return 'icterine';
+        case 'FFAA55':
+            return 'rajah';
+        case 'FF5500':
+            return 'orange';
+        case 'FF0000':
+            return 'red';
+        case 'FF0055':
+            return 'folly';
+        case 'FF5555':
+            return 'sunsetOrange';
+        case 'FFAAAA':
+            return 'melon';
+        case 'FFFF00':
+            return 'yellow';
+        case 'FFAA00':
+            return 'chromeYellow';
+        case 'AA5500':
+            return 'windsorTan';
+        case 'AA5555':
+            return 'roseVale';
+        case 'AA0000':
+            return 'darkCandyAppleRed';
+        case 'FF00AA':
+            return 'fashionMegenta';
+        case 'FF55AA':
+            return 'brilliantRose';
+        case 'FFAAFF':
+            return 'richBrilliantLavender';
+        case 'AAAA00':
+            return 'limerick';
+        case '550000':
+            return 'bulgerianRose';
+        case '550055':
+            return 'imperialPurple';
+        case 'AA00AA':
+            return 'purple';
+        case 'AA55AA':
+            return 'purpures';
+        case '55AA00':
+            return 'kellyGreen';
+        case '005500':
+            return 'darkGreen';
+        case '005555':
+            return 'midnightGreen';
+        case '000055':
+            return 'oxfordBlue';
+        case '5500AA':
+            return 'indigo';
+        case 'AA00FF':
+            return 'vividViolet';
+        case 'AA55FF':
+            return 'lavanderIndigo';
+        case 'AAFF55':
+            return 'inchworm';
+        case 'AAFF00':
+            return 'springbud';
+        case '55FF00':
+            return 'brightGreen';
+        case '00FF00':
+            return 'green';
+        case '00AA00':
+            return 'islamicGreen';
+        case '55AA55':
+            return 'mayGreen';
+        case '55AAAA':
+            return 'cadetBlue';
+        case '0055AA':
+            return 'cobaltBlue';
+        case '0000AA':
+            return 'darkBlue';
+        case '5500FF':
+            return 'electricUltramarine';
+        case '5555AA':
+            return 'liberty';
+        case 'AAFFAA':
+            return 'mintGreen';
+        case '55FF55':
+            return 'screaminGreen';
+        case '00FF55':
+            return 'malachite';
+        case '00AA55':
+            return 'jaegerGreen';
+        case '00AAAA':
+            return 'tiffanyBlue';
+        case '00AAFF':
+            return 'vividCerulean';
+        case '0000FF':
+            return 'blue';
+        case '5555FF':
+            return 'veryLightBlue';
+        case 'AAAAFF':
+            return 'babyBlueEyes';
+        case '55FFAA':
+            return 'mediumAquamarine';
+        case '00FFAA':
+            return 'mediumSpringGreen';
+        case '00FFFF':
+            return 'cyan';
+        case '55AAFF':
+            return 'pictonBlue';
+        case '0055FF':
+            return 'blueMoon';
+        case '55FFFF':
+            return 'electricBlue';
+        case 'AAFFFF':
+            return 'celeste';
+        default:
+            return 'black';
+    }
 };
