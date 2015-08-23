@@ -1,5 +1,5 @@
 function getQueryParam(variable, def) {
-    var result = def;
+    var result = def || '';
     try {
         var obj = JSON.parse(decodeURIComponent(window.location.hash.substr(1)));
         if (variable in obj) {
