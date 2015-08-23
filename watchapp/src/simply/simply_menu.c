@@ -241,13 +241,15 @@ static void request_menu_item(SimplyMenu *self, uint16_t section_index, uint16_t
 }
 
 static void mark_dirty(SimplyMenu *self) {
-  if (!self->menu_layer.menu_layer) { return; }
-  layer_mark_dirty(menu_layer_get_layer(self->menu_layer.menu_layer));
+  if (self->menu_layer.menu_layer) {
+    layer_mark_dirty(menu_layer_get_layer(self->menu_layer.menu_layer));
+  }
 }
 
 static void reload_data(SimplyMenu *self) {
-  if (!self->menu_layer.menu_layer) { return; }
-  menu_layer_reload_data(self->menu_layer.menu_layer);
+  if (self->menu_layer.menu_layer) {
+    menu_layer_reload_data(self->menu_layer.menu_layer);
+  }
 }
 
 static void simply_menu_set_num_sections(SimplyMenu *self, uint16_t num_sections) {
@@ -336,7 +338,13 @@ static void menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, ui
   list1_remove(&self->menu_layer.sections, &section->node);
   list1_prepend(&self->menu_layer.sections, &section->node);
 
-  menu_cell_basic_header_draw(ctx, cell_layer, section->title);
+  GRect bounds = layer_get_bounds(cell_layer);
+  bounds.origin.x += 2;
+  bounds.origin.y -= 1;
+
+  graphics_context_set_text_color(ctx, gcolor8_get_or(self->menu_layer.normal_foreground, GColorBlack));
+  graphics_draw_text(ctx, section->title, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD),
+                     bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, NULL);
 }
 
 static void simply_menu_draw_row_spinner(SimplyMenu *self, GContext *ctx, const Layer *cell_layer) {
@@ -510,6 +518,11 @@ static void handle_menu_props_packet(Simply *simply, Packet *data) {
   SimplyMenu *self = simply->menu;
 
   simply_menu_set_num_sections(self, packet->num_sections);
+
+  if (!self->window.window) {
+    return;
+  }
+
   window_set_background_color(self->window.window, gcolor8_get_or(packet->background_color, GColorWhite));
 
   if (!self->menu_layer.menu_layer) {
@@ -602,16 +615,16 @@ SimplyMenu *simply_menu_create(Simply *simply) {
     .menu_layer.num_sections = 1,
   };
 
-  simply_window_init(&self->window, simply);
-
-  window_set_user_data(self->window.window, self);
-  window_set_background_color(self->window.window, GColorWhite);
-  window_set_window_handlers(self->window.window, (WindowHandlers) {
+  static const WindowHandlers s_window_handlers = {
     .load = window_load,
     .appear = window_appear,
     .disappear = window_disappear,
     .unload = window_unload,
-  });
+  };
+  self->window.window_handlers = &s_window_handlers;
+
+  simply_window_init(&self->window, simply);
+  simply_window_set_background_color(&self->window, GColor8White);
 
   return self;
 }

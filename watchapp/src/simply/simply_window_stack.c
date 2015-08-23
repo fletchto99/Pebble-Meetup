@@ -6,6 +6,7 @@
 #include "simply.h"
 
 #include "util/math.h"
+#include "util/sdk.h"
 
 #include <pebble.h>
 
@@ -81,8 +82,20 @@ SimplyWindow *simply_window_stack_get_top_window(Simply *simply) {
   return window;
 }
 
-void simply_window_stack_show(SimplyWindowStack *self, SimplyWindow *window, bool is_push) {
-  bool animated = (self->simply->splash == NULL);
+#ifdef PBL_SDK_3
+static void show_window_sdk_3(SimplyWindowStack *self, SimplyWindow *window, bool is_push) {
+  self->is_showing = true;
+  window_stack_pop_all(false);
+  self->is_showing = false;
+
+  simply_window_preload(window);
+  window_stack_push(window->window, false);
+}
+#endif
+
+#ifdef PBL_SDK_2
+static void show_window_sdk_2(SimplyWindowStack *self, SimplyWindow *window, bool is_push) {
+  const bool animated = (self->simply->splash == NULL);
 
   self->is_showing = true;
   window_stack_pop_all(!is_push);
@@ -92,11 +105,17 @@ void simply_window_stack_show(SimplyWindowStack *self, SimplyWindow *window, boo
     window_stack_push(self->pusher, false);
   }
 
+  simply_window_preload(window);
   window_stack_push(window->window, animated);
 
   if (is_push) {
     window_stack_remove(self->pusher, false);
   }
+}
+#endif
+
+void simply_window_stack_show(SimplyWindowStack *self, SimplyWindow *window, bool is_push) {
+  SDK_SELECT(show_window_sdk_3, show_window_sdk_2)(self, window, is_push);
 }
 
 void simply_window_stack_pop(SimplyWindowStack *self, SimplyWindow *window) {
@@ -115,22 +134,19 @@ void simply_window_stack_back(SimplyWindowStack *self, SimplyWindow *window) {
 }
 
 void simply_window_stack_send_show(SimplyWindowStack *self, SimplyWindow *window) {
-  if (self->is_showing) {
-    return;
+  if (window->id && self->is_showing) {
+    send_window_show(self->simply->msg, window->id);
   }
-  send_window_show(self->simply->msg, window->id);
 }
 
 void simply_window_stack_send_hide(SimplyWindowStack *self, SimplyWindow *window) {
-  if (!window->id) {
-    return;
-  }
-  if (self->is_showing) {
-    return;
-  }
-  send_window_hide(self->simply->msg, window->id);
-  if (!self->is_hiding) {
-    window_stack_push(self->pusher, false);
+  if (window->id && !self->is_showing) {
+    send_window_hide(self->simply->msg, window->id);
+    SDK_SELECT(NONE, {
+      if (!self->is_hiding) {
+        window_stack_push(self->pusher, false);
+      }
+    });
   }
 }
 
@@ -167,7 +183,9 @@ SimplyWindowStack *simply_window_stack_create(Simply *simply) {
   SimplyWindowStack *self = malloc(sizeof(*self));
   *self = (SimplyWindowStack) { .simply = simply };
 
-  self->pusher = window_create();
+  SDK_SELECT(NONE, {
+    self->pusher = window_create();
+  });
 
   return self;
 }
@@ -177,8 +195,10 @@ void simply_window_stack_destroy(SimplyWindowStack *self) {
     return;
   }
 
-  window_destroy(self->pusher);
-  self->pusher = NULL;
+  SDK_SELECT(NONE, {
+    window_destroy(self->pusher);
+    self->pusher = NULL;
+  });
 
   free(self);
 }
