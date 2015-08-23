@@ -67,7 +67,7 @@ $(function () {
     };
 
     var applyDefaultColor = function (element, color) {
-        element.value = '#' + color;
+        element.value = '0x' + color;
         element.parentNode.lastChild.firstChild.style.background = '#' + color;
     };
 
@@ -142,10 +142,10 @@ $(function () {
     address.value = getQueryParam('address', false);
     lat.value = getQueryParam('lat');
     lon.value = getQueryParam('lon');
-    applyDefaultColor(menubgcolor, getQueryParam('menubgcolor', '0xFFFFFF'));
-    applyDefaultColor(menutextcolor, getQueryParam('menutextcolor', '0x000000'));
-    applyDefaultColor(hmenubgcolor, getQueryParam('hmenubgcolor', '0x000000'));
-    applyDefaultColor(hmenutextcolor, getQueryParam('hmenutextcolor', '0xFFFFFF'));
+    applyDefaultColor(menubgcolor, getQueryParam('menubgcolor', 'FFFFFF'));
+    applyDefaultColor(menutextcolor, getQueryParam('menutextcolor', '000000'));
+    applyDefaultColor(hmenubgcolor, getQueryParam('hmenubgcolor', '000000'));
+    applyDefaultColor(hmenutextcolor, getQueryParam('hmenutextcolor', 'FFFFFF'));
     currentversion.textContent = 'Meetup Version: ' + getQueryParam('latestver', 'Unknown!');
     if (getQueryParam('firstrun', false) == false) {
         // alert('Thank you for downloading Meetup!')
