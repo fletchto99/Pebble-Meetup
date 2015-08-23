@@ -37,6 +37,12 @@
                     </a>
                 </li>
                 <li>
+                    <a class="tab" href="#customize">
+                        <i class="tab-icon fa fa-paint-brush"></i>
+                        <span class="tab-title">Customize</span>
+                    </a>
+                </li>
+                <li>
                     <a class="tab" href="#help">
                         <i class="tab-icon fa fa-question-circle"></i>
                         <span class="tab-title">Help</span>
@@ -75,6 +81,9 @@
                             <input type="checkbox" class="item-toggle" id="events">
                         </label>
                     </div>
+                    <div class="item-container-footer" id="currentversion">
+                        Detecting Meetup current version...
+                    </div>
                 </div>
             </section>
             <section id="customgroups">
@@ -109,6 +118,36 @@
                         </label>
                         <input type="hidden" id="lat" value="0">
                         <input type="hidden" id="lon" value="0">
+                    </div>
+                </div>
+            </section>
+            <section id="customize">
+                <div class="item-container">
+                    <div class="item-container-header">
+                        Regular Menu Colors:
+                    </div>
+                    <div class="item-container-content">
+                        <label class="item">
+                            Background Color
+                            <input type="text" class="item-color item-color-normal" id="menubgcolor">
+                        </label>
+                        <label class="item">
+                            Text Color
+                            <input type="text" class="item-color item-color-normal" id="menutextcolor">
+                        </label>
+                    </div>
+                    <div class="item-container-header">
+                        Highlighted Menu Colors:
+                    </div>
+                    <div class="item-container-content">
+                        <label class="item">
+                            Background Color
+                            <input type="text" class="item-color item-color-normal" id="hmenubgcolor">
+                        </label>
+                        <label class="item">
+                            Text Color
+                            <input type="text" class="item-color item-color-normal" id="hmenutextcolor">
+                        </label>
                     </div>
                 </div>
             </section>

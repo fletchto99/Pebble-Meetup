@@ -54,11 +54,19 @@ function getGroups(lon, lat, customTopics) {
                     });
                 }
                 var menu = new UI.Menu({
+                    backgroundColor: functions.getSetting('menubgcolor', 'white'),
+                    textColor: functions.getSetting('menutextcolor', 'black'),
+                    highlightBackgroundColor: functions.getSetting('hmenubgcolor', 'black'),
+                    highlightTextColor: functions.getSetting('hmenutextcolor', 'white'),
                     sections: [{
                         title: 'Groups - ' + data.length, items: menuItems
                     }]
                 });
                 var options = new UI.Menu({
+                    backgroundColor: functions.getSetting('menubgcolor', 'white'),
+                    textColor: functions.getSetting('menutextcolor', 'black'),
+                    highlightBackgroundColor: functions.getSetting('hmenubgcolor', 'black'),
+                    highlightTextColor: functions.getSetting('hmenutextcolor', 'white'),
                     sections: [{
                         title: 'Group Options', items: optionItems
                     }]

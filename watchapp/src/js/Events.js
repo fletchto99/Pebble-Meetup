@@ -60,11 +60,19 @@ function getEvents(lon, lat, topics) {
                 }
 
                 menu = new UI.Menu({
+                    backgroundColor: functions.getSetting('menubgcolor', 'white'),
+                    textColor: functions.getSetting('menutextcolor', 'black'),
+                    highlightBackgroundColor: functions.getSetting('hmenubgcolor', 'black'),
+                    highlightTextColor: functions.getSetting('hmenutextcolor', 'white'),
                     sections: [{
                         title: 'Events - ' + data.length, items: menuItems
                     }]
                 });
                 options = new UI.Menu({
+                    backgroundColor: functions.getSetting('menubgcolor', 'white'),
+                    textColor: functions.getSetting('menutextcolor', 'black'),
+                    highlightBackgroundColor: functions.getSetting('hmenubgcolor', 'black'),
+                    highlightTextColor: functions.getSetting('hmenutextcolor', 'white'),
                     sections: [{
                         title: 'Event Options', items: optionItems
                     }]

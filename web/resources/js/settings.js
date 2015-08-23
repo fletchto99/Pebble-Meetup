@@ -29,6 +29,11 @@ $(function () {
     var address = document.getElementById('address');
     var lat = document.getElementById('lat');
     var lon = document.getElementById('lon');
+    var menubgcolor = document.getElementById('menubgcolor');
+    var menutextcolor = document.getElementById('menutextcolor');
+    var hmenubgcolor = document.getElementById('hmenubgcolor');
+    var hmenutextcolor = document.getElementById('hmenutextcolor');
+    var currentversion = document.getElementById('currentversion');
     var savebutton = document.getElementById('savebutton');
     var donatebutton = document.getElementById('donatebutton');
 
@@ -59,6 +64,11 @@ $(function () {
             ]
         });
         customgroupscontainer.insertBefore(item, customgroupscontainer.lastChild)
+    };
+
+    var applyDefaultColor = function(element, color) {
+        element.value = color;
+        element.parentNode.lastChild.firstChild.style.background = color;
     };
 
     /** Event Handlers **/
@@ -128,6 +138,14 @@ $(function () {
     address.value = getQueryParam('address', false);
     lat.value = getQueryParam('lat');
     lon.value = getQueryParam('lon');
+    applyDefaultColor(menubgcolor, getQueryParam('menubgcolor', '#000000'));
+    applyDefaultColor(menutextcolor, getQueryParam('menutextcolor', '#000000'));
+    applyDefaultColor(hmenubgcolor, getQueryParam('hmenubgcolor', '#000000'));
+    applyDefaultColor(hmenutextcolor, getQueryParam('hmenutextcolor', '#000000'));
+    currentversion.textContent = 'Meetup Version: ' + getQueryParam('latestver', 'Unknown!');
+    if (getQueryParam('firstrun', false) == false) {
+        alert('Thank you for downloading Meetup!')
+    }
 
     if (location.checked) {
         if (!locationcontainer.classList.contains('open')) {

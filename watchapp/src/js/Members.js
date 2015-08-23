@@ -36,6 +36,10 @@ Members.fetchFor = function (id, attending, name) {
                     };
                 }
                 menu = new UI.Menu({
+                    backgroundColor: functions.getSetting('menubgcolor', 'white'),
+                    textColor: functions.getSetting('menutextcolor', 'black'),
+                    highlightBackgroundColor: functions.getSetting('hmenubgcolor', 'black'),
+                    highlightTextColor: functions.getSetting('hmenutextcolor', 'white'),
                     sections: [{
                         title: 'We\'re ' + attending + ' ' + name, items: menuItems
                     }]
