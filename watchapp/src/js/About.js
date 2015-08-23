@@ -1,6 +1,5 @@
 var functions = require('functions');
 var ajax = require('ajax');
-var UI = require('ui');
 
 var About = module.exports;
 

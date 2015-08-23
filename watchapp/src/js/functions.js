@@ -77,12 +77,12 @@ functions.init = function () {
             if (!functions.getSetting('firstrun')) {
                 console.log("First run launch, enjoy the app!");
                 functions.showCard('IMAGE_WELCOME_ICON', 'Welcome', '', 'Thank you for choosing to use Meetup for Pebble! We hope you enjoy the app.', functions.getColorOptions('DATA'));
-                Settings.data('firstrun', true);
-                Settings.data('latestver', functions.getVersionString());
+                Settings.option('firstrun', true);
+                Settings.option('latestver', functions.getVersionString());
             } else if (functions.getVersionString() != functions.getSetting('latestver')) {
                 console.log("Updated version! Displaying new version information.");
                 changes.fetch();
-                Settings.data('latestver', functions.getVersionString());
+                Settings.option('latestver', functions.getVersionString());
             }
             registerHandlers();
         }
@@ -93,7 +93,7 @@ functions.getSetting = function (setting, default_setting) {
     if (!default_setting) {
         default_setting = false;
     }
-    return Settings.data(setting) !== null ? Settings.data(setting) : default_setting;
+    return Settings.option(setting) !== null ? Settings.option(setting) : default_setting;
 };
 
 

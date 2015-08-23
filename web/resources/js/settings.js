@@ -1,13 +1,13 @@
-function getQueryParam(variable, defaultValue) {
-    var query = location.search.substring(1);
-    var vars = query.split('&');
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split('=');
-        if (pair[0] === variable) {
-            return decodeURIComponent(pair[1]);
+function getQueryParam(variable, def) {
+    var result = def;
+    try {
+        var obj = JSON.parse(decodeURIComponent(window.location.hash.substr(1)));
+        if (variable in obj) {
+            result = obj[variable];
         }
+    } catch (ignored) {
     }
-    return defaultValue || '';
+    return result;
 }
 
 $(function () {
