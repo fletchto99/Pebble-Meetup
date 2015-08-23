@@ -142,10 +142,10 @@ $(function () {
     address.value = getQueryParam('address', false);
     lat.value = getQueryParam('lat');
     lon.value = getQueryParam('lon');
-    applyDefaultColor(menubgcolor, getQueryParam('menubgcolor', '0x000000'));
+    applyDefaultColor(menubgcolor, getQueryParam('menubgcolor', '0xFFFFFF'));
     applyDefaultColor(menutextcolor, getQueryParam('menutextcolor', '0x000000'));
     applyDefaultColor(hmenubgcolor, getQueryParam('hmenubgcolor', '0x000000'));
-    applyDefaultColor(hmenutextcolor, getQueryParam('hmenutextcolor', '0x000000'));
+    applyDefaultColor(hmenutextcolor, getQueryParam('hmenutextcolor', '0xFFFFFF'));
     currentversion.textContent = 'Meetup Version: ' + getQueryParam('latestver', 'Unknown!');
     if (getQueryParam('firstrun', false) == false) {
         // alert('Thank you for downloading Meetup!')
