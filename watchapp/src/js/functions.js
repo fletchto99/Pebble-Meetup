@@ -204,7 +204,7 @@ functions.colorMap = function(hexcode) {
         case 'AA0000':
             return 'darkCandyAppleRed';
         case 'FF00AA':
-            return 'fashionMegenta';
+            return 'fashionMagenta';
         case 'FF55AA':
             return 'brilliantRose';
         case 'FFAAFF':
@@ -212,7 +212,7 @@ functions.colorMap = function(hexcode) {
         case 'AAAA00':
             return 'limerick';
         case '550000':
-            return 'bulgerianRose';
+            return 'bulgarianRose';
         case '550055':
             return 'imperialPurple';
         case 'AA00AA':
@@ -232,11 +232,11 @@ functions.colorMap = function(hexcode) {
         case 'AA00FF':
             return 'vividViolet';
         case 'AA55FF':
-            return 'lavanderIndigo';
+            return 'lavenderIndigo';
         case 'AAFF55':
             return 'inchworm';
         case 'AAFF00':
-            return 'springbud';
+            return 'springBud';
         case '55FF00':
             return 'brightGreen';
         case '00FF00':

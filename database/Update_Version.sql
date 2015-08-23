@@ -36,3 +36,6 @@ VALUES ('2.15', 2.15, 'Meetup is an app which allows users to check upcoming eve
 
 INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
 VALUES ('2.16', 2.16, 'Meetup is an app which allows users to check upcoming events in their area. Currently it supports searching for Groups and Events on Meetup.com, with default support for Pebble groups and events.', 'Update: Use latest PebbleJS version for an improved menu experience\\nImprovement: Select now closes card view', 0)
+
+INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
+VALUES ('2.17', 2.17, 'Meetup is an app which allows users to check upcoming events in their area. Currently it supports searching for Groups and Events on Meetup.com, with default support for Pebble groups and events.', 'Added: Ability to customize the app colors in the settings\\nImprovement: Modified the way settings are saved for a smoother experience\\nUpdate: Use latest PebbleJS version', 0)
