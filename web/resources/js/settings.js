@@ -48,7 +48,7 @@ $(function () {
         return children.join(',');
     };
 
-    var addCustomGroupFromString = function(group) {
+    var addCustomGroupFromString = function (group) {
         var item = createElement({
             elem: 'div',
             className: 'item',
@@ -66,14 +66,14 @@ $(function () {
         customgroupscontainer.insertBefore(item, customgroupscontainer.lastChild)
     };
 
-    var applyDefaultColor = function(element, color) {
-        element.value = color;
-        element.parentNode.lastChild.firstChild.style.background = color;
+    var applyDefaultColor = function (element, color) {
+        element.value = '#' + color;
+        element.parentNode.lastChild.firstChild.style.background = '#' + color;
     };
 
     /** Event Handlers **/
     Slate.tabs.onchange = function (tab, index) {
-        if (index > 2) {
+        if (index > 3) {
             if (savecontainer.classList.contains('open')) {
                 savecontainer.classList.remove('open');
             }
@@ -85,23 +85,23 @@ $(function () {
     };
 
     /** Add event listeners **/
-    donatebutton.addEventListener('click', function() {
+    donatebutton.addEventListener('click', function () {
         document.location = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=3PXVE99RCWGRQ&lc=CA&item_name=Meetup%20for%20Pebble%20by%20Matt%20Langlois&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted&return=fletchto99.com/other/pebble/metup/settings.html';
     });
 
-    location.addEventListener('change', function() {
-       if (location.checked) {
-           if (!locationcontainer.classList.contains('open')) {
-               locationcontainer.classList.add('open');
-           }
-       }  else {
-           if (locationcontainer.classList.contains('open')) {
-               locationcontainer.classList.remove('open');
-           }
-       }
+    location.addEventListener('change', function () {
+        if (location.checked) {
+            if (!locationcontainer.classList.contains('open')) {
+                locationcontainer.classList.add('open');
+            }
+        } else {
+            if (locationcontainer.classList.contains('open')) {
+                locationcontainer.classList.remove('open');
+            }
+        }
     });
 
-    address.addEventListener('blur', function() {
+    address.addEventListener('blur', function () {
         geocoder.geocode({'address': address.value}, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 address.value = results[0].formatted_address;
@@ -115,9 +115,9 @@ $(function () {
         });
     });
 
-    savebutton.addEventListener('click', function() {
+    savebutton.addEventListener('click', function () {
         document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify({
-                'radius':  radius.value,
+                'radius': radius.value,
                 'units': units.value,
                 'events': allevents.checked ? 1 : 0,
                 'customgroups': getCustomGroupsAsList(),
@@ -125,8 +125,12 @@ $(function () {
                 'location': location.checked ? 1 : 0,
                 'address': address.value,
                 'lon': lon.value,
-                'lat': lat.value
-        }));
+                'lat': lat.value,
+                'menubgcolor': menubgcolor.value.substr(2),
+                'menutextcolor': menutextcolor.value.substr(2),
+                'hmenubgcolor': hmenubgcolor.value.substr(2),
+                'hmenutextcolor': hmenutextcolor.value.substr(2)
+            }));
     });
 
     /** Set loaded values **/
@@ -138,13 +142,13 @@ $(function () {
     address.value = getQueryParam('address', false);
     lat.value = getQueryParam('lat');
     lon.value = getQueryParam('lon');
-    applyDefaultColor(menubgcolor, getQueryParam('menubgcolor', '#000000'));
-    applyDefaultColor(menutextcolor, getQueryParam('menutextcolor', '#000000'));
-    applyDefaultColor(hmenubgcolor, getQueryParam('hmenubgcolor', '#000000'));
-    applyDefaultColor(hmenutextcolor, getQueryParam('hmenutextcolor', '#000000'));
+    applyDefaultColor(menubgcolor, getQueryParam('menubgcolor', '0x000000'));
+    applyDefaultColor(menutextcolor, getQueryParam('menutextcolor', '0x000000'));
+    applyDefaultColor(hmenubgcolor, getQueryParam('hmenubgcolor', '0x000000'));
+    applyDefaultColor(hmenutextcolor, getQueryParam('hmenutextcolor', '0x000000'));
     currentversion.textContent = 'Meetup Version: ' + getQueryParam('latestver', 'Unknown!');
     if (getQueryParam('firstrun', false) == false) {
-        alert('Thank you for downloading Meetup!')
+        // alert('Thank you for downloading Meetup!')
     }
 
     if (location.checked) {
@@ -156,10 +160,10 @@ $(function () {
     /** Dynamic lists management */
     var groups = getQueryParam('customgroups').split(',');
     if (groups.length > 0) {
-        groups.forEach(function(group) {
+        groups.forEach(function (group) {
             if (group.length > 0) {
                 addCustomGroupFromString(group);
-           }
+            }
         });
     }
 
