@@ -101,7 +101,8 @@
     "shortName": "Meetup",
     "targetPlatforms": [
                         "aplite",
-                        "basalt"
+                        "basalt",
+                        "chalk"
                         ],
     "uuid": "3257305c-5f42-48fe-b64b-a915ab116125",
     "versionCode": 2,
