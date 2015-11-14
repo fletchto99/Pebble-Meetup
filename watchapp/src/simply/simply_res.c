@@ -110,7 +110,7 @@ typedef struct {
   const uint8_t *data;
 } CreateDataContext;
 
-static GBitmap *create_bitmap_with_data(SimplyImage *image, void *data) {
+SDK_2_USAGE static GBitmap *create_bitmap_with_data(SimplyImage *image, void *data) {
   CreateDataContext *ctx = data;
   GBitmap *bitmap = gbitmap_create_blank(ctx->size, GBitmapFormat1Bit);
   if (bitmap) {
@@ -120,7 +120,7 @@ static GBitmap *create_bitmap_with_data(SimplyImage *image, void *data) {
   return bitmap;
 }
 
-static GBitmap *create_bitmap_with_png_data(SimplyImage *image, void *data) {
+SDK_3_USAGE static GBitmap *create_bitmap_with_png_data(SimplyImage *image, void *data) {
   CreateDataContext *ctx = data;
   return ctx->data ? gbitmap_create_from_png_data(ctx->data, ctx->data_length) : NULL;
 }
@@ -137,8 +137,8 @@ SimplyImage *simply_res_add_image(SimplyRes *self, uint32_t id, int16_t width, i
     .data_length = pixels_length,
     .data = pixels,
   };
-  image = SDK_SELECT(create_image(self, create_bitmap_with_png_data, &context),
-                     create_image(self, create_bitmap_with_data, &context));
+  image = IF_SDK_3_ELSE(create_image(self, create_bitmap_with_png_data, &context),
+                        create_image(self, create_bitmap_with_data, &context));
   if (image) {
     image->id = id;
     add_image(self, image);
