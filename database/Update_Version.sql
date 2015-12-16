@@ -48,3 +48,6 @@ VALUES ('2.19', 2.19, 'Meetup is an app which allows users to check upcoming eve
 
 INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
 VALUES ('2.20', 2.20, 'Meetup is an app which allows users to check upcoming events in their area. Currently it supports searching for Groups and Events on Meetup.com, with default support for Pebble groups and events.', 'Force HTTPS for api calls', 0)
+
+INSERT INTO Versions (Version_Code, Version_Code_Decimal, Version_Description, Version_Changes, Pre_Release)
+VALUES ('2.21', 2.21, 'Meetup is an app which allows users to check upcoming events in their area. Currently it supports searching for Groups and Events on Meetup.com, with default support for Pebble groups and events.', 'Support for 3.x aplite devices!', 0)

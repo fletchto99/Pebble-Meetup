@@ -32,8 +32,8 @@ static inline GBitmap *gbitmap_create_blank_with_format(GSize size, GBitmapForma
 
 #endif
 
-// Compatibility definitions for aplite on all versions
-#ifndef PBL_COLOR
+// Compatibility definitions for aplite on 2.9 including those bundled in 3.x SDKs
+#ifndef PBL_SDK_3
 
 #define GBitmapFormat8Bit         1
 #define GBitmapFormat1BitPalette  2
@@ -140,6 +140,7 @@ typedef union GColor8 {
 typedef struct DictationSession DictationSession;
 typedef struct DictationSessionStatus DictationSessionStatus;
 void dictation_session_start(DictationSession *session);
+#define DictationSessionStatusFailureSystemAborted 3
 
 #endif
 

@@ -1,112 +1,110 @@
 {
-    "appKeys": {},
-    "capabilities": [
-                     "location",
-                     "configurable"
-                     ],
-    "companyName": "fletch_to_99",
-    "longName": "Meetup",
-    "projectType": "native",
-    "resources": {
-        "media": [
-                  {
-                  "menuIcon": true,
-                  "type": "png",
-                  "name": "IMAGE_MENU_ICON",
-                  "file": "images/menu_icon.png"
-                  },
-                  {
-                  "type": "png",
-                  "name": "IMAGE_LOGO_SPLASH",
-                  "file": "images/logo_splash.png"
-                  },
-                  {
-                  "type": "png",
-                  "name": "IMAGE_TILE_SPLASH",
-                  "file": "images/tile_splash.png"
-                  },
-                  {
-                  "type": "png",
-                  "name": "IMAGE_INFO_ICON",
-                  "file": "images/info.png"
-                  },
-                  {
-                  "type": "png",
-                  "name": "IMAGE_ERROR_ICON",
-                  "file": "images/error.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_EVENT_ICON",
-                    "file": "images/event.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_GROUP_ICON",
-                    "file": "images/group.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_PEBBLE_GROUP_ICON",
-                    "file": "images/pebble-group.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_WELCOME_ICON",
-                    "file": "images/welcome.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_CHANGES_ICON",
-                    "file": "images/changes.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_MEMBERS_ICON",
-                    "file": "images/members.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_PIN_ICON",
-                    "file": "images/pin.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_UNPIN_ICON",
-                    "file": "images/unpin.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_SUBSCRIBE_ICON",
-                    "file": "images/subscribe.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_UNSUBSCRIBE_ICON",
-                    "file": "images/unsubscribe.png"
-                  },
-                  {
-                    "type": "png",
-                    "name": "IMAGE_LOADING_ICON",
-                    "file": "images/loading.png"
-                  },
-                  {
-                  "type": "font",
-                  "name": "MONO_FONT_14",
-                  "file": "fonts/UbuntuMono-Regular.ttf"
-                  }
-                  ]
-    },
-    "sdkVersion": "3",
-    "shortName": "Meetup",
-    "targetPlatforms": [
-                        "aplite",
-                        "basalt"
-                        ],
-    "uuid": "3257305c-5f42-48fe-b64b-a915ab116125",
-    "versionCode": 2,
-    "versionLabel": "2.20",
-    "watchapp": {
-        "watchface": false
-    }
+  "appKeys": {},
+  "capabilities": [
+    "location",
+    "configurable"
+  ],
+  "companyName": "fletch_to_99",
+  "longName": "Meetup",
+  "resources": {
+    "media": [
+      {
+        "file": "images/menu_icon.png",
+        "menuIcon": true,
+        "name": "IMAGE_MENU_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/logo_splash.png",
+        "name": "IMAGE_LOGO_SPLASH",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/tile_splash.png",
+        "name": "IMAGE_TILE_SPLASH",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/info.png",
+        "name": "IMAGE_INFO_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/error.png",
+        "name": "IMAGE_ERROR_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/event.png",
+        "name": "IMAGE_EVENT_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/group.png",
+        "name": "IMAGE_GROUP_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/pebble-group.png",
+        "name": "IMAGE_PEBBLE_GROUP_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/welcome.png",
+        "name": "IMAGE_WELCOME_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/changes.png",
+        "name": "IMAGE_CHANGES_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/members.png",
+        "name": "IMAGE_MEMBERS_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/pin.png",
+        "name": "IMAGE_PIN_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/unpin.png",
+        "name": "IMAGE_UNPIN_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/subscribe.png",
+        "name": "IMAGE_SUBSCRIBE_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/unsubscribe.png",
+        "name": "IMAGE_UNSUBSCRIBE_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "images/loading.png",
+        "name": "IMAGE_LOADING_ICON",
+        "type": "bitmap"
+      },
+      {
+        "file": "fonts/UbuntuMono-Regular.ttf",
+        "name": "MONO_FONT_14",
+        "type": "font"
+      }
+    ]
+  },
+  "sdkVersion": "3",
+  "shortName": "Meetup",
+  "targetPlatforms": [
+    "aplite",
+    "basalt"
+  ],
+  "uuid": "3257305c-5f42-48fe-b64b-a915ab116125",
+  "versionLabel": "2.21",
+  "watchapp": {
+    "watchface": false
+  }
 }

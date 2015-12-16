@@ -1,6 +1,7 @@
 var struct = require('struct');
 var util2 = require('util2');
 var myutil = require('myutil');
+var Platform = require('platform');
 var Wakeup = require('wakeup');
 var Timeline = require('timeline');
 var Resource = require('ui/resource');
@@ -971,7 +972,7 @@ var PacketQueue = function() {
   this._send = this.send.bind(this);
 };
 
-PacketQueue.prototype._maxPayloadSize = 2044 - 32;
+PacketQueue.prototype._maxPayloadSize = (Platform.version() === 'aplite' ? 1024 : 2044) - 32;
 
 PacketQueue.prototype.add = function(packet) {
   var byteArray = toByteArray(packet);
@@ -1148,41 +1149,34 @@ SimplyPebble.accelConfig = function(def) {
 };
 
 SimplyPebble.voiceDictationStart = function(callback, enableConfirmation) {
-  // If there's a transcription in progress
-  if (SimplyPebble.dictationCallback) {
-    // Create the eror event
-    var e = {
+  if (Platform.version() === 'aplite') {
+    // If there is no microphone, call with an error event
+    callback({
+      'err': DictationSessionStatus[65],  // noMicrophone
+      'failed': true,
+      'transcription': null,
+    });
+    return;
+  } else if (state.dictationCallback) {
+    // If there's a transcription in progress, call with an error event
+    callback({
       'err': DictationSessionStatus[64],  // dictationAlreadyInProgress
       'failed': true,
       'transcription': null,
-    };
-    
-    // Invoke the callback and return    
-    callback(e);
+    });
     return;
   }
-
-  // Grab the current window to re-show once we're done
-  state.dictationWindow = WindowStack.top();
 
   // Set the callback and send the packet
   state.dictationCallback = callback;
   SimplyPebble.sendPacket(VoiceDictationStartPacket.enableConfirmation(enableConfirmation));
-}
+};
 
 SimplyPebble.voiceDictationStop = function() {
-  // Send the message
+  // Send the message and delete the callback
   SimplyPebble.sendPacket(VoiceDictationStopPacket);
-
-  // Clear the callback variable
-  state.dictationCallback = null;
-
-  // If we have a window stored, show it then clear the varaible
-  if (state.dictationWindow) {
-    state.dictationWindow.show();
-    state.dictationWindow = null;
-  }
-}
+  delete state.dictationCallback;
+};
 
 SimplyPebble.onVoiceData = function(packet) {
   if (!state.dictationCallback) {
@@ -1190,19 +1184,15 @@ SimplyPebble.onVoiceData = function(packet) {
     console.log("No callback specified for dictation session");
   } else {
     var e = {
-      'err': DictationSessionStatus[packet.status()], 
-      'failed': packet.status() != 0,
+      'err': DictationSessionStatus[packet.status()],
+      'failed': packet.status() !== 0,
       'transcription': packet.transcription(),
     };
-    // invoke and clear the callback
+    // Invoke and delete the callback
     state.dictationCallback(e);
-    state.dictationCallback = null;
+    delete state.dictationCallback;
   }
-
-  // show the top window to re-register handlers, etc. 
-  state.dictationWindow.show();
-  state.dictationWindow = null;
-}
+};
 
 SimplyPebble.menuClear = function() {
   SimplyPebble.sendPacket(MenuClearPacket);
