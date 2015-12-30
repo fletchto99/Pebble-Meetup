@@ -152,6 +152,7 @@ function getEvents(lon, lat, topics) {
                     if (typeof Pebble.getTimelineToken == 'function') {
                         optionItems[1].title = 'Pin';
                         optionItems[1].icon = 'IMAGE_PIN_ICON';
+                        optionItems[1].subtitle = 'Add to timeline.';
                         options.items(0, optionItems);
                         var pinstatus = functions.showLoadingCard('Event', 'Determining event pin status');
                         Pebble.getTimelineToken(function (token) {
@@ -169,6 +170,7 @@ function getEvents(lon, lat, topics) {
                                             if (data.pinned == 'true') {
                                                 optionItems[1].title = 'Unpin';
                                                 optionItems[1].icon = 'IMAGE_UNPIN_ICON';
+                                                optionItems[1].subtitle = 'Remove from timeline';
                                                 options.items(0, optionItems);
                                             }
                                             pinstatus.hide();
